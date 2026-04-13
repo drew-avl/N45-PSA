@@ -277,7 +277,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['login']) || isset($_
                         $agent_master_key = null;
                         $agent_cipher = $agentRow['user_specific_encryption_ciphertext'] ?? null;
                         if (!empty($agent_cipher)) {
-                            $agent_master_key = decryptUserSpecificKey($agent_cipher, $password);
+                            // Use SSO-aware decryption that handles both local and OpenID auth
+                            $agent_master_key = decryptUserMasterKey(
+                                $agent_cipher,
+                                $password,
+                                $agentRow['user_auth_method'] ?? 'local',
+                                $agentRow['user_sso_decryption_key'] ?? null
+                            );
                         }
 
                         $_SESSION['pending_dual_login'] = [
@@ -448,7 +454,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['login']) || isset($_
                         } else {
                             // Step 1: initial login (password available in this request)
                             if (!empty($user_encryption_ciphertext)) {
-                                $site_encryption_master_key = decryptUserSpecificKey($user_encryption_ciphertext, $password);
+                                // Use SSO-aware decryption
+                                $site_encryption_master_key = decryptUserMasterKey(
+                                    $user_encryption_ciphertext,
+                                    $password,
+                                    $selectedRow['user_auth_method'] ?? 'local',
+                                    $selectedRow['user_sso_decryption_key'] ?? null
+                                );
                             }
                         }
 
@@ -483,7 +495,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['login']) || isset($_
                             }
                         } else {
                             if (!empty($user_encryption_ciphertext)) {
-                                $agent_master_key = decryptUserSpecificKey($user_encryption_ciphertext, $password);
+                                $agent_master_key = decryptUserMasterKey(
+                                    $user_encryption_ciphertext,
+                                    $password,
+                                    $selectedRow['user_auth_method'] ?? 'local',
+                                    $selectedRow['user_sso_decryption_key'] ?? null
+                                );
                             }
                         }
 
@@ -685,6 +702,19 @@ $show_login_form = (!$show_role_choice && !$show_mfa_form);
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-block mb-3" name="login">Sign In</button>
+
+                    <?php 
+                        // Check if OpenID is configured for agent portal
+                        $openid_config = getOpenIDConfig($mysqli);
+                        if ($openid_config): 
+                    ?>
+                    <div class="text-center mb-2">
+                        <small class="text-muted">or</small>
+                    </div>
+                    <a href="/agent/openid_login.php" class="btn btn-outline-primary btn-block mb-3">
+                        <i class="fas fa-fw fa-sign-in-alt mr-2"></i>Sign in with SSO
+                    </a>
+                    <?php endif; ?>
                 <?php endif; ?>
 
                 <?php if ($show_role_choice): ?>

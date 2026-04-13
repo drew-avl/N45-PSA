@@ -524,6 +524,54 @@ function apiEncryptCredentialEntry(#[\SensitiveParameter]$credential_cleartext, 
     return $iv . $ciphertext;
 }
 
+/*
+ * SSO Decryption: For OpenID/SSO users, decrypt the master key using the provided SSO decryption key
+ * The SSO decryption key is a 16-byte base64-encoded key provided by the OIDC claim
+ * This bypasses PBKDF2 derivation and uses the key directly
+ */
+function decryptUserSpecificKeyWithSSO($user_encryption_ciphertext, $sso_decryption_key_base64)
+{
+    try {
+        // Decode the base64 SSO key to get the raw 16-byte key
+        $sso_decryption_key = base64_decode($sso_decryption_key_base64, true);
+        
+        if ($sso_decryption_key === false || strlen($sso_decryption_key) !== 16) {
+            return null; // Invalid key
+        }
+
+        // Get the IV and ciphertext (no salt needed for SSO keys)
+        $iv = substr($user_encryption_ciphertext, 0, 16);
+        $ciphertext = substr($user_encryption_ciphertext, 16);
+
+        // Decrypt using the SSO key directly (no PBKDF2 derivation)
+        return openssl_decrypt($ciphertext, 'aes-128-cbc', $sso_decryption_key, 0, $iv);
+    } catch (Exception $e) {
+        return null;
+    }
+}
+
+/*
+ * Generate SSO decryption key for new OpenID users
+ * Creates a 16-byte random key and stores it base64-encoded
+ * Also creates the user_specific_encryption_ciphertext using this key
+ */
+function generateSSODecryptionKey($site_encryption_master_key)
+{
+    // Generate a random 16-byte key
+    $sso_decryption_key = random_bytes(16);
+    $sso_decryption_key_base64 = base64_encode($sso_decryption_key);
+    
+    // Encrypt the master key with the SSO key
+    $iv = randomString();
+    $ciphertext = openssl_encrypt($site_encryption_master_key, 'aes-128-cbc', $sso_decryption_key, 0, $iv);
+    $user_specific_encryption_ciphertext = $iv . $ciphertext;
+    
+    return [
+        'key' => $sso_decryption_key_base64,
+        'ciphertext' => $user_specific_encryption_ciphertext
+    ];
+}
+
 // Get domain general info (whois + NS/A/MX records)
 function getDomainRecords($name)
 {
@@ -2072,4 +2120,276 @@ function formatDuration($time) {
     }
 
     return implode(' ', $parts);
+}
+/*
+ * OpenID Connect Helper Functions
+ * For agent technician SSO authentication
+ */
+
+/**
+ * Get OpenID provider configuration from database
+ * @return array|false Configuration array with client_id, client_secret, discovery_url, etc., or false if not configured
+ */
+function getOpenIDConfig($mysqli) {
+    $result = mysqli_query($mysqli, "
+        SELECT 
+            config_openid_enabled,
+            config_openid_client_id,
+            config_openid_client_secret,
+            config_openid_discovery_url,
+            config_openid_decryption_key_claim,
+            config_openid_scopes,
+            config_openid_response_type
+        FROM settings
+        WHERE company_id = 1
+        LIMIT 1
+    ");
+    
+    if (!$result) {
+        return false;
+    }
+    
+    $config = mysqli_fetch_assoc($result);
+    
+    if (!$config || !$config['config_openid_enabled']) {
+        return false;
+    }
+    
+    return [
+        'enabled' => $config['config_openid_enabled'],
+        'client_id' => $config['config_openid_client_id'],
+        'client_secret' => $config['config_openid_client_secret'],
+        'discovery_url' => $config['config_openid_discovery_url'],
+        'decryption_key_claim' => $config['config_openid_decryption_key_claim'] ?? 'encryption_key',
+        'scopes' => $config['config_openid_scopes'] ?? 'openid profile email',
+        'response_type' => $config['config_openid_response_type'] ?? 'code'
+    ];
+}
+
+/**
+ * Fetch OpenID Connect provider metadata from discovery URL
+ * @param string $discovery_url The OpenID Connect discovery endpoint
+ * @return array|false Metadata array with authorization_endpoint, token_endpoint, userinfo_endpoint, or false on error
+ */
+function fetchOpenIDMetadata($discovery_url) {
+    $context = stream_context_create([
+        'http' => [
+            'method' => 'GET',
+            'timeout' => 10,
+            'header' => "Accept: application/json\r\n"
+        ],
+        'ssl' => [
+            'verify_peer' => true,
+            'verify_peer_name' => true
+        ]
+    ]);
+    
+    $response = @file_get_contents($discovery_url, false, $context);
+    
+    if ($response === false) {
+        return false;
+    }
+    
+    $metadata = json_decode($response, true);
+    
+    if (!$metadata || !isset($metadata['authorization_endpoint']) || !isset($metadata['token_endpoint'])) {
+        return false;
+    }
+    
+    return [
+        'authorization_endpoint' => $metadata['authorization_endpoint'],
+        'token_endpoint' => $metadata['token_endpoint'],
+        'userinfo_endpoint' => $metadata['userinfo_endpoint'] ?? null,
+        'jwks_uri' => $metadata['jwks_uri'] ?? null,
+        'end_session_endpoint' => $metadata['end_session_endpoint'] ?? null
+    ];
+}
+
+/**
+ * Generate OpenID Connect authorization URL
+ * @param string $authorization_endpoint OIDC provider's authorization endpoint
+ * @param string $client_id OAuth client ID
+ * @param string $redirect_uri Redirect URI after authorization
+ * @param string $scopes Space-separated scopes to request
+ * @param string $response_type Response type (usually 'code')
+ * @return string Full authorization URL
+ */
+function generateOpenIDAuthorizationURL($authorization_endpoint, $client_id, $redirect_uri, $scopes = 'openid profile email', $response_type = 'code') {
+    $state = bin2hex(random_bytes(32));
+    $nonce = bin2hex(random_bytes(32));
+    
+    // Store state and nonce in session for validation
+    $_SESSION['openid_state'] = $state;
+    $_SESSION['openid_nonce'] = $nonce;
+    
+    $params = [
+        'response_type' => $response_type,
+        'client_id' => $client_id,
+        'redirect_uri' => $redirect_uri,
+        'scope' => $scopes,
+        'state' => $state,
+        'nonce' => $nonce
+    ];
+    
+    return $authorization_endpoint . '?' . http_build_query($params);
+}
+
+/**
+ * Exchange authorization code for access token
+ * @param string $token_endpoint OIDC provider's token endpoint
+ * @param string $client_id OAuth client ID
+ * @param string $client_secret OAuth client secret
+ * @param string $code Authorization code from callback
+ * @param string $redirect_uri Redirect URI
+ * @return array|false Token response with access_token, id_token, etc., or false on error
+ */
+function exchangeOpenIDAuthorizationCode($token_endpoint, $client_id, $client_secret, $code, $redirect_uri) {
+    $post_data = [
+        'grant_type' => 'authorization_code',
+        'code' => $code,
+        'client_id' => $client_id,
+        'client_secret' => $client_secret,
+        'redirect_uri' => $redirect_uri
+    ];
+    
+    $context = stream_context_create([
+        'http' => [
+            'method' => 'POST',
+            'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+            'content' => http_build_query($post_data),
+            'timeout' => 10
+        ],
+        'ssl' => [
+            'verify_peer' => true,
+            'verify_peer_name' => true
+        ]
+    ]);
+    
+    $response = @file_get_contents($token_endpoint, false, $context);
+    
+    if ($response === false) {
+        return false;
+    }
+    
+    $token_response = json_decode($response, true);
+    
+    if (!$token_response || !isset($token_response['access_token'])) {
+        return false;
+    }
+    
+    return $token_response;
+}
+
+/**
+ * Get user info from OpenID Connect userinfo endpoint
+ * @param string $userinfo_endpoint OIDC provider's userinfo endpoint
+ * @param string $access_token Access token obtained from token endpoint
+ * @return array|false User info array with email, name, decryption_key, etc., or false on error
+ */
+function getOpenIDUserInfo($userinfo_endpoint, $access_token) {
+    if (!$userinfo_endpoint) {
+        // Try to decode from ID token instead if userinfo endpoint not available
+        return false;
+    }
+    
+    $context = stream_context_create([
+        'http' => [
+            'method' => 'GET',
+            'header' => "Authorization: Bearer $access_token\r\nAccept: application/json\r\n",
+            'timeout' => 10
+        ],
+        'ssl' => [
+            'verify_peer' => true,
+            'verify_peer_name' => true
+        ]
+    ]);
+    
+    $response = @file_get_contents($userinfo_endpoint, false, $context);
+    
+    if ($response === false) {
+        return false;
+    }
+    
+    $user_info = json_decode($response, true);
+    
+    return $user_info ?: false;
+}
+
+/**
+ * Decode JWT token (ID token) without verification
+ * Note: In production, you should verify the signature using the provider's public key
+ * @param string $token JWT token
+ * @return array|false Decoded payload or false on error
+ */
+function decodeOpenIDToken($token) {
+    $parts = explode('.', $token);
+    
+    if (count($parts) !== 3) {
+        return false;
+    }
+    
+    // Decode payload (second part)
+    $payload = base64_decode(strtr($parts[1], '-_', '+/'), true);
+    
+    if ($payload === false) {
+        return false;
+    }
+    
+    $decoded = json_decode($payload, true);
+    
+    return $decoded ?: false;
+}
+
+/**
+ * Log SSO authentication attempt
+ * @param mysqli $mysqli Database connection
+ * @param string $type Type of log (e.g., 'Authorization', 'Token Exchange', 'Success', 'Error')
+ * @param string $status Status (e.g., 'Success', 'Failed', 'Pending')
+ * @param string|null $user_email User email
+ * @param int|null $user_id User ID
+ * @param string|null $message Additional message
+ * @param string|null $ip IP address
+ * @param string|null $user_agent User agent
+ */
+function logSSOAuth($mysqli, $type, $status, $user_email = null, $user_id = null, $message = null, $ip = null, $user_agent = null) {
+    $user_email = $user_email ? "'" . mysqli_real_escape_string($mysqli, $user_email) . "'" : "NULL";
+    $user_id = $user_id ? intval($user_id) : "NULL";
+    $message = $message ? "'" . mysqli_real_escape_string($mysqli, substr($message, 0, 500)) . "'" : "NULL";
+    $ip = $ip ? "'" . mysqli_real_escape_string($mysqli, substr($ip, 0, 50)) . "'" : "NULL";
+    $user_agent = $user_agent ? "'" . mysqli_real_escape_string($mysqli, substr($user_agent, 0, 255)) . "'" : "NULL";
+    
+    mysqli_query($mysqli, "
+        INSERT INTO sso_auth_log 
+        (sso_log_type, sso_log_provider, sso_log_user_email, sso_log_user_id, sso_log_status, sso_log_message, sso_log_ip, sso_log_user_agent)
+        VALUES 
+        ('$type', 'openid', $user_email, $user_id, '$status', $message, $ip, $user_agent)
+    ");
+}
+
+/**
+ * Universal decryption function that handles both password and SSO-based decryption
+ * Intelligently determines which decryption method to use based on auth_method and available data
+ * @param string $user_encryption_ciphertext The encrypted ciphertext to decrypt
+ * @param string|null $user_password The user's password (for local auth)
+ * @param string|null $user_auth_method The user's authentication method ('local' or 'openid')
+ * @param string|null $sso_decryption_key The SSO decryption key base64 (for OpenID auth)
+ * @return string|null The decrypted master key or null on failure
+ */
+function decryptUserMasterKey($user_encryption_ciphertext, $user_password = null, $user_auth_method = 'local', $sso_decryption_key = null)
+{
+    if (empty($user_encryption_ciphertext)) {
+        return null;
+    }
+
+    // Handle SSO decryption
+    if ($user_auth_method === 'openid' && !empty($sso_decryption_key)) {
+        return decryptUserSpecificKeyWithSSO($user_encryption_ciphertext, $sso_decryption_key);
+    }
+
+    // Handle password-based decryption
+    if (!empty($user_password)) {
+        return decryptUserSpecificKey($user_encryption_ciphertext, $user_password);
+    }
+
+    return null;
 }
