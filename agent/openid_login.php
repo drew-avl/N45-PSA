@@ -44,10 +44,8 @@ if (!$metadata) {
 }
 
 // Generate authorization URL
-// Callback URL must be absolute
-$callback_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://') 
-    . $_SERVER['HTTP_HOST'] 
-    . '/agent/openid_callback.php';
+// Callback URL must be absolute and handle reverse proxy HTTPS
+$callback_url = getBaseUrl() . '/agent/openid_callback.php';
 
 $auth_url = generateOpenIDAuthorizationURL(
     $metadata['authorization_endpoint'],

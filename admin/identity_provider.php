@@ -135,7 +135,7 @@ require_once "includes/inc_all_admin.php";
                 <ul class="mb-0 ml-3">
                     <li>Your OpenID provider must return <strong>email</strong> claim for user identification</li>
                     <li>Add a custom claim to your OpenID provider containing the 16-byte encryption key</li>
-                    <li>Configure the callback URL in your provider: <strong><?php echo (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://') . $_SERVER['HTTP_HOST']; ?>/agent/openid_callback.php</strong></li>
+                    <li>Configure the callback URL in your provider: <strong><?php echo getBaseUrl(); ?>/agent/openid_callback.php</strong></li>
                     <li>New technician accounts are created automatically on first login</li>
                 </ul>
             </div>

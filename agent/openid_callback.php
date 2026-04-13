@@ -68,9 +68,11 @@ if (!$metadata) {
 }
 
 // Callback URL
-$callback_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://') 
-    . $_SERVER['HTTP_HOST'] 
-    . '/agent/openid_callback.php';
+$callback_url = getBaseUrl() . '/agent/openid_callback.php';
+
+// DEBUG: Log the callback URL being used
+error_log("OpenID Callback URL: $callback_url");
+error_log("OpenID Token Endpoint: " . $metadata['token_endpoint']);
 
 // Exchange authorization code for token
 $token_response = exchangeOpenIDAuthorizationCode(

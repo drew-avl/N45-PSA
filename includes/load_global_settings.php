@@ -11,6 +11,15 @@ DEFINE("CURRENT_DATABASE_VERSION", $row['config_current_database_version']);
 $config_azure_client_id = $row['config_azure_client_id'];
 $config_azure_client_secret = $row['config_azure_client_secret'];
 
+// OpenID Connect
+$config_openid_enabled = intval($row['config_openid_enabled']);
+$config_openid_client_id = $row['config_openid_client_id'];
+$config_openid_client_secret = $row['config_openid_client_secret'];
+$config_openid_discovery_url = $row['config_openid_discovery_url'];
+$config_openid_decryption_key_claim = $row['config_openid_decryption_key_claim'];
+$config_openid_scopes = $row['config_openid_scopes'];
+$config_openid_response_type = $row['config_openid_response_type'];
+
 // Mail - SMTP
 $config_smtp_provider = $row['config_smtp_provider'];
 $config_smtp_host = $row['config_smtp_host'];

@@ -2268,12 +2268,18 @@ function exchangeOpenIDAuthorizationCode($token_endpoint, $client_id, $client_se
     $response = @file_get_contents($token_endpoint, false, $context);
     
     if ($response === false) {
+        // Log the error details
+        $error = error_get_last();
+        error_log("OpenID Token Exchange Error: " . ($error['message'] ?? 'Unknown error'));
+        error_log("Token endpoint: $token_endpoint");
+        error_log("Redirect URI: $redirect_uri");
         return false;
     }
     
     $token_response = json_decode($response, true);
     
     if (!$token_response || !isset($token_response['access_token'])) {
+        error_log("OpenID Token Exchange Failed: " . $response);
         return false;
     }
     
@@ -2367,29 +2373,41 @@ function logSSOAuth($mysqli, $type, $status, $user_email = null, $user_id = null
 }
 
 /**
- * Universal decryption function that handles both password and SSO-based decryption
- * Intelligently determines which decryption method to use based on auth_method and available data
- * @param string $user_encryption_ciphertext The encrypted ciphertext to decrypt
- * @param string|null $user_password The user's password (for local auth)
- * @param string|null $user_auth_method The user's authentication method ('local' or 'openid')
- * @param string|null $sso_decryption_key The SSO decryption key base64 (for OpenID auth)
- * @return string|null The decrypted master key or null on failure
+ * Get the base URL of the application, properly handling reverse proxy HTTPS
+ * @return string The base URL (e.g., https://example.com)
  */
-function decryptUserMasterKey($user_encryption_ciphertext, $user_password = null, $user_auth_method = 'local', $sso_decryption_key = null)
-{
-    if (empty($user_encryption_ciphertext)) {
-        return null;
+function getBaseUrl() {
+    // Check for reverse proxy headers first
+    $protocol = 'http://';
+    
+    // Check X-Forwarded-Proto header (most common)
+    if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+        $protocol = 'https://';
     }
-
-    // Handle SSO decryption
-    if ($user_auth_method === 'openid' && !empty($sso_decryption_key)) {
-        return decryptUserSpecificKeyWithSSO($user_encryption_ciphertext, $sso_decryption_key);
+    // Check X-Forwarded-Scheme header
+    elseif (isset($_SERVER['HTTP_X_FORWARDED_SCHEME']) && $_SERVER['HTTP_X_FORWARDED_SCHEME'] === 'https') {
+        $protocol = 'https://';
     }
-
-    // Handle password-based decryption
-    if (!empty($user_password)) {
-        return decryptUserSpecificKey($user_encryption_ciphertext, $user_password);
+    // Check X-Forwarded-SSL header
+    elseif (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on') {
+        $protocol = 'https://';
     }
-
-    return null;
+    // Check standard HTTPS detection
+    elseif (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] === 'on' || $_SERVER['HTTPS'] === '1')) {
+        $protocol = 'https://';
+    }
+    // Check server port
+    elseif (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) {
+        $protocol = 'https://';
+    }
+    
+    // Get host
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    
+    return $protocol . $host;
 }
+
+/*
+ * OpenID Connect Helper Functions
+ * For agent technician SSO authentication
+ */
