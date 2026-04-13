@@ -183,8 +183,14 @@ if ($user_exists) {
         exit("System encryption not properly configured. Please contact an administrator.");
     }
     
-    // Create encrypted ciphertext with SSO decryption key
-    $sso_ciphertext_result = generateSSODecryptionKey($site_master_key);
+    // Create encrypted ciphertext with the provider-supplied SSO decryption key
+    $sso_ciphertext_result = generateSSODecryptionKey($site_master_key, $sso_decryption_key);
+    if (!$sso_ciphertext_result) {
+        logSSOAuth($mysqli, 'UserCreate', 'Failed', $user_email, null, 'Invalid SSO decryption key format', $session_ip, $session_user_agent);
+        http_response_code(400);
+        exit("Invalid encryption key format from OpenID provider");
+    }
+
     $user_specific_encryption_ciphertext = $sso_ciphertext_result['ciphertext'];
     
     // Insert new user

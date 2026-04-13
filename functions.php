@@ -555,14 +555,21 @@ function decryptUserSpecificKeyWithSSO($user_encryption_ciphertext, $sso_decrypt
  * Creates a 16-byte random key and stores it base64-encoded
  * Also creates the user_specific_encryption_ciphertext using this key
  */
-function generateSSODecryptionKey($site_encryption_master_key)
+function generateSSODecryptionKey($site_encryption_master_key, $sso_decryption_key_base64 = null)
 {
-    // Generate a random 16-byte key
-    $sso_decryption_key = random_bytes(16);
-    $sso_decryption_key_base64 = base64_encode($sso_decryption_key);
-    
+    if ($sso_decryption_key_base64 === null) {
+        // Generate a random 16-byte key when no provider key is supplied
+        $sso_decryption_key = random_bytes(16);
+        $sso_decryption_key_base64 = base64_encode($sso_decryption_key);
+    } else {
+        $sso_decryption_key = base64_decode($sso_decryption_key_base64, true);
+        if ($sso_decryption_key === false || strlen($sso_decryption_key) !== 16) {
+            return false;
+        }
+    }
+
     // Encrypt the master key with the SSO key
-    $iv = randomString();
+    $iv = random_bytes(16);
     $ciphertext = openssl_encrypt($site_encryption_master_key, 'aes-128-cbc', $sso_decryption_key, 0, $iv);
     $user_specific_encryption_ciphertext = $iv . $ciphertext;
     
