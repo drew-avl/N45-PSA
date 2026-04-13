@@ -19,6 +19,7 @@ $config_openid_discovery_url = $row['config_openid_discovery_url'];
 $config_openid_decryption_key_claim = $row['config_openid_decryption_key_claim'];
 $config_openid_scopes = $row['config_openid_scopes'];
 $config_openid_response_type = $row['config_openid_response_type'];
+$config_site_encryption_master_key = $row['config_site_encryption_master_key'] ?? null;
 
 // Mail - SMTP
 $config_smtp_provider = $row['config_smtp_provider'];

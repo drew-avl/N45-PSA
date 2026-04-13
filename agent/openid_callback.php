@@ -168,19 +168,25 @@ if ($user_exists) {
     $placeholder_password = password_hash(randomString(), PASSWORD_DEFAULT);
     
     // Get master key from settings to encrypt with new SSO key
-    $settings_query = mysqli_query($mysqli, "
+    $settings_query = @mysqli_query($mysqli, "
         SELECT config_site_encryption_master_key
         FROM settings
         WHERE company_id = 1
     ");
     
+    if (!$settings_query) {
+        logSSOAuth($mysqli, 'UserCreate', 'Failed', $user_email, null, 'Missing settings column config_site_encryption_master_key', $session_ip, $session_user_agent);
+        http_response_code(500);
+        exit("OpenID SSO is not fully configured: missing encryption master key support. Please run the latest database migration.");
+    }
+    
     $settings_row = mysqli_fetch_assoc($settings_query);
     $site_master_key = $settings_row['config_site_encryption_master_key'] ?? null;
     
     if (empty($site_master_key)) {
-        logSSOAuth($mysqli, 'UserCreate', 'Failed', $user_email, null, 'Site master key not configured', $session_ip, $session_user_agent);
+        logSSOAuth($mysqli, 'UserCreate', 'Failed', $user_email, null, 'SSO encryption master key value is not configured', $session_ip, $session_user_agent);
         http_response_code(500);
-        exit("System encryption not properly configured. Please contact an administrator.");
+        exit("OpenID SSO is not ready: missing encryption master key value. Please configure this setting.");
     }
     
     // Create encrypted ciphertext with the provider-supplied SSO decryption key

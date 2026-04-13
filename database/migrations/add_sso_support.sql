@@ -12,6 +12,7 @@ ALTER TABLE `settings` ADD COLUMN `config_openid_discovery_url` VARCHAR(500) DEF
 ALTER TABLE `settings` ADD COLUMN `config_openid_decryption_key_claim` VARCHAR(255) DEFAULT 'encryption_key' AFTER `config_openid_discovery_url`;
 ALTER TABLE `settings` ADD COLUMN `config_openid_scopes` VARCHAR(500) DEFAULT 'openid profile email' AFTER `config_openid_decryption_key_claim`;
 ALTER TABLE `settings` ADD COLUMN `config_openid_response_type` VARCHAR(50) DEFAULT 'code' AFTER `config_openid_scopes`;
+ALTER TABLE `settings` ADD COLUMN `config_site_encryption_master_key` VARCHAR(255) DEFAULT NULL AFTER `config_openid_response_type`;
 
 -- Add index for faster lookups by auth method
 ALTER TABLE `users` ADD INDEX `idx_user_auth_method` (`user_auth_method`);
