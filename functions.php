@@ -529,11 +529,30 @@ function apiEncryptCredentialEntry(#[\SensitiveParameter]$credential_cleartext, 
  * The SSO decryption key is a 16-byte base64-encoded key provided by the OIDC claim
  * This bypasses PBKDF2 derivation and uses the key directly
  */
+function normalizeBase64Key($key)
+{
+    if ($key === null || $key === '') {
+        return false;
+    }
+
+    // Convert URL-safe Base64 to standard Base64
+    $key = strtr($key, '-_', '+/');
+
+    // Add padding if missing
+    $padding = strlen($key) % 4;
+    if ($padding > 0) {
+        $key .= str_repeat('=', 4 - $padding);
+    }
+
+    return $key;
+}
+
 function decryptUserSpecificKeyWithSSO($user_encryption_ciphertext, $sso_decryption_key_base64)
 {
     try {
-        // Decode the base64 SSO key to get the raw 16-byte key
-        $sso_decryption_key = base64_decode($sso_decryption_key_base64, true);
+        // Normalize and decode the SSO key to get the raw 16-byte key
+        $normalized_key = normalizeBase64Key($sso_decryption_key_base64);
+        $sso_decryption_key = $normalized_key ? base64_decode($normalized_key, true) : false;
         
         if ($sso_decryption_key === false || strlen($sso_decryption_key) !== 16) {
             return null; // Invalid key
@@ -544,7 +563,12 @@ function decryptUserSpecificKeyWithSSO($user_encryption_ciphertext, $sso_decrypt
         $ciphertext = substr($user_encryption_ciphertext, 16);
 
         // Decrypt using the SSO key directly (no PBKDF2 derivation)
-        return openssl_decrypt($ciphertext, 'aes-128-cbc', $sso_decryption_key, 0, $iv);
+        $decrypted = openssl_decrypt($ciphertext, 'aes-128-cbc', $sso_decryption_key, 0, $iv);
+        if ($decrypted === false) {
+            return null;
+        }
+
+        return $decrypted;
     } catch (Exception $e) {
         return null;
     }

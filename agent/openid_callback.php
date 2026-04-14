@@ -260,6 +260,9 @@ if ($user_enc_data && !empty($user_enc_data['user_sso_decryption_key'])) {
         generateUserSessionKey($site_encryption_master_key);
         logSSOAuth($mysqli, 'SessionSetup', 'Success', $user_email, $user_id, 'Encryption session initialized', $session_ip, $session_user_agent);
     } else {
+        $key = $user_enc_data['user_sso_decryption_key'];
+        error_log("OpenID SSO session setup failed: invalid decryption key or ciphertext. key=" . substr($key, 0, 64) . " length=" . strlen($key));
+        error_log("User ciphertext length=" . strlen($user_enc_data['user_specific_encryption_ciphertext']));
         logSSOAuth($mysqli, 'SessionSetup', 'Failed', $user_email, $user_id, 'Failed to decrypt encryption key', $session_ip, $session_user_agent);
         http_response_code(500);
         exit("Failed to setup encryption session");
