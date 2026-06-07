@@ -444,7 +444,7 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
                         }
 
                         $client_tag_id_array[] = $client_tag_id;
-                        $client_tag_name_display_array[] = "<a href='clients.php?tags[]=$client_tag_id'><span class='badge badge-pill text-light p-2 mr-1' style='background-color: $client_tag_color;'><i class='fas fa-$client_tag_icon fa-fw mr-1'></i>$client_tag_name</span></a>";
+                        $client_tag_name_display_array[] = "<a href='clients.php?tags[]=$client_tag_id'><span class='mt-1 badge badge-pill text-light p-2 mr-1' style='background-color: $client_tag_color;'><i class='fas fa-$client_tag_icon fa-fw mr-1'></i>$client_tag_name</span></a>";
                     }
                     $client_tags_display = implode('', $client_tag_name_display_array);
 
@@ -512,10 +512,10 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
                                     <div class="media-body">
                                         <div class="text-bold"><?= $client_name ?></div>
                                         <div class="text-secondary"><?= $client_type ?></div>
-                                        <div><?php if ($client_tags_display) { echo $client_tags_display; } ?></div>
+
                                     </div>
                                 </div>
-
+                                <div class="ml-2"><?php if ($client_tags_display) { echo $client_tags_display; } ?></div>
                             </a>
                         </td>
                         <td>

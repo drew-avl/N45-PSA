@@ -3,7 +3,7 @@
         <form id="bulkActions" action="post.php" method="post">
                 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
 
-                <div class="table-responsive-sm">
+                <div class="table-responsive">
                     <table class="table table-striped table-borderless table-hover">
                         <thead class="text-dark <?php if (!$num_rows[0]) { echo "d-none"; } ?> text-nowrap">
                         <tr>
@@ -172,6 +172,9 @@
 
 
                             // Get Tasks
+                            // Get Tasks
+                            $row = mysqli_fetch_assoc(mysqli_query($mysqli, "SELECT COUNT('task_id') AS count FROM tickets, tasks WHERE ticket_id = task_ticket_id AND ticket_project_id = $project_id"));
+                            $task_count = $row['count'];
                             $sql_tasks = mysqli_query( $mysqli, "SELECT * FROM tasks WHERE task_ticket_id = $ticket_id ORDER BY task_created_at ASC");
                             $task_count = mysqli_num_rows($sql_tasks);
                                     // Get Completed Task Count

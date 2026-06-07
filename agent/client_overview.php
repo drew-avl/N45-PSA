@@ -349,7 +349,7 @@ $sql_asset_retired = mysqli_query(
 
     <?php } ?>
 
-    <?php if (mysqli_num_rows($sql_favorite_credentials) > 0) { ?>
+    <?php if ((mysqli_num_rows($sql_favorite_credentials) > 0) && (lookupUserPermission('module_credential'))) { ?>
 
     <div class="col-md-4">
 

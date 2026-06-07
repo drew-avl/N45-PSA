@@ -2,15 +2,60 @@
 
 This file documents all notable changes made to ITFlow.
 
+## [26.05.1] Stable Release
+- Security Fixes.
+
+## [26.05] Stable Release
+### Bug Fixes
+- Stripe Payment: Fix adding saved cards on client portal.
+- Various client and module enforments fixes. 
+- Projects: Fix slow load by using an optimized query to count tickets and tasks.
+- Show correct currency for the account balance when adding payment to invoice.
+- Expire all Password reset tokens nightly with cron.
+- Shared Items via secure link: Do not delete shared items that have not been viewed before cron runs.
+- Client: Fix Client Abbreviation being converted to an int on edit.
+
+### New Features & Updates 
+- Bump TinyMCE from 8.4.0 to 8.5.0.
+- Bump TCPDF from 6.11.2 to 6.11.3.
+- DeBump stripe-php from 20.0.0 to 19.4.1.
+
+## [26.04] Stable Release
+### Bug Fixes
+- Racks: Fix Device Removal.
+- Table Lists: replace class table-responsive-sm with just table-reponsive was causing ui issues with certain screen sizes.
+- Client: Fix Edit erroring on certain characters.
+- Category: Fix Add/Edit due to missing CSRF fields.
+- Category: Fix Restore function and Icon and text color.
+- Invoice: Do not apply late fee on first overdue reminder (1 day).
+- Ticket: Fix issue with contact not being added with Add contact modal v1.
+- Quote: Fix Copy was missing client.
+- API: Don't set client ID from POST - this is properly done via require_post_method instead only if it's an all-clients key.
+- API: Prevent error 500s when existing data can't be cleanly re-inserted to database.
+- API: Add more helpful errors.
+- API: Fix asset read uri_2 field.
+- API: Various other field fixes.
+
+### New Features & Updates 
+- Categories: Add Description Field.
+- Categories: Add DB Field for order.
+- Categories: Move Asset Status and Network Interface Type to categories so custom ones can be created and edited.
+- Categories: Moved note type, software type, rack type to be creatable/editable Categories with common defaults and descriptions
+- Files: Allow .swb file for MikroTik Backup Files.
+- Software: Added additonal License Types including Perpetual, Site, etc.
+- API: Invoice Items: Add read endpoint.
+- Networks: Added Import.
+- Bump TinyMCE from 8.3.2 to 8.4.0.
+- Bump stripe-php from 19.4.1 to 20.0.0.
+
 ## [26.03] Stable Release
 ### Bug Fixes
-- Ticket Templates: Fix Task Sorting.
+- Ticket Templates: Fix Task Sortinhahahg.
 - Ticket: Lower autoclose setting minimum value from 48 to 24 Hours.
 - Ticket: Fix Task Approval.
 - Recurring Ticket: add empty value placeholder for Ticket Frequency.
 - Documents/Files: Fix redirect after File Upload to redirect to files instead of the non existent documents.
 - Setup: Fix base url tacking on /setup when not installing via script.
-
 
 ### New Features & Updates 
 - Clients: Net Terms: Added common 45 and 15 Days, removed 14 Days not as common.

@@ -59,8 +59,19 @@ ob_start();
                         </div>
                         <select class="form-control select2" name="type" required>
                             <option value="">- Type -</option>
-                            <?php foreach($rack_type_select_array as $rack_type_select) { ?>
-                                <option <?php if ($rack_type == $rack_type_select) { echo "selected"; } ?>><?php echo $rack_type_select; ?></option>
+                            <?php
+                            $sql_rack_types_select = mysqli_query($mysqli, "
+                                SELECT category_name FROM categories
+                                WHERE category_type = 'rack_type'
+                                AND category_archived_at IS NULL
+                                ORDER BY category_order ASC, category_name ASC
+                            ");
+                            while ($row = mysqli_fetch_assoc($sql_rack_types_select)) {
+                                $rack_type_select = nullable_htmlentities($row['category_name']);
+                                ?>
+                                <option <?php if ($rack_type == $rack_type_select) { echo "selected"; } ?>>
+                                    <?= $rack_type_select ?>
+                                </option>
                             <?php } ?>
                         </select>
                     </div>

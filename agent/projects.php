@@ -108,7 +108,7 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
             </div>
         </form>
         <hr>
-        <div class="table-responsive-sm">
+        <div class="table-responsive">
             <table class="table table-striped table-hover table-borderless">
                 <thead class="<?php if ($num_rows[0] == 0) { echo "d-none"; } ?> text-nowrap">
                 <tr>
@@ -190,34 +190,24 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
 
                     // Get Tasks and Tickets Stats
                     // Get Tickets
-                    $sql_tickets = mysqli_query($mysqli, "SELECT * FROM tickets WHERE ticket_project_id = $project_id");
-                    $ticket_count = mysqli_num_rows($sql_tickets);
+                    $row = mysqli_fetch_assoc(mysqli_query($mysqli, "SELECT COUNT('ticket_id') AS count FROM tickets WHERE ticket_project_id = $project_id"));
+                    $ticket_count = $row['count'];
 
                     // Get Closed Ticket Count
-                    $sql_closed_tickets = mysqli_query($mysqli, "SELECT * FROM tickets WHERE ticket_project_id = $project_id AND ticket_closed_at IS NOT NULL");
-
-                    $closed_ticket_count = mysqli_num_rows($sql_closed_tickets);
+                    $row = mysqli_fetch_assoc(mysqli_query($mysqli, "SELECT COUNT('ticket_id') AS count FROM tickets WHERE ticket_project_id = $project_id AND ticket_closed_at IS NOT NULL"));
+                    $closed_ticket_count = $row['count'];
 
                     // Ticket Closed Percent
                     if($ticket_count) {
                         $tickets_closed_percent = round(($closed_ticket_count / $ticket_count) * 100);
                     }
                     // Get All Tasks
-                    $sql_tasks = mysqli_query($mysqli,
-                        "SELECT * FROM tickets, tasks
-                        WHERE ticket_id = task_ticket_id
-                        AND ticket_project_id = $project_id"
-                    );
-                    $task_count = mysqli_num_rows($sql_tasks);
+                    $row = mysqli_fetch_assoc(mysqli_query($mysqli, "SELECT COUNT('task_id') AS count FROM tickets, tasks WHERE ticket_id = task_ticket_id AND ticket_project_id = $project_id"));
+                    $task_count = $row['count'];
 
                     // Get Completed Task Count
-                    $sql_tasks_completed = mysqli_query($mysqli,
-                        "SELECT * FROM tickets, tasks
-                        WHERE ticket_id = task_ticket_id
-                        AND ticket_project_id = $project_id
-                        AND task_completed_at IS NOT NULL"
-                    );
-                    $completed_task_count = mysqli_num_rows($sql_tasks_completed);
+                    $row = mysqli_fetch_assoc(mysqli_query($mysqli, "SELECT COUNT('task_id') AS count FROM tickets, tasks WHERE ticket_id = task_ticket_id AND ticket_project_id = $project_id AND task_completed_at IS NOT NULL"));
+                    $completed_task_count = $row['count'];
 
                     // Tasks Completed Percent
                     if($task_count) {

@@ -122,16 +122,25 @@ ob_start();
 
                 <!-- Type -->
                 <div class="form-group">
-                    <label for="network">Type</label>
+                    <label for="network">Interface Type</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-fw fa-plug"></i></span>
                         </div>
                         <select class="form-control select2" name="type">
                             <option value="">- Select Type -</option>
-                            <?php foreach($interface_types_array as $interface_type_select) { ?>
+                            <?php
+                            $sql_interface_types_select = mysqli_query($mysqli, "
+                                SELECT category_name FROM categories
+                                WHERE category_type = 'network_interface'
+                                AND category_archived_at IS NULL
+                                ORDER BY category_order ASC, category_name ASC
+                            ");
+                            while ($row = mysqli_fetch_assoc($sql_interface_types_select)) {
+                                $interface_type_select = nullable_htmlentities($row['category_name']);
+                                ?>
                                 <option <?php if($interface_type == $interface_type_select) { echo "selected"; } ?>>
-                                    <?php echo $interface_type_select; ?>
+                                    <?= $interface_type_select ?>
                                 </option>
                             <?php } ?>
                         </select>

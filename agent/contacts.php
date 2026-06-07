@@ -288,7 +288,7 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
         <form id="bulkActions" action="post.php" method="post" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
 
-            <div class="table-responsive-sm">
+            <div class="table-responsive">
                 <table class="table border">
                     <thead class="thead-light <?php if (!$num_rows[0]) { echo "d-none"; } ?>">
                     <tr>

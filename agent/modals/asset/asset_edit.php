@@ -270,8 +270,20 @@ ob_start();
                             <span class="input-group-text"><i class="fa fa-fw fa-circle"></i></span>
                         </div>
                         <select class="form-control select2" name="status">
-                            <?php foreach($asset_status_array as $asset_status_select) { ?>
-                                <option <?php if ($asset_status_select == $asset_status) { echo "selected"; } ?>><?= $asset_status_select ?></option>
+                            <option value="">- Select Status -</option>
+                            <?php
+                            $sql_interface_types_select = mysqli_query($mysqli, "
+                                SELECT category_name FROM categories
+                                WHERE category_type = 'asset_status'
+                                AND category_archived_at IS NULL
+                                ORDER BY category_order ASC, category_name ASC
+                            ");
+                            while ($row = mysqli_fetch_assoc($sql_interface_types_select)) {
+                                $asset_status_select = nullable_htmlentities($row['category_name']);
+                                ?>
+                                <option <?php if ($asset_status_select == $asset_status) { echo "selected"; } ?>>
+                                    <?= $asset_status_select ?>
+                                </option>
                             <?php } ?>
                         </select>
                     </div>

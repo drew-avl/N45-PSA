@@ -258,8 +258,17 @@ ob_start();
                         </div>
                         <select class="form-control select2" name="status">
                             <option value="">- Select Status -</option>
-                            <?php foreach($asset_status_array as $asset_status) { ?>
-                                <option><?php echo $asset_status; ?></option>
+                            <?php
+                            $sql_interface_types_select = mysqli_query($mysqli, "
+                                SELECT category_name FROM categories
+                                WHERE category_type = 'asset_status'
+                                AND category_archived_at IS NULL
+                                ORDER BY category_order ASC, category_name ASC
+                            ");
+                            while ($row = mysqli_fetch_assoc($sql_interface_types_select)) {
+                                $asset_status_select = nullable_htmlentities($row['category_name']);
+                                ?>
+                                <option><?= $asset_status_select ?></option>
                             <?php } ?>
                         </select>
                     </div>

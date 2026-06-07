@@ -95,6 +95,7 @@ ob_start();
                         $account_id = intval($row['account_id']);
                         $account_name = nullable_htmlentities($row['account_name']);
                         $opening_balance = floatval($row['opening_balance']);
+                        $account_currency = nullable_htmlentities($row['account_currency_code']);
 
                         $sql_payments = mysqli_query($mysqli, "SELECT SUM(payment_amount) AS total_payments FROM payments WHERE payment_account_id = $account_id");
                         $row = mysqli_fetch_assoc($sql_payments);
@@ -113,7 +114,7 @@ ob_start();
                     ?>
                         <option <?php if ($config_default_payment_account == $account_id) { echo "selected"; } ?>
                             value="<?php echo $account_id; ?>">
-                            <?php echo $account_name; ?> [$<?php echo number_format($account_balance, 2); ?>]
+                            <?php echo $account_name; ?> [<?php echo numfmt_format_currency($currency_format, $account_balance, $account_currency);  ?>]
                         </option>
 
                     <?php

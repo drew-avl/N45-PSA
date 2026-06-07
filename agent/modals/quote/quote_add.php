@@ -29,7 +29,7 @@ ob_start();
         </div>
 
         <?php if ($client_id) { ?>
-            <input type="hidden" name="client" value="<?php echo $client_id; ?>">
+            <input type="hidden" name="client_id" value="<?php echo $client_id; ?>">
         <?php } else { ?>
 
             <div class="form-group">
@@ -38,7 +38,7 @@ ob_start();
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fa fa-fw fa-user"></i></span>
                     </div>
-                    <select class="form-control select2" name="client" required>
+                    <select class="form-control select2" name="client_id" required>
                         <option value="">- Client -</option>
                         <?php
 

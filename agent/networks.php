@@ -79,15 +79,21 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
         <div class="card-tools">
             <div class="btn-group">
                 <button type="button" class="btn btn-primary ajax-modal" data-modal-url="modals/network/network_add.php?<?= $client_url ?>&location_id=<?= $location_filter ?>"><i class="fas fa-plus mr-2"></i>New Network</button>
-                <?php if ($num_rows[0] > 0) { ?>
                     <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"></button>
                     <div class="dropdown-menu">
+                        <?php if ($num_rows[0] > 0) { ?>
                         <a class="dropdown-item text-dark ajax-modal" href="#"
                             data-modal-url="modals/network/network_export.php?<?= $client_url ?>">
                             <i class="fa fa-fw fa-download mr-2"></i>Export
                         </a>
+                        <?php } ?>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-dark ajax-modal" href="#"
+                            data-modal-url="modals/network/network_import.php?<?= $client_url ?>">
+                            <i class="fa fa-fw fa-upload mr-2"></i>Import
+                        </a>
                     </div>
-                <?php } ?>
+
             </div>
 
         </div>
@@ -187,7 +193,7 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
             </div>
         </form>
         <hr>
-        <div class="table-responsive-sm">
+        <div class="table-responsive">
 
             <form id="bulkActions" action="post.php" method="post">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">

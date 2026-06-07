@@ -41,9 +41,20 @@ while ($row = mysqli_fetch_assoc($contact_licenses_sql)) {
 }
 $contact_licenses = implode(',', $contact_licenses_array);
 
-// Generate the HTML form content using output buffering.
+$license_types_array = array (
+    'Device',
+    'User',
+    'Site',
+    'Concurrent',
+    'Trial',
+    'Perpetual',
+    'Usage-based'
+);
+
 ob_start();
+
 ?>
+
 <div class="modal-header bg-dark">
     <h5 class="modal-title"><i class="fa fa-fw fa-cube mr-2"></i>Editing license: <strong><?php echo $software_name; ?></strong></h5>
     <button type="button" class="close text-white" data-dismiss="modal">
@@ -86,8 +97,20 @@ ob_start();
                             <span class="input-group-text"><i class="fa fa-fw fa-tag"></i></span>
                         </div>
                         <select class="form-control select2" name="type" required>
-                            <?php foreach($software_types_array as $software_type_select) { ?>
-                                <option <?php if ($software_type == $software_type_select) { echo "selected"; } ?>><?php echo $software_type_select; ?></option>
+                            <option value="">- Select Type -</option>
+                            <<?php
+                            $sql_software_types_select = mysqli_query($mysqli, "
+                                SELECT category_name FROM categories
+                                WHERE category_type = 'software_type'
+                                AND category_archived_at IS NULL
+                                ORDER BY category_order ASC, category_name ASC
+                            ");
+                            while ($row = mysqli_fetch_assoc($sql_software_types_select)) {
+                                $software_type_select = nullable_htmlentities($row['category_name']);
+                                ?>
+                                <option <?php if ($software_type == $software_type_select) { echo "selected"; } ?>>
+                                    <?= $software_type_select ?>
+                                </option>
                             <?php } ?>
                         </select>
                     </div>

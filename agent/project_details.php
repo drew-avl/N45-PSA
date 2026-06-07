@@ -341,13 +341,13 @@ if (isset($_GET['project_id'])) {
                 <div class="card-body p-0">
                     <form id="bulkActions" action="post.php" method="post">
                         <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
-                        <div class="table-responsive-sm">
+                        <div class="table-responsive">
                             <table class="table table-border table-hover">
                                 <thead class="thead-light">
                                 <tr>
                                     <td class="bg-light checkbox-column">
                                         <div class="form-check">
-                                            <input class="form-check-input" id="selectAllCheckbox" type="checkbox" onclick="checkAll(this)" onkeydown="checkAll(this)">
+                                            <input class="form-check-input" id="selectAllCheckbox" type="checkbox" onclick="checkAll(this)">
                                         </div>
                                     </td>
                                     <th>
@@ -493,7 +493,6 @@ if (isset($_GET['project_id'])) {
                                         </td>
                                         <td><?php echo $client_name; ?></td>
                                     </tr>
-
 
                                 <?php } ?>
 

@@ -6,6 +6,17 @@ $client_ids = array_map('intval', $_GET['client_ids'] ?? []);
 
 $count = count($client_ids);
 
+$net_terms_array = array (
+    '0'=>'On Receipt',
+    '7'=>'7 Days',
+    '10'=>'10 Days',
+    '15'=>'15 Days',
+    '30'=>'30 Days',
+    '45'=>'45 Days',
+    '60'=>'60 Days',
+    '90'=>'90 Days'
+);
+
 ob_start();
 
 ?>

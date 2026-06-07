@@ -33,7 +33,7 @@ if (isset($_POST['upload_files'])) {
         'odt', 'csv', 'xls', 'xlsx', 'ods', 'pptx', 'odp', 'zip', 'tar', 'gz',
         'msg', 'json', 'wav', 'mp3', 'ogg', 'mov', 'mp4', 'av1', 'ovpn',
         'cfg', 'ps1', 'vsdx', 'drawio', 'pfx', 'pages', 'numbers', 'unf', 'unifi',
-        'key', 'bat', 'stk'
+        'key', 'bat', 'stk', 'swb'
     ];
 
     // Loop through each uploaded file

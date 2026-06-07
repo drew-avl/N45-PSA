@@ -1,4 +1,4 @@
-/*M!999999\- enable the sandbox mode */
+/*M!999999\- enable the sandbox mode */ 
 -- MariaDB dump 10.19  Distrib 10.11.14-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: itflow_dev
@@ -449,9 +449,11 @@ DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories` (
   `category_id` int(11) NOT NULL AUTO_INCREMENT,
   `category_name` varchar(200) NOT NULL,
+  `category_description` varchar(255) DEFAULT NULL,
   `category_type` varchar(200) NOT NULL,
   `category_color` varchar(200) DEFAULT NULL,
   `category_icon` varchar(200) DEFAULT NULL,
+  `category_order` int(11) NOT NULL DEFAULT 0,
   `category_parent` int(11) DEFAULT 0,
   `category_created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `category_updated_at` datetime DEFAULT NULL ON UPDATE current_timestamp(),
@@ -1293,8 +1295,6 @@ CREATE TABLE `invoice_items` (
   `item_archived_at` datetime DEFAULT NULL,
   `item_tax_id` int(11) NOT NULL DEFAULT 0,
   `item_product_id` int(11) NOT NULL DEFAULT 0,
-  `item_quote_id` int(11) NOT NULL DEFAULT 0,
-  `item_recurring_invoice_id` int(11) NOT NULL DEFAULT 0,
   `item_invoice_id` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -2997,4 +2997,4 @@ CREATE TABLE `vendors` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-03-07 18:46:25
+-- Dump completed on 2026-04-04 18:13:53

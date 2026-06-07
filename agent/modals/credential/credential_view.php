@@ -2,11 +2,14 @@
 
 require_once '../../../includes/modal_header.php';
 
+enforceUserPermission('module_credential');
+
 $credential_id = intval($_GET['id']);
 
 $sql = mysqli_query($mysqli, "SELECT * FROM credentials WHERE credential_id = $credential_id LIMIT 1");
 
 $row = mysqli_fetch_assoc($sql);
+$client_id = intval($row['credential_client_id']);
 $credential_name = nullable_htmlentities($row['credential_name']);
 $credential_description = nullable_htmlentities($row['credential_description']);
 $credential_uri = nullable_htmlentities($row['credential_uri']);
@@ -22,6 +25,8 @@ if (empty($credential_otp_secret)) {
 }
 $credential_note = nullable_htmlentities($row['credential_note']);
 $credential_created_at = nullable_htmlentities($row['credential_created_at']);
+
+enforceClientAccess();
 
 // Generate the HTML form content using output buffering.
 ob_start();

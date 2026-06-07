@@ -28,9 +28,21 @@ while ($row = mysqli_fetch_assoc($sql_client_tags)) {
     $client_tag_id_array[] = $client_tag_id;
 }
 
-// Generate the HTML form content using output buffering.
+$net_terms_array = array (
+    '0'=>'On Receipt',
+    '7'=>'7 Days',
+    '10'=>'10 Days',
+    '15'=>'15 Days',
+    '30'=>'30 Days',
+    '45'=>'45 Days',
+    '60'=>'60 Days',
+    '90'=>'90 Days'
+);
+
 ob_start();
+
 ?>
+
 <div class="modal-header bg-dark">
     <h5 class="modal-title"><i class='fa fa-fw fa-user-edit mr-2'></i>Editing Client: <strong><?php echo $client_name; ?></strong></h5>
     <button type="button" class="close text-white" data-dismiss="modal">

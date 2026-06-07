@@ -615,6 +615,8 @@ if (isset($_GET['asset_id'])) {
                     </form>
                 </div>
 
+                <?php if (lookupUserPermission('module_credential')) { // Begin Credential Enforcement ?>
+
                 <div class="card card-dark <?php if ($credential_count == 0) { echo "d-none"; } ?>">
                     <div class="card-header">
                         <h3 class="card-title"><i class="fa fa-fw fa-key mr-2"></i>Credentials</h3>
@@ -743,6 +745,8 @@ if (isset($_GET['asset_id'])) {
 
                     </div>
                 </div>
+
+                <?php } // End Credential Enforcement ?>
 
                 <div class="card card-dark <?php if ($software_count == 0) { echo "d-none"; } ?>">
                     <div class="card-header py-2">

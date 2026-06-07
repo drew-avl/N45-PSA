@@ -105,13 +105,14 @@ logApp("Cron", "info", "Cron Started");
 mysqli_query($mysqli, "TRUNCATE TABLE ticket_views");
 
 // Clean-up shared items that have been used
-mysqli_query($mysqli, "DELETE FROM shared_items WHERE item_views = item_view_limit");
+mysqli_query($mysqli, "DELETE FROM shared_items WHERE item_view_limit > 0 AND item_views >= item_view_limit");
 
 // Clean-up shared items that have expired
 mysqli_query($mysqli, "DELETE FROM shared_items WHERE item_expire_at < NOW()");
 
 // Invalidate any password reset links
 mysqli_query($mysqli, "UPDATE users SET user_password_reset_token = NULL WHERE user_archived_at IS NULL");
+mysqli_query($mysqli, "UPDATE users SET user_password_reset_token = NULL"); // TODO: Make this 'expired' tokens only when we actually use expiry
 
 // Clean-up old dismissed notifications
 mysqli_query($mysqli, "DELETE FROM notifications WHERE notification_dismissed_at < CURDATE() - INTERVAL 90 DAY");
@@ -524,7 +525,7 @@ if ($config_send_invoice_reminders == 1) {
 
             // Late Charges
 
-            if ($config_invoice_late_fee_enable == 1) {
+            if ($config_invoice_late_fee_enable == 1 && $day > 1) {
 
                 $todays_date = date('Y-m-d');
                 $late_fee_amount = ($invoice_amount * $config_invoice_late_fee_percent) / 100;

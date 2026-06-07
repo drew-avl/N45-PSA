@@ -2,6 +2,8 @@
 
 require_once '../../../includes/modal_header.php';
 
+enforceUserPermission('module_credential', 2);
+
 $credential_id = intval($_GET['id']);
 
 $sql = mysqli_query($mysqli, "SELECT * FROM credentials WHERE credential_id = $credential_id LIMIT 1");
@@ -31,6 +33,8 @@ while ($row = mysqli_fetch_assoc($sql_credential_tags)) {
     $credential_tag_id = intval($row['tag_id']);
     $credential_tag_id_array[] = $credential_tag_id;
 }
+
+enforceClientAccess();
 
 // Generate the HTML form content using output buffering.
 ob_start();

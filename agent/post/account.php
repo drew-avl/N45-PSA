@@ -12,7 +12,6 @@ if (isset($_POST['add_account'])) {
 
     enforceUserPermission('module_financial', 2);
 
-
     $name = sanitizeInput($_POST['name']);
     $opening_balance = floatval($_POST['opening_balance']);
     $currency_code = sanitizeInput($_POST['currency_code']);

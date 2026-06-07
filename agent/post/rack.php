@@ -265,7 +265,7 @@ if (isset($_POST['edit_rack_unit'])) {
 
 if (isset($_GET['remove_rack_unit'])) {
 
-    validateCSRFToken($_POST['csrf_token']);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 

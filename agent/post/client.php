@@ -8,6 +8,8 @@ defined('FROM_POST_HANDLER') || die("Direct file access is not allowed");
 
 if (isset($_POST['add_client'])) {
 
+    // JQ - Using Prepared MySQLi Statements here for show this is not our standard and is only used in the client add/edit POST.
+
     validateCSRFToken($_POST['csrf_token']);
 
     enforceUserPermission('module_client', 2);
@@ -260,25 +262,63 @@ if (isset($_POST['edit_client'])) {
 
     $client_id = intval($_POST['client_id']);
 
-    mysqli_query($mysqli, "UPDATE clients SET client_name = '$name', client_type = '$type', client_website = '$website', client_referral = '$referral', client_rate = $rate, client_net_terms = $net_terms, client_tax_id_number = '$tax_id_number', client_lead = $lead, client_abbreviation = '$abbreviation', client_notes = '$notes' WHERE client_id = $client_id");
+    // Update client using prepared statement
+    $query = mysqli_prepare(
+        $mysqli,
+        "UPDATE clients SET
+        client_name = ?,
+        client_type = ?,
+        client_website = ?,
+        client_referral = ?,
+        client_rate = ?,
+        client_net_terms = ?,
+        client_tax_id_number = ?,
+        client_lead = ?,
+        client_abbreviation = ?,
+        client_notes = ?
+        WHERE client_id = ?"
+    );
+    mysqli_stmt_bind_param(
+        $query,
+        "ssssdisissi",
+        $name,
+        $type,
+        $website,
+        $referral,
+        $rate,
+        $net_terms,
+        $tax_id_number,
+        $lead,
+        $abbreviation,
+        $notes,
+        $client_id
+    );
+    mysqli_stmt_execute($query);
 
-    // Create Referral if it doesn't exist
-    $sql = mysqli_query($mysqli, "SELECT category_name FROM categories WHERE category_type = 'Referral' AND category_archived_at IS NULL AND category_name = '$referral'");
-    if(mysqli_num_rows($sql) == 0) {
-        mysqli_query($mysqli, "INSERT INTO categories SET category_name = '$referral', category_type = 'Referral'");
+    // Create referral category if it doesn't exist
+    $query = mysqli_prepare($mysqli, "SELECT category_name FROM categories WHERE category_type = 'Referral' AND category_archived_at IS NULL AND category_name = ?");
+    mysqli_stmt_bind_param($query, "s", $referral);
+    mysqli_stmt_execute($query);
+    mysqli_stmt_store_result($query);
+    if (mysqli_stmt_num_rows($query) == 0) {
+        $query = mysqli_prepare($mysqli, "INSERT INTO categories SET category_name = ?, category_type = 'Referral'");
+        mysqli_stmt_bind_param($query, "s", $referral);
+        mysqli_stmt_execute($query);
 
         logAction("Category", "Create", "$session_name created referral category $referral");
     }
 
-    // Tags
-    // Delete existing tags
-    mysqli_query($mysqli, "DELETE FROM client_tags WHERE client_id = $client_id");
+    // Tags - delete existing and re-insert
+    $query = mysqli_prepare($mysqli, "DELETE FROM client_tags WHERE client_id = ?");
+    mysqli_stmt_bind_param($query, "i", $client_id);
+    mysqli_stmt_execute($query);
 
-    // Add new tags
-    if(isset($_POST['tags'])) {
-        foreach($_POST['tags'] as $tag) {
+    if (isset($_POST['tags'])) {
+        $query = mysqli_prepare($mysqli, "INSERT INTO client_tags SET client_id = ?, tag_id = ?");
+        foreach ($_POST['tags'] as $tag) {
             $tag = intval($tag);
-            mysqli_query($mysqli, "INSERT INTO client_tags SET client_id = $client_id, tag_id = $tag");
+            mysqli_stmt_bind_param($query, "ii", $client_id, $tag);
+            mysqli_stmt_execute($query);
         }
     }
 

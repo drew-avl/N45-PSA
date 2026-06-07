@@ -14,7 +14,7 @@ if (isset($_POST['add_quote'])) {
 
     require_once 'quote_model.php';
 
-    $client_id = intval($_POST['client']);
+    $client_id = intval($_POST['client_id']);
 
     enforceClientAccess();
 
@@ -55,7 +55,7 @@ if (isset($_POST['add_quote_copy'])) {
     enforceUserPermission('module_sales', 2);
 
     $quote_id = intval($_POST['quote_id']);
-    $client_id = intval($_POST['client']);
+    $client_id = intval($_POST['client_id']);
     $date = sanitizeInput($_POST['date']);
     $expire = sanitizeInput($_POST['expire']);
 

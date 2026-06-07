@@ -495,7 +495,7 @@ ob_start();
         </div>
         <?php } ?>
 
-        <?php if ($credential_count) { ?>
+        <?php if (lookupUserPermission('module_credential') && ($credential_count)) { ?>
         <div class="tab-pane fade" id="pills-asset-credentials">
             <div class="table-responsive-sm-sm">
                 <table class="table table-sm table-striped table-borderless table-hover">
