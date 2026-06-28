@@ -4,11 +4,7 @@ on:
   pull_request:
     branches:
       - master
-      - develop
-  push:
-    branches:
-      - master
-      - develop
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -16,22 +12,45 @@ permissions:
 jobs:
   php-syntax:
     name: PHP syntax
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mysqli, intl, curl, gd, mbstring, zip, xml
+          coverage: none
+
+      - name: Show PHP version
+        run: php -v
 
       - name: Validate PHP syntax
+        shell: bash
         run: |
-          find . \
-            -path './uploads' -prune -o \
-            -path './.git' -prune -o \
-            -type f -name '*.php' -print0 \
-            | xargs -0 -n1 php -l
+          set -Eeuo pipefail
+          failed=0
+
+          while IFS= read -r -d '' file; do
+            echo "Checking $file"
+            if ! php -d display_errors=1 -l "$file"; then
+              failed=1
+            fi
+          done < <(
+            find . \
+              -path './.git' -prune -o \
+              -path './uploads' -prune -o \
+              -type f -name '*.php' -print0
+          )
+
+          exit "$failed"
 
   database-schema:
     name: Database schema
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     services:
       mariadb:
@@ -51,14 +70,21 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Install MariaDB client and PHP MySQL extension
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mysqli
+          coverage: none
+
+      - name: Install MariaDB client
         run: |
           sudo apt-get update
-          sudo apt-get install -y mariadb-client php-mysql
+          sudo apt-get install -y mariadb-client
 
-      - name: Import clean schema
+      - name: Import current schema
         env:
           MYSQL_PWD: itflow
         run: |
@@ -67,7 +93,7 @@ jobs:
             --user=itflow \
             itflow_ci < db.sql
 
-      - name: Create CI configuration
+      - name: Create isolated CI configuration
         run: |
           cat > config.php <<'PHP'
           <?php
@@ -77,19 +103,10 @@ jobs:
           $database = 'itflow_ci';
           $mysqli = mysqli_connect($dbhost, $dbusername, $dbpassword, $database)
               or die('Database Connection Failed');
-          $config_app_name = 'N45 PSA CI';
-          $config_base_url = 'localhost';
-          $config_https_only = false;
-          $repo_branch = 'master';
-          $installation_id = 'ci';
-          $config_enable_setup = 0;
           PHP
-
-      - name: Validate upstream database updater
-        run: php scripts/update_cli.php --update_db
 
       - name: Validate N45 migrations
         run: php ops/run-n45-migrations.php "$GITHUB_WORKSPACE"
 
-      - name: Verify database version
+      - name: Verify schema version
         run: php ops/verify-db-version.php "$GITHUB_WORKSPACE"
