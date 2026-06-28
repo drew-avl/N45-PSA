@@ -1,0 +1,146 @@
+name: N45 PSA CI
+
+on:
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  php-syntax:
+    name: PHP syntax
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mysqli, intl, curl, gd, mbstring, zip, xml
+          coverage: none
+
+      - name: Show PHP version
+        run: php -v
+
+      - name: Validate PHP syntax
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          failed=0
+
+          while IFS= read -r -d '' file; do
+            echo "Checking $file"
+            if ! php -d display_errors=1 -l "$file"; then
+              failed=1
+            fi
+          done < <(
+            find . \
+              -path './.git' -prune -o \
+              -path './uploads' -prune -o \
+              -type f -name '*.php' -print0
+          )
+
+          exit "$failed"
+
+  database-schema:
+    name: Database schema
+    runs-on: ubuntu-24.04
+
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: itflow_ci
+          MARIADB_USER: itflow
+          MARIADB_PASSWORD: itflow
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mysqli
+          coverage: none
+
+      - name: Install MariaDB client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mariadb-client
+
+      - name: Import current schema
+        env:
+          MYSQL_PWD: itflow
+        run: |
+          mariadb \
+            --host=127.0.0.1 \
+            --user=itflow \
+            itflow_ci < db.sql
+
+      - name: Create isolated CI configuration
+        run: |
+          cat > config.php <<'PHP'
+          <?php
+          $dbhost = '127.0.0.1';
+          $dbusername = 'itflow';
+          $dbpassword = 'itflow';
+          $database = 'itflow_ci';
+          $mysqli = mysqli_connect($dbhost, $dbusername, $dbpassword, $database)
+              or die('Database Connection Failed');
+          PHP
+
+      - name: Seed schema version row
+        shell: bash
+        run: |
+          php <<'PHP'
+          <?php
+
+          declare(strict_types=1);
+
+          require getcwd() . '/config.php';
+          require getcwd() . '/includes/database_version.php';
+
+          $version = (string) LATEST_DATABASE_VERSION;
+
+          $statement = mysqli_prepare(
+              $mysqli,
+              'INSERT INTO settings (
+                  company_id,
+                  config_current_database_version
+              ) VALUES (1, ?)'
+          );
+
+          if ($statement === false) {
+              throw new RuntimeException(mysqli_error($mysqli));
+          }
+
+          mysqli_stmt_bind_param($statement, 's', $version);
+
+          if (!mysqli_stmt_execute($statement)) {
+              throw new RuntimeException(mysqli_stmt_error($statement));
+          }
+
+          echo "Seeded database version: {$version}\n";
+          PHP
+
+      - name: Validate N45 migrations
+        run: php ops/run-n45-migrations.php "$GITHUB_WORKSPACE"
+
+      - name: Verify schema version
+        run: php ops/verify-db-version.php "$GITHUB_WORKSPACE"
