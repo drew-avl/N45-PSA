@@ -2152,7 +2152,7 @@ function formatDuration($time) {
 
     return implode(' ', $parts);
 }
-<<<<<<< HEAD
+
 /*
  * OpenID Connect Helper Functions
  * For agent technician SSO authentication
@@ -2439,16 +2439,9 @@ function getBaseUrl() {
     return $protocol . $host;
 }
 
-/*
- * OpenID Connect Helper Functions
- * For agent technician SSO authentication
- */
-=======
-
 function validateDate($date) {
     if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
         return $date;
     }
     return date('Y-m-d'); // Fallback
 }
->>>>>>> upstream/master
