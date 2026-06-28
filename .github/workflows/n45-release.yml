@@ -1,0 +1,108 @@
+name: N45 PSA Release
+
+on:
+  push:
+    tags:
+      - 'n45-v*'
+
+permissions:
+  contents: write
+
+jobs:
+  validate-and-release:
+    name: Validate and publish release
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: itflow_release
+          MARIADB_USER: itflow
+          MARIADB_PASSWORD: itflow
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@v4
+
+      - name: Validate release tag
+        run: |
+          [[ "$GITHUB_REF_NAME" =~ ^n45-v[0-9]{4}\.[0-9]{2}\.[0-9]+$ ]]
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mariadb-client php-mysql
+
+      - name: Validate PHP syntax
+        run: |
+          find . \
+            -path './uploads' -prune -o \
+            -path './.git' -prune -o \
+            -type f -name '*.php' -print0 \
+            | xargs -0 -n1 php -l
+
+      - name: Import clean schema
+        env:
+          MYSQL_PWD: itflow
+        run: |
+          mariadb \
+            --host=127.0.0.1 \
+            --user=itflow \
+            itflow_release < db.sql
+
+      - name: Create CI configuration
+        run: |
+          cat > config.php <<'PHP'
+          <?php
+          $dbhost = '127.0.0.1';
+          $dbusername = 'itflow';
+          $dbpassword = 'itflow';
+          $database = 'itflow_release';
+          $mysqli = mysqli_connect($dbhost, $dbusername, $dbpassword, $database)
+              or die('Database Connection Failed');
+          $config_app_name = 'N45 PSA Release';
+          $config_base_url = 'localhost';
+          $config_https_only = false;
+          $repo_branch = 'master';
+          $installation_id = 'release-ci';
+          $config_enable_setup = 0;
+          PHP
+
+      - name: Validate database updates and N45 migrations
+        run: |
+          php scripts/update_cli.php --update_db
+          php ops/run-n45-migrations.php "$GITHUB_WORKSPACE"
+          php ops/verify-db-version.php "$GITHUB_WORKSPACE"
+
+      - name: Remove runtime configuration
+        run: rm -f config.php
+
+      - name: Build release archive
+        run: |
+          mkdir -p dist
+          tar \
+            --exclude='.git' \
+            --exclude='dist' \
+            --exclude='config.php' \
+            -czf "dist/${GITHUB_REF_NAME}.tar.gz" .
+          sha256sum "dist/${GITHUB_REF_NAME}.tar.gz" \
+            > "dist/${GITHUB_REF_NAME}.sha256"
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            "dist/${GITHUB_REF_NAME}.tar.gz" \
+            "dist/${GITHUB_REF_NAME}.sha256" \
+            --generate-notes \
+            --verify-tag

@@ -1,0 +1,11 @@
+# N45 ITFlow release configuration
+
+APP_BASE=/var/www/n45-psa
+REPO_DIR=/opt/n45-psa-repo
+APP_URL=https://psa.n45tech.com
+
+WEB_USER=www-data
+WEB_GROUP=www-data
+
+BACKUP_RETENTION_DAYS=30
+BACKUP_UPLOADS=true
