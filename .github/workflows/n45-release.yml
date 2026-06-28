@@ -93,6 +93,40 @@ jobs:
               or die('Database Connection Failed');
           PHP
 
+      - name: Seed schema version row
+        shell: bash
+        run: |
+          php <<'PHP'
+          <?php
+
+          declare(strict_types=1);
+
+          require getcwd() . '/config.php';
+          require getcwd() . '/includes/database_version.php';
+
+          $version = (string) LATEST_DATABASE_VERSION;
+
+          $statement = mysqli_prepare(
+              $mysqli,
+              'INSERT INTO settings (
+                  company_id,
+                  config_current_database_version
+              ) VALUES (1, ?)'
+          );
+
+          if ($statement === false) {
+              throw new RuntimeException(mysqli_error($mysqli));
+          }
+
+          mysqli_stmt_bind_param($statement, 's', $version);
+
+          if (!mysqli_stmt_execute($statement)) {
+              throw new RuntimeException(mysqli_stmt_error($statement));
+          }
+
+          echo "Seeded database version: {$version}\n";
+          PHP
+
       - name: Validate N45 migrations and schema version
         run: |
           php ops/run-n45-migrations.php "$GITHUB_WORKSPACE"
