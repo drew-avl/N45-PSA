@@ -90,7 +90,8 @@ rm -rf "$NEW_RELEASE/uploads"
 ln -s "$CONFIG_PHP" "$NEW_RELEASE/config.php"
 ln -s "$UPLOADS_DIR" "$NEW_RELEASE/uploads"
 
-chown -R root:root "$NEW_RELEASE"
+chown -R root:"$WEB_GROUP" "$NEW_RELEASE"
+chmod -R g+rX,o-rwx "$NEW_RELEASE"
 chown -h "$WEB_USER:$WEB_GROUP" "$NEW_RELEASE/config.php" "$NEW_RELEASE/uploads"
 
 log "Validating PHP syntax in release."
