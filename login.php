@@ -1,6 +1,6 @@
 <?php
 
-// Unified login (Agent + Client) using one email & password
+// Local technician login fallback. Normal technician login is OpenID Connect.
 
 header("Content-Security-Policy: default-src 'self'");
 
@@ -25,6 +25,11 @@ if (session_status() === PHP_SESSION_NONE) {
 
 if (!isset($config_enable_setup) || $config_enable_setup == 1) {
     header("Location: /setup");
+    exit();
+}
+
+if (($_GET['source'] ?? '') !== 'local') {
+    header("Location: /agent/openid_login.php", true, 302);
     exit();
 }
 
@@ -175,23 +180,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['login']) || isset($_
     // Continue only if no response error
     if (empty($response)) {
 
-        // Query all possible matches for that email
+        // Query local technician matches for that email.
         $sql = mysqli_query($mysqli, "
             SELECT users.*,
-                   user_settings.*,
-                   contacts.*,
-                   clients.*
+                   user_settings.*
             FROM users
             LEFT JOIN user_settings ON users.user_id = user_settings.user_id
-            LEFT JOIN contacts       ON users.user_id = contacts.contact_user_id
-            LEFT JOIN clients        ON contacts.contact_client_id = clients.client_id
             WHERE user_email = '$email'
               AND user_archived_at IS NULL
               AND user_status = 1
-              AND (
-                    user_type = 1
-                    OR (user_type = 2 AND client_archived_at IS NULL)
-                  )
+              AND user_type = 1
+              AND user_auth_method = 'local'
         ");
 
         $agentRow  = null;
@@ -254,58 +253,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['login']) || isset($_
             $selectedRow  = null;
             $selectedType = null; // 1 agent, 2 client
 
-            // Dual role
-            if ($agentRow !== null && $clientRow !== null) {
-
-                if ($role_choice === 'agent') {
-                    $selectedRow  = $agentRow;
-                    $selectedType = 1;
-                } elseif ($role_choice === 'client') {
-                    $selectedRow  = $clientRow;
-                    $selectedType = 2;
-                } else {
-                    // Show role choice screen
-                    $show_role_choice = true;
-
-                    // If this is the first time (Step 1), we need to stash allowed ids and (optional) decrypted agent encryption key
-                    // WITHOUT storing password.
-                    if ($is_login_step) {
-
-                        $pending_token = bin2hex(random_bytes(32));
-
-                        // If agent has user-specific encryption ciphertext, decrypt it NOW while password is present.
-                        $agent_master_key = null;
-                        $agent_cipher = $agentRow['user_specific_encryption_ciphertext'] ?? null;
-                        if (!empty($agent_cipher)) {
-                            // Use SSO-aware decryption that handles both local and OpenID auth
-                            $agent_master_key = decryptUserMasterKey(
-                                $agent_cipher,
-                                $password,
-                                $agentRow['user_auth_method'] ?? 'local',
-                                $agentRow['user_sso_decryption_key'] ?? null
-                            );
-                        }
-
-                        $_SESSION['pending_dual_login'] = [
-                            'email'            => $email,
-                            'agent_user_id'    => intval($agentRow['user_id']),
-                            'client_user_id'   => intval($clientRow['user_id']),
-                            'agent_master_key' => $agent_master_key, // may be null
-                            'token'            => $pending_token,
-                            'created'          => time()
-                        ];
-                    }
-                }
-
-            } else {
-                // Single role
-                if ($agentRow !== null) {
-                    $selectedRow  = $agentRow;
-                    $selectedType = 1;
-                } else {
-                    $selectedRow  = $clientRow;
-                    $selectedType = 2;
-                }
+            if ($agentRow !== null) {
+                $selectedRow  = $agentRow;
+                $selectedType = 1;
             }
 
             // Proceed if selected
@@ -554,76 +504,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['login']) || isset($_
                         }
                     }
 
-                // =========================
-                // CLIENT FLOW
-                // =========================
-                } elseif ($selectedType === 2) {
-
-                    if ($config_client_portal_enable != 1) {
-                        header("HTTP/1.1 401 Unauthorized");
-
-                        logAction("Client Login", "Failed", "Client portal disabled; login attempt using $email");
-
-                        $response = "
-                          <div class='alert alert-danger'>
-                            Incorrect username or password.
-                          </div>";
-                    } else {
-
-                        // Client login user id can be clobbered by SELECT users.*, contacts.*, clients.* collisions.
-                        // Prefer contact_user_id (ties to the portal user), fallback to user_id if present.
-                        $user_id = intval($selectedRow['contact_user_id'] ?? 0);
-                        if ($user_id === 0) {
-                            $user_id = intval($selectedRow['user_id'] ?? 0);
-                        }
-
-                        $client_id        = intval($selectedRow['contact_client_id'] ?? 0);
-                        $contact_id       = intval($selectedRow['contact_id'] ?? 0);
-                        $user_auth_method = sanitizeInput($selectedRow['user_auth_method'] ?? '');
-
-                        if ($client_id && $contact_id && $user_auth_method === 'local') {
-
-                            $_SESSION['client_logged_in'] = true;
-                            $_SESSION['client_id']        = $client_id;
-                            $_SESSION['user_id']          = $user_id;
-                            $_SESSION['user_type']        = 2;
-                            $_SESSION['contact_id']       = $contact_id;
-                            $_SESSION['login_method']     = "local";
-
-                            // Keep consistent with agent flow (helps any shared session checks)
-                            $_SESSION['logged']     = true;
-                            $_SESSION['csrf_token'] = randomString(32);
-
-                            // Option B: set session_user_id BEFORE logAction()
-                            $session_user_id = $user_id;
-                            logAction("Client Login", "Success", "Client contact $user_email successfully logged in locally", $client_id, $user_id);
-
-                            // Clear any pending sessions (avoid stale dual-role/MFA state)
-                            unset($_SESSION['pending_dual_login']);
-                            unset($_SESSION['pending_mfa_login']);
-
-                            header("Location: client/index.php");
-                            exit();
-
-                        } else {
-
-                            // if we have a users.user_id, log it
-                            $session_user_id = $user_id ?: 0;
-                            logAction(
-                                "Client Login",
-                                "Failed",
-                                "Failed client portal login attempt using $email (invalid auth method or missing contact/client)",
-                                $client_id ?? 0,
-                                $user_id
-                            );
-
-                            header("HTTP/1.1 401 Unauthorized");
-                            $response = "
-                              <div class='alert alert-danger'>
-                                Incorrect username or password.
-                              </div>";
-                        }
-                    }
                 }
             }
         }
@@ -703,18 +583,9 @@ $show_login_form = (!$show_role_choice && !$show_mfa_form);
 
                     <button type="submit" class="btn btn-primary btn-block mb-3" name="login">Sign In</button>
 
-                    <?php 
-                        // Check if OpenID is configured for agent portal
-                        $openid_config = getOpenIDConfig($mysqli);
-                        if ($openid_config): 
-                    ?>
-                    <div class="text-center mb-2">
-                        <small class="text-muted">or</small>
-                    </div>
                     <a href="/agent/openid_login.php" class="btn btn-outline-primary btn-block mb-3">
                         <i class="fas fa-fw fa-sign-in-alt mr-2"></i>Sign in with SSO
                     </a>
-                    <?php endif; ?>
                 <?php endif; ?>
 
                 <?php if ($show_role_choice): ?>
@@ -750,20 +621,6 @@ $show_login_form = (!$show_role_choice && !$show_mfa_form);
                 <?php endif; ?>
 
             </form>
-
-            <?php if($config_client_portal_enable == 1){ ?>
-                <hr>
-                <?php if (!empty($config_smtp_host)) { ?>
-                    <a href="client/login_reset.php">Forgot password?</a>
-                <?php } ?>
-                <?php if (!empty($azure_client_id)) { ?>
-                    <div class="col text-center mt-2">
-                        <a href="client/login_microsoft.php">
-                            <button type="button" class="btn btn-secondary">Login with Microsoft Entra</button>
-                        </a>
-                    </div>
-                <?php } ?>
-            <?php } ?>
 
         </div>
     </div>

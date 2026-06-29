@@ -16,7 +16,7 @@ if (!isset($_SESSION)) {
 }
 
 if (!isset($_SESSION['client_logged_in']) || !$_SESSION['client_logged_in']) {
-    redirect("/login.php");
+    redirect("/client/login.php");
 }
 
 // Set Timezone
@@ -46,21 +46,21 @@ $session_user_archived_at = $row['user_archived_at'];
 if ($session_user_type !== 2) {
     session_unset();
     session_destroy();
-    redirect("/login.php");
+    redirect("/client/login.php");
 }
 
 // Check User is active
 if ($session_user_status !== 1) {
     session_unset();
     session_destroy();
-    redirect("/login.php");
+    redirect("/client/login.php");
 }
 
 // Check User is archived
 if ($session_user_archived_at !== null) {
     session_unset();
     session_destroy();
-    redirect("/login.php");
+    redirect("/client/login.php");
 }
 
 // Load company session vars
