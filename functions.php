@@ -33,6 +33,18 @@ function nullable_htmlentities($unsanitizedInput) {
     return htmlspecialchars($unsanitizedInput ?? '', ENT_QUOTES, 'UTF-8');
 }
 
+function normalizeLegacyPostActionRequest() {
+    if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || empty($_POST['csrf_token'])) {
+        return;
+    }
+
+    foreach ($_POST as $key => $value) {
+        if (!array_key_exists($key, $_GET)) {
+            $_GET[$key] = $value;
+        }
+    }
+}
+
 function initials($string) {
     if (!empty($string)) {
         $return = '';

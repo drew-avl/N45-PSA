@@ -41,11 +41,12 @@ if (isset($_POST['edit_ticket_status'])) {
 
 }
 
-if (isset($_GET['delete_ticket_status'])) {
+if (isset($_POST['delete_ticket_status']) || isset($_GET['delete_ticket_status'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
-    $ticket_status_id = intval($_GET['delete_ticket_status']);
+    $ticket_status_id = intval($_POST['delete_ticket_status'] ?? $_GET['delete_ticket_status']);
 
     if ($ticket_status_id <= 5) {
         exit("Can't delete built-in statuses");

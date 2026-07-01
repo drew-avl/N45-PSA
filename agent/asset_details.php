@@ -600,9 +600,13 @@ if (isset($_GET['asset_id'])) {
                                                     </a>
                                                     <?php if ($session_user_role == 3 && $interface_primary == 0): ?>
                                                         <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item text-danger text-bold" href="post.php?delete_asset_interface=<?= $interface_id; ?>&csrf_token=<?= $_SESSION['csrf_token']; ?>">
-                                                            <i class="fas fa-fw fa-trash mr-2"></i>Delete
-                                                        </a>
+                                                        <form method="post" action="post.php" class="m-0">
+                                                            <input type="hidden" name="delete_asset_interface" value="<?= $interface_id; ?>">
+                                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+                                                            <button type="submit" class="dropdown-item text-danger text-bold">
+                                                                <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                                            </button>
+                                                        </form>
                                                     <?php endif; ?>
                                                 </div>
                                             </div>
@@ -719,14 +723,24 @@ if (isset($_GET['asset_id'])) {
                                                         <i class="fas fa-fw fa-share-alt mr-2"></i>Share
                                                     </a>
                                                     <div class="dropdown-divider"></div>
-                                                    <a class="dropdown-item" href="post.php?unlink_credential_from_asset&asset_id=<?= $asset_id; ?>&credential_id=<?= $credential_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
-                                                        <i class="fas fa-fw fa-unlink mr-2"></i>Unlink
-                                                    </a>
+                                                    <form method="post" action="post.php" class="m-0 d-inline">
+                                                        <input type="hidden" name="unlink_credential_from_asset" value="1">
+                                                        <input type="hidden" name="asset_id" value="<?= $asset_id; ?>">
+                                                        <input type="hidden" name="credential_id" value="<?= $credential_id; ?>">
+                                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                                        <button type="submit" class="dropdown-item">
+                                                            <i class="fas fa-fw fa-unlink mr-2"></i>Unlink
+                                                        </button>
+                                                    </form>
                                                     <?php if ($session_user_role == 3) { ?>
                                                         <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item text-danger text-bold" href="post.php?delete_credential=<?= $credential_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
-                                                            <i class="fas fa-fw fa-trash mr-2"></i>Delete
-                                                        </a>
+                                                        <form method="post" action="post.php" class="m-0">
+                                                            <input type="hidden" name="delete_credential" value="<?= $credential_id; ?>">
+                                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                                            <button type="submit" class="dropdown-item text-danger text-bold">
+                                                                <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                                            </button>
+                                                        </form>
                                                     <?php } ?>
                                                 </div>
                                             </div>
@@ -818,7 +832,13 @@ if (isset($_GET['asset_id'])) {
                                         <td><?= $software_license_type; ?></td>
                                         <td><?= "$seat_count / $software_seats"; ?></td>
                                         <td class="text-center">
-                                            <a href="post.php?unlink_software_from_asset&asset_id=<?= $asset_id; ?>&software_id=<?= $software_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" class="btn btn-secondary btn-sm" title="Unlink"><i class="fas fa-fw fa-unlink"></i></a>
+                                            <form method="post" action="post.php" class="d-inline">
+                                                <input type="hidden" name="unlink_software_from_asset" value="1">
+                                                <input type="hidden" name="asset_id" value="<?= $asset_id; ?>">
+                                                <input type="hidden" name="software_id" value="<?= $software_id; ?>">
+                                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                                <button type="submit" class="btn btn-secondary btn-sm" title="Unlink"><i class="fas fa-fw fa-unlink"></i></button>
+                                            </form>
                                         </td>
                                     </tr>
 
@@ -884,7 +904,13 @@ if (isset($_GET['asset_id'])) {
                                                 data-modal-url="modals/document/document_view.php?id=<?= $document_id ?>">
                                                 <i class="fas fa-fw fa-eye"></i>
                                             </a>
-                                            <a href="post.php?unlink_asset_from_document&asset_id=<?= $asset_id; ?>&document_id=<?= $document_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" class="btn btn-secondary btn-sm" title="Unlink"><i class="fas fa-fw fa-unlink"></i></a>
+                                            <form method="post" action="post.php" class="d-inline">
+                                                <input type="hidden" name="unlink_asset_from_document" value="1">
+                                                <input type="hidden" name="asset_id" value="<?= $asset_id; ?>">
+                                                <input type="hidden" name="document_id" value="<?= $document_id; ?>">
+                                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                                <button type="submit" class="btn btn-secondary btn-sm" title="Unlink"><i class="fas fa-fw fa-unlink"></i></button>
+                                            </form>
                                         </td>
                                     </tr>
 
@@ -975,7 +1001,13 @@ if (isset($_GET['asset_id'])) {
                                         <td><a class="text-dark" href="<?= "../uploads/clients/$client_id/$file_reference_name"; ?>" target="_blank" ><?= "$file_name<br><span class='text-secondary'>$file_description</span>"; ?></a></td>
                                         <td><?= $file_created_at; ?></td>
                                         <td class="text-center">
-                                            <a href="post.php?unlink_asset_from_file&asset_id=<?= $asset_id; ?>&file_id=<?= $file_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" class="btn btn-secondary btn-sm" title="Unlink"><i class="fas fa-fw fa-unlink"></i></a>
+                                            <form method="post" action="post.php" class="d-inline">
+                                                <input type="hidden" name="unlink_asset_from_file" value="1">
+                                                <input type="hidden" name="asset_id" value="<?= $asset_id; ?>">
+                                                <input type="hidden" name="file_id" value="<?= $file_id; ?>">
+                                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                                <button type="submit" class="btn btn-secondary btn-sm" title="Unlink"><i class="fas fa-fw fa-unlink"></i></button>
+                                            </form>
                                         </td>
                                     </tr>
 
@@ -1044,15 +1076,23 @@ if (isset($_GET['asset_id'])) {
                                                         <i class="fas fa-fw fa-edit mr-2"></i>Edit
                                                     </a>
                                                     <div class="dropdown-divider"></div>
-                                                    <a class="dropdown-item" href="post.php?force_recurring_ticket=<?= $recurring_ticket_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
-                                                        <i class="fa fa-fw fa-paper-plane text-secondary mr-2"></i>Force Reoccur
-                                                    </a>
+                                                    <form method="post" action="post.php" class="m-0">
+                                                        <input type="hidden" name="force_recurring_ticket" value="<?= $recurring_ticket_id; ?>">
+                                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                                        <button type="submit" class="dropdown-item">
+                                                            <i class="fa fa-fw fa-paper-plane text-secondary mr-2"></i>Force Reoccur
+                                                        </button>
+                                                    </form>
                                                     <?php
                                                     if ($session_user_role == 3) { ?>
                                                     <div class="dropdown-divider"></div>
-                                                    <a class="dropdown-item text-danger text-bold confirm-link" href="post.php?delete_recurring_ticket=<?= $recurring_ticket_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
-                                                        <i class="fas fa-fw fa-trash mr-2"></i>Delete
-                                                    </a>
+                                                    <form method="post" action="post.php" class="m-0">
+                                                        <input type="hidden" name="delete_recurring_ticket" value="<?= $recurring_ticket_id ?>">
+                                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                                        <button type="submit" class="dropdown-item text-danger text-bold confirm-link">
+                                                            <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                                        </button>
+                                                    </form>
                                                 </div>
                                                 <?php } ?>
                                             </div>
@@ -1198,7 +1238,13 @@ if (isset($_GET['asset_id'])) {
                                         <td><?= $service_category; ?></td>
                                         <td><?= $service_importance; ?></td>
                                         <td class="text-center">
-                                            <a href="post.php?unlink_service_from_asset&asset_id=<?= $asset_id; ?>&service_id=<?= $service_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" class="btn btn-secondary btn-sm" title="Unlink"><i class="fas fa-fw fa-unlink"></i></a>
+                                            <form method="post" action="post.php" class="d-inline">
+                                                <input type="hidden" name="unlink_service_from_asset" value="1">
+                                                <input type="hidden" name="asset_id" value="<?= $asset_id; ?>">
+                                                <input type="hidden" name="service_id" value="<?= $service_id; ?>">
+                                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                                <button type="submit" class="btn btn-secondary btn-sm" title="Unlink"><i class="fas fa-fw fa-unlink"></i></button>
+                                            </form>
                                         </td>
                                     </tr>
 

@@ -71,11 +71,12 @@ if (isset($_POST['edit_document_template'])) {
 
 }
 
-if (isset($_GET['delete_document_template'])) {
+if (isset($_POST['delete_document_template']) || isset($_GET['delete_document_template'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
-    $document_template_id = intval($_GET['delete_document_template']);
+    $document_template_id = intval($_POST['delete_document_template'] ?? $_GET['delete_document_template']);
 
     $document_template_name = sanitizeInput(getFieldById('document_templates', $document_template_id, 'document_template_name'));
 

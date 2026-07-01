@@ -178,11 +178,12 @@ if (isset($_POST['edit_user'])) {
 
 }
 
-if (isset($_GET['activate_user'])) {
+if (isset($_POST['activate_user']) || isset($_GET['activate_user'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
-    $user_id = intval($_GET['activate_user']);
+    $user_id = intval($_POST['activate_user'] ?? $_GET['activate_user']);
 
     $user_name = sanitizeInput(getFieldById('users', $user_id, 'user_name'));
 
@@ -196,11 +197,12 @@ if (isset($_GET['activate_user'])) {
 
 }
 
-if (isset($_GET['disable_user'])) {
+if (isset($_POST['disable_user']) || isset($_GET['disable_user'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
-    $user_id = intval($_GET['disable_user']);
+    $user_id = intval($_POST['disable_user'] ?? $_GET['disable_user']);
 
     $user_name = sanitizeInput(getFieldById('users', $user_id, 'user_name'));
 
@@ -218,11 +220,12 @@ if (isset($_GET['disable_user'])) {
 
 }
 
-if (isset($_GET['revoke_remember_me'])) {
+if (isset($_POST['revoke_remember_me']) || isset($_GET['revoke_remember_me'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
-    $user_id = intval($_GET['revoke_remember_me']);
+    $user_id = intval($_POST['revoke_remember_me'] ?? $_GET['revoke_remember_me']);
 
     $user_name = sanitizeInput(getFieldById('users', $user_id, 'user_name'));
 

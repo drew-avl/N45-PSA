@@ -61,9 +61,12 @@ if (isset($_GET['dismiss_all_notifications'])) {
 }
 
 // Revoke sharing (sharing itself is done via ajax.php)
-if (isset($_GET['deactivate_shared_item'])) {
+if (isset($_POST['deactivate_shared_item']) || isset($_GET['deactivate_shared_item'])) {
 
-    $item_id = intval($_GET['deactivate_shared_item']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
+
+    $item_id = intval($_POST['deactivate_shared_item'] ?? $_GET['deactivate_shared_item']);
 
     // Get details of the shared link
     $sql = mysqli_query($mysqli, "SELECT item_type, item_related_id, item_client_id FROM shared_items WHERE item_id = $item_id");

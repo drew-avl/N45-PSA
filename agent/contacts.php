@@ -526,25 +526,41 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
                                         <?php if ($session_user_role == 3 && $contact_primary == 0) { ?>
                                             <?php if ($contact_archived_at) { ?>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item text-info confirm-link" href="post.php?restore_contact=<?= $contact_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
-                                                <i class="fas fa-fw fa-redo mr-2"></i>Restore
-                                            </a>
+                                            <form method="post" action="post.php" class="m-0">
+                                                <input type="hidden" name="restore_contact" value="<?= $contact_id ?>">
+                                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                                <button type="submit" class="dropdown-item text-info confirm-link">
+                                                    <i class="fas fa-fw fa-redo mr-2"></i>Restore
+                                                </button>
+                                            </form>
                                             <?php } else { ?>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item text-danger confirm-link" href="post.php?archive_contact=<?= $contact_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
-                                                <i class="fas fa-fw fa-archive mr-2"></i>Archive
-                                            </a>
+                                            <form method="post" action="post.php" class="m-0">
+                                                <input type="hidden" name="archive_contact" value="<?= $contact_id ?>">
+                                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                                <button type="submit" class="dropdown-item text-danger confirm-link">
+                                                    <i class="fas fa-fw fa-archive mr-2"></i>Archive
+                                                </button>
+                                            </form>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item text-danger confirm-link" href="post.php?anonymize_contact=<?= $contact_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
-                                                <i class="fas fa-fw fa-user-secret mr-2"></i>Anonymize & Archive
-                                            </a>
+                                            <form method="post" action="post.php" class="m-0">
+                                                <input type="hidden" name="anonymize_contact" value="<?= $contact_id ?>">
+                                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                                <button type="submit" class="dropdown-item text-danger confirm-link">
+                                                    <i class="fas fa-fw fa-user-secret mr-2"></i>Anonymize & Archive
+                                                </button>
+                                            </form>
                                             <?php } ?>
 
                                             <?php if ($config_destructive_deletes_enable) { ?>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item text-danger text-bold confirm-link" href="post.php?delete_contact=<?= $contact_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
-                                                <i class="fas fa-fw fa-trash mr-2"></i>Delete
-                                            </a>
+                                            <form method="post" action="post.php" class="m-0">
+                                                <input type="hidden" name="delete_contact" value="<?= $contact_id ?>">
+                                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                                <button type="submit" class="dropdown-item text-danger text-bold confirm-link">
+                                                    <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                                </button>
+                                            </form>
                                             <?php } ?>
                                         <?php } ?>
                                     </div>

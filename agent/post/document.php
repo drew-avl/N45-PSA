@@ -378,14 +378,15 @@ if (isset($_POST['link_file_to_document'])) {
 
 }
 
-if (isset($_GET['unlink_file_from_document'])) {
+if (isset($_POST['unlink_file_from_document']) || isset($_GET['unlink_file_from_document'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $is_post = isset($_POST['unlink_file_from_document']);
+    validateCSRFToken($is_post ? $_POST['csrf_token'] : $_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $file_id = intval($_GET['file_id']);
-    $document_id = intval($_GET['document_id']);
+    $file_id = intval($is_post ? $_POST['file_id'] : $_GET['file_id']);
+    $document_id = intval($is_post ? $_POST['document_id'] : $_GET['document_id']);
 
     // Get Document Name and Client ID for logging
     $sql_document = mysqli_query($mysqli,"SELECT document_name, document_client_id FROM documents WHERE document_id = $document_id");
@@ -439,14 +440,15 @@ if (isset($_POST['link_vendor_to_document'])) {
 
 }
 
-if (isset($_GET['unlink_vendor_from_document'])) {
+if (isset($_POST['unlink_vendor_from_document']) || isset($_GET['unlink_vendor_from_document'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $is_post = isset($_POST['unlink_vendor_from_document']);
+    validateCSRFToken($is_post ? $_POST['csrf_token'] : $_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $vendor_id = intval($_GET['vendor_id']);
-    $document_id = intval($_GET['document_id']);
+    $vendor_id = intval($is_post ? $_POST['vendor_id'] : $_GET['vendor_id']);
+    $document_id = intval($is_post ? $_POST['document_id'] : $_GET['document_id']);
 
     // Get Document Name and Client ID for logging
     $sql_document = mysqli_query($mysqli,"SELECT document_name, document_client_id FROM documents WHERE document_id = $document_id");
@@ -501,14 +503,15 @@ if (isset($_POST['link_contact_to_document'])) {
 
 }
 
-if (isset($_GET['unlink_contact_from_document'])) {
+if (isset($_POST['unlink_contact_from_document']) || isset($_GET['unlink_contact_from_document'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $is_post = isset($_POST['unlink_contact_from_document']);
+    validateCSRFToken($is_post ? $_POST['csrf_token'] : $_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $contact_id = intval($_GET['contact_id']);
-    $document_id = intval($_GET['document_id']);
+    $contact_id = intval($is_post ? $_POST['contact_id'] : $_GET['contact_id']);
+    $document_id = intval($is_post ? $_POST['document_id'] : $_GET['document_id']);
 
     // Get Document Name and Client ID for logging
     $sql_document = mysqli_query($mysqli,"SELECT document_name, document_client_id FROM documents WHERE document_id = $document_id");
@@ -561,14 +564,15 @@ if (isset($_POST['link_asset_to_document'])) {
 
 }
 
-if (isset($_GET['unlink_asset_from_document'])) {
+if (isset($_POST['unlink_asset_from_document']) || isset($_GET['unlink_asset_from_document'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $is_post = isset($_POST['unlink_asset_from_document']);
+    validateCSRFToken($is_post ? $_POST['csrf_token'] : $_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $asset_id = intval($_GET['asset_id']);
-    $document_id = intval($_GET['document_id']);
+    $asset_id = intval($is_post ? $_POST['asset_id'] : $_GET['asset_id']);
+    $document_id = intval($is_post ? $_POST['document_id'] : $_GET['document_id']);
 
     // Get Document Name and Client ID for logging
     $sql_document = mysqli_query($mysqli,"SELECT document_name, document_client_id FROM documents WHERE document_id = $document_id");
@@ -622,14 +626,15 @@ if (isset($_POST['link_software_to_document'])) {
 
 }
 
-if (isset($_GET['unlink_software_from_document'])) {
+if (isset($_POST['unlink_software_from_document']) || isset($_GET['unlink_software_from_document'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $is_post = isset($_POST['unlink_software_from_document']);
+    validateCSRFToken($is_post ? $_POST['csrf_token'] : $_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $software_id = intval($_GET['software_id']);
-    $document_id = intval($_GET['document_id']);
+    $software_id = intval($is_post ? $_POST['software_id'] : $_GET['software_id']);
+    $document_id = intval($is_post ? $_POST['document_id'] : $_GET['document_id']);
 
     // Get Document Name and Client ID for logging
     $sql_document = mysqli_query($mysqli,"SELECT document_name, document_client_id FROM documents WHERE document_id = $document_id");
@@ -733,13 +738,14 @@ if (isset($_GET['export_document'])) {
 
 }
 
-if (isset($_GET['archive_document'])) {
+if (isset($_POST['archive_document']) || isset($_GET['archive_document'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $is_post = isset($_POST['archive_document']);
+    validateCSRFToken($is_post ? $_POST['csrf_token'] : $_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $document_id = intval($_GET['archive_document']);
+    $document_id = intval($is_post ? $_POST['archive_document'] : $_GET['archive_document']);
 
     // Get Contact Name and Client ID for logging and alert message
     $sql = mysqli_query($mysqli,"SELECT document_name, document_client_id FROM documents WHERE document_id = $document_id");
@@ -778,13 +784,14 @@ if (isset($_GET['archive_document'])) {
 
 }
 
-if (isset($_GET['restore_document'])) {
+if (isset($_POST['restore_document']) || isset($_GET['restore_document'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $is_post = isset($_POST['restore_document']);
+    validateCSRFToken($is_post ? $_POST['csrf_token'] : $_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $document_id = intval($_GET['restore_document']);
+    $document_id = intval($is_post ? $_POST['restore_document'] : $_GET['restore_document']);
 
     // Get Document Name and Client ID for logging and alert message
     $sql = mysqli_query($mysqli,"SELECT document_name, document_client_id FROM documents WHERE document_id = $document_id");
@@ -804,13 +811,14 @@ if (isset($_GET['restore_document'])) {
 
 }
 
-if (isset($_GET['delete_document_version'])) {
+if (isset($_POST['delete_document_version']) || isset($_GET['delete_document_version'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $is_post = isset($_POST['delete_document_version']);
+    validateCSRFToken($is_post ? $_POST['csrf_token'] : $_GET['csrf_token']);
 
     enforceUserPermission('module_support', 3);
 
-    $document_version_id = intval($_GET['delete_document_version']);
+    $document_version_id = intval($is_post ? $_POST['delete_document_version'] : $_GET['delete_document_version']);
 
     // Get Document
     $sql = mysqli_query($mysqli,"SELECT document_version_name, document_client_id FROM documents, document_versions WHERE document_version_document_id = document_id AND document_version_id = $document_version_id");
@@ -830,13 +838,14 @@ if (isset($_GET['delete_document_version'])) {
 
 }
 
-if (isset($_GET['delete_document'])) {
+if (isset($_POST['delete_document']) || isset($_GET['delete_document'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $is_post = isset($_POST['delete_document']);
+    validateCSRFToken($is_post ? $_POST['csrf_token'] : $_GET['csrf_token']);
 
     enforceUserPermission('module_support', 3);
 
-    $document_id = intval($_GET['delete_document']);
+    $document_id = intval($is_post ? $_POST['delete_document'] : $_GET['delete_document']);
 
     // Get Document Name and Client ID for logging
     $sql = mysqli_query($mysqli,"SELECT document_name, document_client_id FROM documents WHERE document_id = $document_id");

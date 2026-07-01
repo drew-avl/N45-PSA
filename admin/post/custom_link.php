@@ -51,11 +51,12 @@ if (isset($_POST['edit_custom_link'])) {
 
 }
 
-if (isset($_GET['delete_custom_link'])) {
+if (isset($_POST['delete_custom_link']) || isset($_GET['delete_custom_link'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
-    $custom_link_id = intval($_GET['delete_custom_link']);
+    $custom_link_id = intval($_POST['delete_custom_link'] ?? $_GET['delete_custom_link']);
 
     // Get Custom Link name and uri for logging
     $sql = mysqli_query($mysqli,"SELECT custom_link_name, custom_link_uri FROM custom_links WHERE custom_link_id = $custom_link_id");

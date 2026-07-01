@@ -73,11 +73,12 @@ if (isset($_POST['edit_role'])) {
 
 }
 
-if (isset($_GET['archive_role'])) {
+if (isset($_POST['archive_role']) || isset($_GET['archive_role'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
-    $role_id = intval($_GET['archive_role']);
+    $role_id = intval($_POST['archive_role'] ?? $_GET['archive_role']);
 
     // Check role isn't in use
     $sql_role_user_count = mysqli_query($mysqli, "SELECT COUNT(user_id) FROM users WHERE user_role_id = $role_id AND user_archived_at IS NULL");
