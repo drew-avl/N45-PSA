@@ -563,13 +563,14 @@ if (isset($_POST['add_ticket_watcher'])) {
 
 }
 
-if (isset($_GET['delete_ticket_watcher'])) {
+if (isset($_POST['delete_ticket_watcher']) || isset($_GET['delete_ticket_watcher'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $watcher_id = intval($_GET['delete_ticket_watcher']);
+    $watcher_id = intval($_POST['delete_ticket_watcher'] ?? $_GET['delete_ticket_watcher']);
 
     // Get ticket / watcher details for logging
     $sql = mysqli_query($mysqli, "SELECT watcher_email, ticket_prefix, ticket_number, ticket_status_name, ticket_client_id, ticket_id FROM ticket_watchers
@@ -604,14 +605,15 @@ if (isset($_GET['delete_ticket_watcher'])) {
 
 }
 
-if (isset($_GET['delete_ticket_additional_asset'])) {
+if (isset($_POST['delete_ticket_additional_asset']) || isset($_GET['delete_ticket_additional_asset'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $asset_id = intval($_GET['delete_ticket_additional_asset']);
-    $ticket_id = intval($_GET['ticket_id']);
+    $asset_id = intval($_POST['delete_ticket_additional_asset'] ?? $_GET['delete_ticket_additional_asset']);
+    $ticket_id = intval($_POST['ticket_id'] ?? $_GET['ticket_id']);
 
     // Get ticket / asset details for logging
     $sql = mysqli_query($mysqli, "SELECT asset_name, ticket_prefix, ticket_number, ticket_status_name, ticket_client_id FROM assets
@@ -847,13 +849,14 @@ if (isset($_POST['assign_ticket'])) {
 
 }
 
-if (isset($_GET['delete_ticket'])) {
+if (isset($_POST['delete_ticket']) || isset($_GET['delete_ticket'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 3);
 
-    $ticket_id = intval($_GET['delete_ticket']);
+    $ticket_id = intval($_POST['delete_ticket'] ?? $_GET['delete_ticket']);
 
     // Get Ticket and Client ID for logging and alert message
     $sql = mysqli_query($mysqli, "SELECT ticket_prefix, ticket_number, ticket_subject, ticket_status, ticket_closed_at, ticket_client_id FROM tickets WHERE ticket_id = $ticket_id");
@@ -1961,13 +1964,14 @@ if (isset($_POST['redact_ticket_reply'])) {
 
 }
 
-if (isset($_GET['archive_ticket_reply'])) {
+if (isset($_POST['archive_ticket_reply']) || isset($_GET['archive_ticket_reply'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $ticket_reply_id = intval($_GET['archive_ticket_reply']);
+    $ticket_reply_id = intval($_POST['archive_ticket_reply'] ?? $_GET['archive_ticket_reply']);
 
     $ticket_id = intval(getFieldById('ticket_replies', $ticket_reply_id, 'ticket_reply_ticket_id'));
     $client_id = intval(getFieldById('tickets', $ticket_id, 'ticket_client_id'));
@@ -2098,13 +2102,15 @@ if (isset($_POST['change_client_ticket'])) {
 
 }
 
-if (isset($_GET['resolve_ticket'])) {
+if (isset($_POST['resolve_ticket']) || isset($_GET['resolve_ticket'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    // Prefer POST for state changes; fall back to GET for compatibility
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $ticket_id = intval($_GET['resolve_ticket']);
+    $ticket_id = intval($_POST['resolve_ticket'] ?? $_GET['resolve_ticket']);
 
     $sql = mysqli_query($mysqli, "SELECT * FROM tickets WHERE ticket_id = $ticket_id");
     $row = mysqli_fetch_assoc($sql);
@@ -2210,13 +2216,14 @@ if (isset($_GET['resolve_ticket'])) {
 
 }
 
-if (isset($_GET['close_ticket'])) {
+    if (isset($_POST['close_ticket']) || isset($_GET['close_ticket'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $ticket_id = intval($_GET['close_ticket']);
+    $ticket_id = intval($_POST['close_ticket'] ?? $_GET['close_ticket']);
     $client_id = intval(getFieldById('tickets', $ticket_id, 'ticket_client_id'));
 
     // Don't Enforce Client Access if Ticket doesn't have an assigned client
@@ -2309,13 +2316,14 @@ if (isset($_GET['close_ticket'])) {
 
 }
 
-if (isset($_GET['reopen_ticket'])) {
+if (isset($_POST['reopen_ticket']) || isset($_GET['reopen_ticket'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $ticket_id = intval($_GET['reopen_ticket']);
+    $ticket_id = intval($_POST['reopen_ticket'] ?? $_GET['reopen_ticket']);
 
     $client_id = intval(getFieldById('tickets', $ticket_id, 'ticket_client_id'));
 
@@ -2802,13 +2810,14 @@ if (isset($_POST['edit_ticket_schedule'])) {
 
 }
 
-if (isset($_GET['cancel_ticket_schedule'])) {
+if (isset($_POST['cancel_ticket_schedule']) || isset($_GET['cancel_ticket_schedule'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $ticket_id = intval($_GET['cancel_ticket_schedule']);
+    $ticket_id = intval($_POST['cancel_ticket_schedule'] ?? $_GET['cancel_ticket_schedule']);
 
     $sql = mysqli_query($mysqli, "SELECT * FROM tickets WHERE ticket_id = $ticket_id");
     $row = mysqli_fetch_assoc($sql);

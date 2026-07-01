@@ -40,14 +40,22 @@
 
                     <?php if (empty($client_archived_at)) { ?>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-danger confirm-link" href="post.php?archive_client=<?php echo $client_id; ?>&csrf_token=<?php echo $_SESSION['csrf_token'] ?>">
-                            <i class="fas fa-fw fa-archive mr-2"></i>Archive Client
-                        </a>
+                        <form method="post" action="post.php" class="m-0">
+                            <input type="hidden" name="archive_client" value="<?php echo $client_id; ?>">
+                            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
+                            <button type="submit" class="dropdown-item text-danger confirm-link">
+                                <i class="fas fa-fw fa-archive mr-2"></i>Archive Client
+                            </button>
+                        </form>
                     <?php } else { ?>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-primary confirm-link" href="post.php?restore_client=<?= $client_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
-                            <i class="fas fa-fw fa-archive mr-2"></i>Restore Client
-                        </a>
+                        <form method="post" action="post.php" class="m-0">
+                            <input type="hidden" name="restore_client" value="<?= $client_id ?>">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                            <button type="submit" class="dropdown-item text-primary confirm-link">
+                                <i class="fas fa-fw fa-archive mr-2"></i>Restore Client
+                            </button>
+                        </form>
                     <?php } ?>
 
                     <?php if (lookupUserPermission("module_client") >= 3 && $client_archived_at) { ?>

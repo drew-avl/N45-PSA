@@ -123,9 +123,13 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
                                             <i class="fas fa-fw fa-edit mr-2"></i>Edit
                                         </a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item text-danger text-bold confirm-link" href="post.php?delete_custom_link=<?php echo $custom_link_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
-                                            <i class="fas fa-fw fa-trash mr-2"></i>Delete
-                                        </a>
+                                        <form method="post" action="post.php" class="m-0">
+                                            <input type="hidden" name="delete_custom_link" value="<?php echo $custom_link_id; ?>">
+                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                            <button type="submit" class="dropdown-item text-danger text-bold confirm-link">
+                                                <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </td>

@@ -50,9 +50,10 @@ if (isset($_POST['edit_favicon_settings'])) {
 
 }
 
-if (isset($_GET['reset_favicon'])) {
+if (isset($_POST['reset_favicon']) || isset($_GET['reset_favicon'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     if (file_exists("../uploads/favicon.ico")) {
         unlink("../uploads/favicon.ico");

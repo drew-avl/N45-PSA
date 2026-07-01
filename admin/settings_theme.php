@@ -80,7 +80,11 @@ $theme_colors_array = array (
 
             <button type="submit" name="edit_favicon_settings" class="btn btn-primary text-bold"><i class="fa fa-check mr-2"></i>Upload Icon</button>
             <?php if(file_exists("../uploads/favicon.ico")) { ?>
-            <a href="post.php?reset_favicon&csrf_token=<?= $_SESSION['csrf_token'] ?>" class="btn btn-outline-danger"><i class="fas fa-redo-alt mr-2"></i>Reset Favicon</a>
+            <form method="post" action="post.php" class="d-inline m-0">
+                <input type="hidden" name="reset_favicon" value="1">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                <button type="submit" class="btn btn-outline-danger"><i class="fas fa-redo-alt mr-2"></i>Reset Favicon</button>
+            </form>
             <?php } ?>
         </form>
     </div>

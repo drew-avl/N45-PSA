@@ -732,16 +732,28 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
                                             </a>
                                             <?php if ($session_user_role > 2) { ?>
                                                 <?php if ($asset_archived_at) { ?>
-                                                <a class="dropdown-item text-info" href="post.php?restore_asset=<?php echo $asset_id; ?>&csrf_token=<?php echo $_SESSION['csrf_token'] ?>">
-                                                    <i class="fas fa-fw fa-redo mr-2"></i>Restore
-                                                </a>
-                                                <a class="dropdown-item text-danger text-bold confirm-link" href="post.php?delete_asset=<?php echo $asset_id; ?>&csrf_token=<?php echo $_SESSION['csrf_token'] ?>">
-                                                    <i class="fas fa-fw fa-trash mr-2"></i>Delete
-                                                </a>
+                                                <form method="post" action="post.php" class="m-0">
+                                                    <input type="hidden" name="restore_asset" value="<?php echo $asset_id; ?>">
+                                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
+                                                    <button type="submit" class="dropdown-item text-info">
+                                                        <i class="fas fa-fw fa-redo mr-2"></i>Restore
+                                                    </button>
+                                                </form>
+                                                <form method="post" action="post.php" class="m-0">
+                                                    <input type="hidden" name="delete_asset" value="<?php echo $asset_id; ?>">
+                                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
+                                                    <button type="submit" class="dropdown-item text-danger text-bold confirm-link">
+                                                        <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                                    </button>
+                                                </form>
                                                 <?php } else { ?>
-                                                <a class="dropdown-item text-danger confirm-link" href="post.php?archive_asset=<?php echo $asset_id; ?>&csrf_token=<?php echo $_SESSION['csrf_token'] ?>">
-                                                    <i class="fas fa-fw fa-archive mr-2"></i>Archive
-                                                </a>
+                                                <form method="post" action="post.php" class="m-0">
+                                                    <input type="hidden" name="archive_asset" value="<?php echo $asset_id; ?>">
+                                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
+                                                    <button type="submit" class="dropdown-item text-danger confirm-link">
+                                                        <i class="fas fa-fw fa-archive mr-2"></i>Archive
+                                                    </button>
+                                                </form>
                                                 <?php } ?>
 
                                             <?php } ?>

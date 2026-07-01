@@ -10,6 +10,8 @@ require_once '../functions.php';
 require_once 'includes/check_login.php';
 require_once 'functions.php';
 
+normalizeLegacyPostActionRequest();
+
 if (isset($_POST['add_ticket'])) {
 
     validateCSRFToken($_POST['csrf_token']);
@@ -189,13 +191,14 @@ if (isset($_POST['add_ticket_comment'])) {
     }
 }
 
-if (isset($_GET['approve_ticket_task'])) {
+if (isset($_POST['approve_ticket_task']) || isset($_GET['approve_ticket_task'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
-    $task_id = intval($_GET['approve_ticket_task']);
-    $approval_id = intval($_GET['approval_id']);
-    $url_key = sanitizeInput($_GET['approval_url_key']);
+    $task_id = intval($_POST['approve_ticket_task'] ?? $_GET['approve_ticket_task']);
+    $approval_id = intval($_POST['approval_id'] ?? $_GET['approval_id']);
+    $url_key = sanitizeInput($_POST['approval_url_key'] ?? $_GET['approval_url_key']);
 
     $approval_row = mysqli_fetch_assoc(mysqli_query($mysqli, "SELECT * FROM task_approvals LEFT JOIN tasks on task_id = approval_task_id WHERE approval_id = $approval_id AND approval_task_id = $task_id AND approval_url_key = '$url_key' AND approval_status = 'pending' AND approval_scope = 'client'"));
 
@@ -260,11 +263,12 @@ if (isset($_POST['add_ticket_feedback'])) {
 
 }
 
-if (isset($_GET['resolve_ticket'])) {
+if (isset($_POST['resolve_ticket']) || isset($_GET['resolve_ticket'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
-    $ticket_id = intval($_GET['resolve_ticket']);
+    $ticket_id = intval($_POST['resolve_ticket'] ?? $_GET['resolve_ticket']);
 
     // Get ticket details for logging
     $row = mysqli_fetch_assoc(mysqli_query($mysqli, "SELECT * FROM tickets WHERE ticket_id = $ticket_id LIMIT 1"));
@@ -295,11 +299,12 @@ if (isset($_GET['resolve_ticket'])) {
 
 }
 
-if (isset($_GET['reopen_ticket'])) {
+if (isset($_POST['reopen_ticket']) || isset($_GET['reopen_ticket'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
-    $ticket_id = intval($_GET['reopen_ticket']);
+    $ticket_id = intval($_POST['reopen_ticket'] ?? $_GET['reopen_ticket']);
 
     // Get ticket details for logging
     $row = mysqli_fetch_assoc(mysqli_query($mysqli, "SELECT * FROM tickets WHERE ticket_id = $ticket_id LIMIT 1"));
@@ -330,11 +335,12 @@ if (isset($_GET['reopen_ticket'])) {
 
 }
 
-if (isset($_GET['close_ticket'])) {
+if (isset($_POST['close_ticket']) || isset($_GET['close_ticket'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
-    $ticket_id = intval($_GET['close_ticket']);
+    $ticket_id = intval($_POST['close_ticket'] ?? $_GET['close_ticket']);
 
     // Get ticket details for logging
     $row = mysqli_fetch_assoc(mysqli_query($mysqli, "SELECT * FROM tickets WHERE ticket_id = $ticket_id LIMIT 1"));
@@ -372,7 +378,7 @@ if (isset($_GET['logout'])) {
     session_unset();
     session_destroy();
 
-    redirect('/login.php');
+    redirect('/client/');
 
 }
 

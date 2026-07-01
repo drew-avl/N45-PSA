@@ -30,6 +30,13 @@ ob_start();
         <span>&times;</span>
     </button>
 </div>
+<?php if ($ticket_scheduled_for) { ?>
+<form id="cancelTicketScheduleForm" action="post.php" method="post">
+    <input type="hidden" name="cancel_ticket_schedule" value="<?= $ticket_id ?>">
+    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+</form>
+<?php } ?>
+
 <form action="post.php" method="post" autocomplete="off">
     <div class="modal-body">
         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
@@ -61,9 +68,9 @@ ob_start();
 
     <div class="modal-footer">
     <?php if ($ticket_scheduled_for) { ?>
-        <a href="post.php?cancel_ticket_schedule=<?= $ticket_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" class="btn btn-danger text-bold">
+        <button type="submit" form="cancelTicketScheduleForm" class="btn btn-danger text-bold confirm-link">
             <i class="fa fa-trash mr-2"></i>Cancel Scheduled Time
-        </a>
+        </button>
     <?php } ?>
         <button type="submit" name="edit_ticket_schedule" class="btn btn-primary text-bold"><i class="fa fa-check mr-2"></i>Save</button>
         <button type="button" class="btn btn-light" data-dismiss="modal"><i class="fa fa-times mr-2"></i>Cancel</button>

@@ -162,13 +162,14 @@ if (isset($_POST['move_file'])) {
 
 }
 
-if (isset($_GET['archive_file'])) {
+if (isset($_POST['archive_file']) || isset($_GET['archive_file'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $is_post = isset($_POST['archive_file']);
+    validateCSRFToken($is_post ? $_POST['csrf_token'] : $_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $file_id = intval($_GET['archive_file']);
+    $file_id = intval($is_post ? $_POST['archive_file'] : $_GET['archive_file']);
 
     // Get Contact Name and Client ID for logging and alert message
     $sql = mysqli_query($mysqli,"SELECT file_name, file_client_id FROM files WHERE file_id = $file_id");
@@ -188,13 +189,14 @@ if (isset($_GET['archive_file'])) {
 
 }
 
-if (isset($_GET['restore_file'])) {
+if (isset($_POST['restore_file']) || isset($_GET['restore_file'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $is_post = isset($_POST['restore_file']);
+    validateCSRFToken($is_post ? $_POST['csrf_token'] : $_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $file_id = intval($_GET['restore_file']);
+    $file_id = intval($is_post ? $_POST['restore_file'] : $_GET['restore_file']);
 
     // Get Document Name and Client ID for logging and alert message
     $sql = mysqli_query($mysqli,"SELECT file_name, file_client_id FROM files WHERE file_id = $file_id");

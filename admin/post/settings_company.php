@@ -52,9 +52,10 @@ if (isset($_POST['edit_company'])) {
 
 }
 
-if (isset($_GET['remove_company_logo'])) {
+if (isset($_POST['remove_company_logo']) || isset($_GET['remove_company_logo'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     $sql = mysqli_query($mysqli,"SELECT company_logo FROM companies");
     $row = mysqli_fetch_assoc($sql);
