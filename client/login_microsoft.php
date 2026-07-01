@@ -153,5 +153,5 @@ if (isset($_POST['code']) && $_POST['state'] == session_id()) {
 
 // If the user is just sat on the page, redirect them to log in to try again
 if (empty($_GET)) {
-    echo "<script> setTimeout(function() { window.location = \"login.php\"; },1000);</script>";
+    echo "<script> setTimeout(function() { window.location = \"/client/\"; },1000);</script>";
 }
