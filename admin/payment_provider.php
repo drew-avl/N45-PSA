@@ -108,14 +108,18 @@ $num_rows = mysqli_num_rows($sql);
                                         <i class="fas fa-fw fa-edit mr-2"></i>Edit
                                     </a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item text-danger confirm-link" href="post.php?delete_payment_provider=<?= $provider_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
-                                        <i class="fas fa-fw fa-trash mr-2"></i><strong>Delete Provider and</strong>
-                                        <ul class="text-xs">
-                                            <li>Related Recurring Payments</li>
-                                            <li>Related Saved cards</li>
-                                            <li>Client Provider Relations</li>
-                                        </ul>
-                                    </a>
+                                    <form method="post" action="post.php" class="m-0">
+                                        <input type="hidden" name="delete_payment_provider" value="<?= $provider_id ?>">
+                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                        <button type="submit" class="dropdown-item text-danger confirm-link">
+                                            <i class="fas fa-fw fa-trash mr-2"></i><strong>Delete Provider and</strong>
+                                            <ul class="text-xs">
+                                                <li>Related Recurring Payments</li>
+                                                <li>Related Saved cards</li>
+                                                <li>Client Provider Relations</li>
+                                            </ul>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </td>

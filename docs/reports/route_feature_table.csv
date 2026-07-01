@@ -1,0 +1,30 @@
+route,file,feature,primary_tables,notes
+/agent/tickets.php,agent/tickets.php,Ticket queue,tickets;ticket_statuses;ticket_replies,Queue views and filters
+/agent/ticket.php,agent/ticket.php,Ticket detail,tickets;ticket_replies;ticket_attachments;ticket_history;ticket_assets,Detail + timeline + attachments
+/agent/ticket_list.php,agent/ticket_list.php,Ticket list,tickets,Alternate list view
+/agent/ticket_kanban.php,agent/ticket_kanban.php,Ticket kanban,tickets,Kanban columns based on ticket status
+/agent/assets.php,agent/assets.php,Asset list,assets;asset_tags;asset_interfaces,Filters, bulk actions
+/agent/asset_details.php,agent/asset_details.php,Asset detail,assets;asset_files;asset_history;asset_tags;ticket_assets,Unified asset view with related tickets
+/agent/clients.php,agent/clients.php,Client list,clients;client_tags,Client workspace entry
+/agent/client_overview.php,agent/client_overview.php,Client workspace,clients;contacts;locations;invoices;tickets;assets,Overview with quick actions and health indicators
+/agent/contacts.php,agent/contacts.php,Contacts list,contacts,Contact management
+/agent/contact_details.php,agent/contact_details.php,Contact detail,contacts;contact_assets,Contact links to assets and tickets
+/agent/invoices.php,agent/invoices.php,Invoice list,invoices;invoice_items;payments,Billing list and actions
+/agent/invoice.php,agent/invoice.php,Invoice detail,invoices;invoice_items;payments,Invoice preview and payment actions
+/agent/projects.php,agent/projects.php,Projects list,projects;tasks;project_templates,Project planning and tasks
+/agent/project_details.php,agent/project_details.php,Project detail,projects;tasks;tasks_approvals,Milestones and task lists
+/agent/calendar.php,agent/calendar.php,Calendar,schedule_events;calendars,Scheduling and dispatch
+/agent/global_search.php,agent/global_search.php,Global search,clients;assets;tickets;contacts;invoices,Search index using DB queries
+/client/tickets.php,client/tickets.php,Client ticket list,tickets,Client-facing ticket list
+/client/ticket.php,client/ticket.php,Client ticket detail,tickets;ticket_replies,Client view of ticket with replies
+/api/v1/tickets/*,api/v1/tickets/,API - tickets,tickets;ticket_replies;ticket_attachments,REST endpoints for tickets
+/api/v1/clients/*,api/v1/clients/,API - clients,clients,REST endpoints for clients
+/admin/users.php,admin/users.php,User management,users;user_roles;user_role_permissions,Admin user and role controls
+/admin/roles.php,admin/roles.php,Role management,user_roles;user_role_permissions,Permissions mapping
+/admin/api_keys.php,admin/api_keys.php,API keys,api_keys,Credential storage for integrations
+/admin/database_updates.php,admin/database_updates.php,Migrations and DB updates,tickets;recurring_tickets;ticket_statuses,DB migration scripts
+/includes/load_global_settings.php,includes/load_global_settings.php,Runtime settings loader,settings,Loads settings table into runtime config
+/ops/deploy.sh,ops/deploy.sh,Deployment script,n/a,Deployment workflow
+/cron/cron.php,cron/cron.php,Cron tasks,tickets;recurring_tickets;notifications,Cron-driven automation
+/plugins/*,plugins/,Frontend libraries,n/a,Third-party libraries (AdminLTE, jQuery)
+

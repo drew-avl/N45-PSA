@@ -77,13 +77,14 @@ if (isset($_POST['edit_ticket_template_task'])) {
 
 }
 
-if (isset($_GET['delete_task'])) {
+if (isset($_POST['delete_task']) || isset($_GET['delete_task'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 3);
 
-    $task_id = intval($_GET['delete_task']);
+    $task_id = intval($_POST['delete_task'] ?? $_GET['delete_task']);
 
     // Get Client ID, task name from tasks and tickets using the task_id
     $sql = mysqli_query($mysqli, "SELECT * FROM tasks LEFT JOIN tickets ON ticket_id = task_ticket_id WHERE task_id = $task_id");
@@ -101,13 +102,14 @@ if (isset($_GET['delete_task'])) {
 
 }
 
-if (isset($_GET['complete_task'])) {
+if (isset($_POST['complete_task']) || isset($_GET['complete_task'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $task_id = intval($_GET['complete_task']);
+    $task_id = intval($_POST['complete_task'] ?? $_GET['complete_task']);
 
     // Get Client ID
     $sql = mysqli_query($mysqli, "SELECT * FROM tasks LEFT JOIN tickets ON ticket_id = task_ticket_id WHERE task_id = $task_id");
@@ -135,13 +137,14 @@ if (isset($_GET['complete_task'])) {
 
 }
 
-if (isset($_GET['undo_complete_task'])) {
+if (isset($_POST['undo_complete_task']) || isset($_GET['undo_complete_task'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $task_id = intval($_GET['undo_complete_task']);
+    $task_id = intval($_POST['undo_complete_task'] ?? $_GET['undo_complete_task']);
 
     // Get Client ID
     $sql = mysqli_query($mysqli, "SELECT * FROM tasks LEFT JOIN tickets ON ticket_id = task_ticket_id WHERE task_id = $task_id");
@@ -339,14 +342,15 @@ if (isset($_POST['add_ticket_task_approver'])) {
     redirect();
 }
 
-if (isset($_GET['approve_ticket_task'])) {
+if (isset($_POST['approve_ticket_task']) || isset($_GET['approve_ticket_task'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $task_id = intval($_GET['approve_ticket_task']);
-    $approval_id = intval($_GET['approval_id']);
+    $task_id = intval($_POST['approve_ticket_task'] ?? $_GET['approve_ticket_task']);
+    $approval_id = intval($_POST['approval_id'] ?? $_GET['approval_id']);
 
     $approval_row = mysqli_fetch_assoc(mysqli_query($mysqli, "SELECT * FROM task_approvals LEFT JOIN tasks on task_id = approval_task_id WHERE approval_id = $approval_id AND approval_task_id = $task_id AND approval_scope = 'internal'"));
 
@@ -390,13 +394,14 @@ if (isset($_GET['approve_ticket_task'])) {
 
 }
 
-if (isset($_GET['delete_ticket_task_approver'])) {
+if (isset($_POST['delete_ticket_task_approver']) || isset($_GET['delete_ticket_task_approver'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 3);
 
-    $approval_id = intval($_GET['delete_ticket_task_approver']);
+    $approval_id = intval($_POST['delete_ticket_task_approver'] ?? $_GET['delete_ticket_task_approver']);
 
     mysqli_query($mysqli, "DELETE FROM task_approvals WHERE approval_id = $approval_id");
 
@@ -408,13 +413,14 @@ if (isset($_GET['delete_ticket_task_approver'])) {
 
 }
 
-if (isset($_GET['complete_all_tasks'])) {
+if (isset($_POST['complete_all_tasks']) || isset($_GET['complete_all_tasks'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $ticket_id = intval($_GET['complete_all_tasks']);
+    $ticket_id = intval($_POST['complete_all_tasks'] ?? $_GET['complete_all_tasks']);
 
     // Get Client ID
     $client_id = intval(getFieldById('tickets', $ticket_id, 'ticket_client_id'));
@@ -434,13 +440,14 @@ if (isset($_GET['complete_all_tasks'])) {
 
 }
 
-if (isset($_GET['undo_complete_all_tasks'])) {
+if (isset($_POST['undo_complete_all_tasks']) || isset($_GET['undo_complete_all_tasks'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $ticket_id = intval($_GET['undo_complete_all_tasks']);
+    $ticket_id = intval($_POST['undo_complete_all_tasks'] ?? $_GET['undo_complete_all_tasks']);
 
     // Get Client ID
     $client_id = intval(getFieldById('tickets', $ticket_id, 'ticket_client_id'));

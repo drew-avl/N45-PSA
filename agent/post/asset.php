@@ -770,14 +770,15 @@ if (isset($_POST['link_software_to_asset'])) {
 
 }
 
-if (isset($_GET['unlink_software_from_asset'])) {
+if (isset($_POST['unlink_software_from_asset']) || isset($_GET['unlink_software_from_asset'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $asset_id = intval($_GET['asset_id']);
-    $software_id = intval($_GET['software_id']);
+    $asset_id = intval($_POST['asset_id'] ?? $_GET['asset_id']);
+    $software_id = intval($_POST['software_id'] ?? $_GET['software_id']);
 
     // Get software Name and Client ID for logging
     $sql_software = mysqli_query($mysqli,"SELECT software_name, software_client_id FROM software WHERE software_id = $software_id");
@@ -831,14 +832,15 @@ if (isset($_POST['link_asset_to_credential'])) {
 
 }
 
-if (isset($_GET['unlink_credential_from_asset'])) {
+if (isset($_POST['unlink_credential_from_asset']) || isset($_GET['unlink_credential_from_asset'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $asset_id = intval($_GET['asset_id']);
-    $credential_id = intval($_GET['credential_id']);
+    $asset_id = intval($_POST['asset_id'] ?? $_GET['asset_id']);
+    $credential_id = intval($_POST['credential_id'] ?? $_GET['credential_id']);
 
     // Get credential Name and Client ID for logging
     $sql_credential = mysqli_query($mysqli,"SELECT credential_name, credential_client_id FROM credentials WHERE credential_id = $credential_id");
@@ -891,14 +893,15 @@ if (isset($_POST['link_service_to_asset'])) {
 
 }
 
-if (isset($_GET['unlink_service_from_asset'])) {
+if (isset($_POST['unlink_service_from_asset']) || isset($_GET['unlink_service_from_asset'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $asset_id = intval($_GET['asset_id']);
-    $service_id = intval($_GET['service_id']);
+    $asset_id = intval($_POST['asset_id'] ?? $_GET['asset_id']);
+    $service_id = intval($_POST['service_id'] ?? $_GET['service_id']);
 
     // Get service Name and Client ID for logging
     $sql_service = mysqli_query($mysqli,"SELECT service_name, service_client_id FROM services WHERE service_id = $service_id");
@@ -952,14 +955,15 @@ if (isset($_POST['link_asset_to_file'])) {
 
 }
 
-if (isset($_GET['unlink_asset_from_file'])) {
+if (isset($_POST['unlink_asset_from_file']) || isset($_GET['unlink_asset_from_file'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $asset_id = intval($_GET['asset_id']);
-    $file_id = intval($_GET['file_id']);
+    $asset_id = intval($_POST['asset_id'] ?? $_GET['asset_id']);
+    $file_id = intval($_POST['file_id'] ?? $_GET['file_id']);
 
     // Get file Name and Client ID for logging
     $sql_file = mysqli_query($mysqli,"SELECT file_name, file_client_id FROM files WHERE file_id = $file_id");
@@ -1452,13 +1456,14 @@ if (isset($_POST['edit_asset_interface'])) {
 
 }
 
-if (isset($_GET['delete_asset_interface'])) {
+if (isset($_POST['delete_asset_interface']) || isset($_GET['delete_asset_interface'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $interface_id = intval($_GET['delete_asset_interface']);
+    $interface_id = intval($_POST['delete_asset_interface'] ?? $_GET['delete_asset_interface']);
 
     // 1) Fetch details for logging / alerts
     $sql = mysqli_query($mysqli, "

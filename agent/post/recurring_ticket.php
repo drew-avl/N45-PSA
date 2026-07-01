@@ -218,13 +218,14 @@ if (isset($_POST['bulk_force_recurring_tickets'])) {
 
 }
 
-if (isset($_GET['force_recurring_ticket'])) {
+if (isset($_POST['force_recurring_ticket']) || isset($_GET['force_recurring_ticket'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 2);
 
-    $recurring_ticket_id = intval($_GET['force_recurring_ticket']);
+    $recurring_ticket_id = intval($_POST['force_recurring_ticket'] ?? $_GET['force_recurring_ticket']);
 
     $sql = mysqli_query($mysqli, "SELECT * FROM recurring_tickets WHERE recurring_ticket_id = $recurring_ticket_id");
 
@@ -358,13 +359,14 @@ if (isset($_GET['force_recurring_ticket'])) {
 
 }
 
-if (isset($_GET['delete_recurring_ticket'])) {
+if (isset($_POST['delete_recurring_ticket']) || isset($_GET['delete_recurring_ticket'])) {
 
-    validateCSRFToken($_GET['csrf_token']);
+    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    validateCSRFToken($csrf_token);
 
     enforceUserPermission('module_support', 3);
 
-    $recurring_ticket_id = intval($_GET['delete_recurring_ticket']);
+    $recurring_ticket_id = intval($_POST['delete_recurring_ticket'] ?? $_GET['delete_recurring_ticket']);
 
     // Get Scheduled Ticket Subject Ticket Prefix, Number and Client ID for logging and alert message
     $sql = mysqli_query($mysqli, "SELECT * FROM recurring_tickets WHERE recurring_ticket_id = $recurring_ticket_id");

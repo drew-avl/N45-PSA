@@ -467,9 +467,13 @@ $sql_asset_retired = mysqli_query(
                                 </td>
                                 <td title="Expires at <?php echo $item_expire_at; ?>">Expires <?php echo $item_expire_at_human ?></td>
                                 <td title="Deactivate Link">
-                                    <a class="text-danger confirm-link" href="post.php?deactivate_shared_item=<?php echo $item_id; ?>">
-                                        <i class="fas fa-fw fa-calendar-times mr-2"></i>
-                                    </a>
+                                    <form method="post" action="post.php" class="d-inline">
+                                        <input type="hidden" name="deactivate_shared_item" value="<?php echo $item_id; ?>">
+                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                        <button type="submit" class="btn btn-link p-0 text-danger confirm-link" title="Deactivate Link">
+                                            <i class="fas fa-fw fa-calendar-times mr-2"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
 

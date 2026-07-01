@@ -72,9 +72,13 @@ $num_rows = mysqli_num_rows($sql);
                                         <i class="fas fa-fw fa-edit mr-2"></i>Edit
                                     </a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item text-danger confirm-link" href="post.php?delete_payment_method=<?php echo $payment_method_id; ?>&csrf_token=<?php echo $_SESSION['csrf_token'] ?>">
-                                        <i class="fas fa-fw fa-trash mr-2"></i>Delete
-                                    </a>
+                                    <form method="post" action="post.php" class="m-0">
+                                        <input type="hidden" name="delete_payment_method" value="<?php echo $payment_method_id; ?>">
+                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
+                                        <button type="submit" class="dropdown-item text-danger confirm-link">
+                                            <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </td>
