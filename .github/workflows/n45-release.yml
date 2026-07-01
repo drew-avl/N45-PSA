@@ -127,6 +127,23 @@ jobs:
           echo "Seeded database version: {$version}\n";
           PHP
 
+      - name: Simulate legacy production schema gaps
+        env:
+          MYSQL_PWD: itflow
+        run: |
+          mariadb \
+            --host=127.0.0.1 \
+            --user=itflow \
+            itflow_release <<'SQL'
+          ALTER TABLE settings
+            DROP COLUMN config_azure_client_id,
+            DROP COLUMN config_azure_client_secret;
+
+          ALTER TABLE users
+            DROP COLUMN user_auth_method,
+            DROP COLUMN user_specific_encryption_ciphertext;
+          SQL
+
       - name: Validate N45 migrations and schema version
         run: |
           php ops/run-n45-migrations.php "$GITHUB_WORKSPACE"

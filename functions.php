@@ -586,10 +586,12 @@ function generateSSODecryptionKey($site_encryption_master_key, $sso_decryption_k
         $sso_decryption_key = random_bytes(16);
         $sso_decryption_key_base64 = base64_encode($sso_decryption_key);
     } else {
-        $sso_decryption_key = base64_decode($sso_decryption_key_base64, true);
+        $normalized_key = normalizeBase64Key($sso_decryption_key_base64);
+        $sso_decryption_key = $normalized_key ? base64_decode($normalized_key, true) : false;
         if ($sso_decryption_key === false || strlen($sso_decryption_key) !== 16) {
             return false;
         }
+        $sso_decryption_key_base64 = $normalized_key;
     }
 
     // Encrypt the master key with the SSO key

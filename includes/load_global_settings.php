@@ -12,13 +12,13 @@ $config_azure_client_id = $row['config_azure_client_id'];
 $config_azure_client_secret = $row['config_azure_client_secret'];
 
 // OpenID Connect
-$config_openid_enabled = intval($row['config_openid_enabled']);
-$config_openid_client_id = $row['config_openid_client_id'];
-$config_openid_client_secret = $row['config_openid_client_secret'];
-$config_openid_discovery_url = $row['config_openid_discovery_url'];
-$config_openid_decryption_key_claim = $row['config_openid_decryption_key_claim'];
-$config_openid_scopes = $row['config_openid_scopes'];
-$config_openid_response_type = $row['config_openid_response_type'];
+$config_openid_enabled = intval($row['config_openid_enabled'] ?? 0);
+$config_openid_client_id = $row['config_openid_client_id'] ?? null;
+$config_openid_client_secret = $row['config_openid_client_secret'] ?? null;
+$config_openid_discovery_url = $row['config_openid_discovery_url'] ?? null;
+$config_openid_decryption_key_claim = $row['config_openid_decryption_key_claim'] ?? 'encryption_key';
+$config_openid_scopes = $row['config_openid_scopes'] ?? 'openid profile email';
+$config_openid_response_type = $row['config_openid_response_type'] ?? 'code';
 $config_site_encryption_master_key = $row['config_site_encryption_master_key'] ?? null;
 
 // Mail - SMTP
