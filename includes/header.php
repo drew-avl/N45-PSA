@@ -43,7 +43,7 @@ header("X-Frame-Options: DENY");
 </head>
 <body class="
     hold-transition sidebar-mini layout-fixed layout-navbar-fixed 
-    accent-teal
+    accent-<?php echo isset($_GET['client_id']) ? 'blue' : nullable_htmlentities($config_theme); ?>
     dark-mode
 ">
     <div class="wrapper text-sm">
