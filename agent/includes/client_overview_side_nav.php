@@ -31,12 +31,14 @@ $num_software = $row['num'];
 ?>
 
 <!-- Main Sidebar Container -->
-<aside class="main-sidebar sidebar-dark-primary d-print-none">
+<aside class="main-sidebar sidebar-dark-primary d-print-none n45-sidebar">
 
-    <a class="pb-1 mt-1 brand-link" href="clients.php">
-        <p class="h6"><i class="nav-icon fas fa-arrow-left ml-3 mr-2"></i>
-            <span class="brand-text ">Back | <strong>Client Overview</strong>
-        </p>
+    <a class="brand-link n45-brand-link" href="clients.php">
+        <?php echo n45_brand_mark(); ?>
+        <span class="brand-text n45-brand-copy">
+            <strong>Client Overview</strong>
+            <small><i class="fas fa-arrow-left mr-1"></i>Back to clients</small>
+        </span>
     </a>
 
     <!-- Sidebar -->

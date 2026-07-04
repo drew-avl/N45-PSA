@@ -29,14 +29,17 @@ header("X-Frame-Options: DENY"); // Legacy
     <!-- Theme style -->
     <link rel="stylesheet" href="/plugins/adminlte/css/adminlte.min.css">
     <link rel="stylesheet" href="/css/itflow_custom.css">
+    <link rel="stylesheet" href="/css/n45_ui.css">
 
 </head>
+<body class="dark-mode n45-client-portal">
 
-<!-- Navbar -->
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark n45-client-nav">
     <div class="container">
-        <a class="navbar-brand" href="index.php"><?php echo nullable_htmlentities($session_company_name); ?></a>
+        <a class="navbar-brand" href="/client/index.php">
+            <span class="n45-brand-mark" aria-hidden="true"><span>N45</span></span>
+            <span><?php echo nullable_htmlentities($session_company_name); ?></span>
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -110,7 +113,7 @@ header("X-Frame-Options: DENY"); // Legacy
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
                         <?php echo stripslashes(nullable_htmlentities($session_contact_name)); ?>
                     </a>
-                    <div class="dropdown-menu">
+                    <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" href="/client/profile.php"><i class="fas fa-fw fa-user mr-2"></i>Account</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="/client/post.php?logout"><i class="fas fa-fw fa-sign-out-alt mr-2"></i>Sign out</a>
@@ -121,32 +124,25 @@ header("X-Frame-Options: DENY"); // Legacy
     </div>
 </nav>
 
-<br>
-
-<!-- Page content container -->
-<div class="container">
-
-    <div class="row mb-3">
-        <div class="col-md-1 text-center">
+<main class="n45-client-shell">
+    <section class="n45-client-hero">
+        <div class="n45-client-person">
             <?php if (!empty($session_contact_photo)) { ?>
-                <img src="/uploads/clients/<?= $session_client_id ?>/<?= $session_contact_photo ?>" alt="..." height="50" width="50" class="img-circle img-responsive">
-
+                <img src="/uploads/clients/<?= $session_client_id ?>/<?= $session_contact_photo ?>" alt="" class="n45-client-avatar">
             <?php } else { ?>
-                <span class="fa-stack fa-2x rounded-left">
-                    <i class="fa fa-circle fa-stack-2x text-secondary"></i>
-                    <span class="fa fa-stack-1x text-white"><?php echo $session_contact_initials; ?></span>
-                </span>
+                <span class="n45-client-avatar"><?php echo $session_contact_initials; ?></span>
             <?php } ?>
+            <div>
+                <div class="n45-eyebrow">Client Portal</div>
+                <h1><?php echo stripslashes(nullable_htmlentities($session_contact_name)); ?></h1>
+                <p><?php echo nullable_htmlentities($session_company_name); ?></p>
+            </div>
         </div>
 
-        <div class="col-md-11 p-0">
-                <?php if ($session_company_logo) { ?>
-                    <img height="48" width="142" class="img-fluid float-right" src="<?php echo "/uploads/settings/$session_company_logo"; ?>">
-                <?php } ?>
-            <h4>Welcome, <strong><?php echo stripslashes(nullable_htmlentities($session_contact_name)); ?></strong>!</h4>
-        </div>
-    </div>
-    <hr>
+        <?php if ($session_company_logo) { ?>
+            <img class="n45-client-logo" src="<?php echo "/uploads/settings/$session_company_logo"; ?>" alt="<?php echo nullable_htmlentities($session_company_name); ?> logo">
+        <?php } ?>
+    </section>
 
     <?php
     //Alert Feedback
