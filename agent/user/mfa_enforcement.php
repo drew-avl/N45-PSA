@@ -46,7 +46,7 @@ $data = "otpauth://totp/ITFlow:$session_email?secret=$token";
     <!-- Theme style -->
     <link rel="stylesheet" href="../../plugins/adminlte/css/adminlte.min.css">
     <link rel="stylesheet" href="../../css/itflow_custom.css">
-    <link rel="stylesheet" href="../../css/n45_ui.css">
+    <link rel="stylesheet" href="../../css/n45-app.css">
     <link href="../../plugins/toastr/toastr.min.css" rel="stylesheet">
 
     <!-- jQuery -->
@@ -54,27 +54,35 @@ $data = "otpauth://totp/ITFlow:$session_email?secret=$token";
     <script src="../../plugins/toastr/toastr.min.js"></script>
 
 </head>
-<body class="hold-transition login-page dark-mode n45-auth-page">
+<body class="n45-auth-page">
     <?php require_once "../../includes/inc_alert_feedback.php"; ?>
-    <div class="login-box n45-auth-card">
-        <div class="login-logo">
-            <?php if (!empty($company_logo)) { ?>
-                <img alt="<?= nullable_htmlentities($company_name)?> logo" height="110" width="380" class="img-fluid" src="<?php echo "../../uploads/settings/$company_logo"; ?>">
-            <?php } else { ?>
-                <span class="text-primary text-bold"><i class="fas fa-paper-plane mr-2"></i>IT</span>Flow
-            <?php } ?>
-        </div>
+    <div class="n45-auth-shell">
+        <section class="n45-auth-side">
+            <div>
+                <div class="n45-auth-kicker">Technician Security</div>
+                <h1>Multi-Factor Authentication</h1>
+                <p>MFA is required before continuing into the N45 PSA workspace.</p>
+            </div>
+            <div class="n45-auth-footer"><?php echo nullable_htmlentities($session_company_name); ?></div>
+        </section>
 
-        <!-- /.login-logo -->
-        <div class="card">
-            <div class="card-body login-card-body text-center">
+        <section class="n45-auth-card-wrap">
+            <div class="n45-auth-card text-center">
+                <div class="n45-auth-logo justify-content-center">
+                    <?php if (!empty($company_logo)) { ?>
+                        <img alt="<?= nullable_htmlentities($company_name)?> logo" class="img-fluid" src="<?php echo "../../uploads/settings/$company_logo"; ?>">
+                    <?php } else { ?>
+                        <span class="n45-brand-mark" aria-hidden="true"><span>N45</span></span>
+                    <?php } ?>
+                </div>
 
-                <p class="login-box-msg">Multi-Factor Authentication Enforced</p>
+                <h2 class="n45-auth-title">Enable MFA</h2>
+                <p class="n45-auth-subtitle">Scan the QR code, then enter the 6 digit verification code.</p>
 
                 <form action="post.php" method="post" autocomplete="off">
                     <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
 
-                    <img src='../../plugins/barcode/barcode.php?f=png&s=qr&d=<?php echo $data; ?>' data-toggle="tooltip" title="Scan QR code into your MFA App">
+                    <img class="n45-auth-qr mb-3" src='../../plugins/barcode/barcode.php?f=png&s=qr&d=<?php echo $data; ?>' data-toggle="tooltip" title="Scan QR code into your MFA App">
 
                     <p>
                         <small data-toggle="tooltip" title="Can't Scan? Copy and paste this code into your app"><?php echo $token; ?></small>
@@ -92,12 +100,9 @@ $data = "otpauth://totp/ITFlow:$session_email?secret=$token";
 
                     <button type="submit" name="enable_mfa" class="btn btn-primary btn-block mb-3"><i class="fa fa-check mr-2"></i>Enable MFA</button>
                 </form>
-
             </div>
-            <!-- /.login-card-body -->
-        </div>
+        </section>
     </div>
-    <!-- /.login-box -->
 
     <!-- REQUIRED SCRIPTS -->
 

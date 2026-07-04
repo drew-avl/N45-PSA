@@ -5,6 +5,8 @@
  */
 
 header("X-Frame-Options: DENY"); // Legacy
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/ui/n45_helpers.php';
 ?>
 
 <!DOCTYPE html>
@@ -29,15 +31,15 @@ header("X-Frame-Options: DENY"); // Legacy
     <!-- Theme style -->
     <link rel="stylesheet" href="/plugins/adminlte/css/adminlte.min.css">
     <link rel="stylesheet" href="/css/itflow_custom.css">
-    <link rel="stylesheet" href="/css/n45_ui.css">
+    <link rel="stylesheet" href="/css/n45-app.css">
 
 </head>
-<body class="dark-mode n45-client-portal">
+<body class="n45-client-portal">
 
 <nav class="navbar navbar-expand-lg navbar-dark n45-client-nav">
     <div class="container">
         <a class="navbar-brand" href="/client/index.php">
-            <span class="n45-brand-mark" aria-hidden="true"><span>N45</span></span>
+            <?php echo n45_brand_mark(); ?>
             <span><?php echo nullable_htmlentities($session_company_name); ?></span>
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
