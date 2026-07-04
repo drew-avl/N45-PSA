@@ -46,6 +46,7 @@ $data = "otpauth://totp/ITFlow:$session_email?secret=$token";
     <!-- Theme style -->
     <link rel="stylesheet" href="../../plugins/adminlte/css/adminlte.min.css">
     <link rel="stylesheet" href="../../css/itflow_custom.css">
+    <link rel="stylesheet" href="../../css/n45_ui.css">
     <link href="../../plugins/toastr/toastr.min.css" rel="stylesheet">
 
     <!-- jQuery -->
@@ -53,9 +54,9 @@ $data = "otpauth://totp/ITFlow:$session_email?secret=$token";
     <script src="../../plugins/toastr/toastr.min.js"></script>
 
 </head>
-<body class="hold-transition login-page dark-mode">
+<body class="hold-transition login-page dark-mode n45-auth-page">
     <?php require_once "../../includes/inc_alert_feedback.php"; ?>
-    <div class="login-box">
+    <div class="login-box n45-auth-card">
         <div class="login-logo">
             <?php if (!empty($company_logo)) { ?>
                 <img alt="<?= nullable_htmlentities($company_name)?> logo" height="110" width="380" class="img-fluid" src="<?php echo "../../uploads/settings/$company_logo"; ?>">

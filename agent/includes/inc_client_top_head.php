@@ -1,6 +1,6 @@
 <?php $show_add_credit = 0; // Remove once credits is added hides the button ?>
 
-<div class="card d-print-none">
+<div class="card d-print-none n45-client-summary">
     <div class="card-header pb-1 pt-2 px-3">
         <div class="card-title">
             <a href="#" data-toggle="collapse" data-target="#clientHeader"><h4 class="text-dark" data-toggle="tooltip" data-placement="right" title="Client ID: <?php echo $client_id; ?>"><strong><?php echo $client_name; ?></strong> <?php if ($client_archived_at) { echo "(archived)"; } ?></h4></a>
@@ -74,7 +74,7 @@
 
 <div class="collapse <?php if (basename($_SERVER["PHP_SELF"]) == "client_overview.php") { echo "show"; } ?>" id="clientHeader">
 
-    <div class="card-group mb-3">
+    <div class="card-group mb-3 n45-client-summary-grid">
         <div class="card card-body px-3 py-2">
             <h5>Primary Location</h5>
             <?php if (!empty($location_address)) { ?>

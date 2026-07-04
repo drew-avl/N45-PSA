@@ -5,20 +5,17 @@
  */
 ?>
 
-<!-- Close container -->
-</div>
+<!-- Close client shell -->
+</main>
 
-<br>
-<hr>
-
-<p class="text-center">
+<footer class="n45-client-footer">
     <?php
         echo nullable_htmlentities($session_company_name);
         if (!$config_whitelabel_enabled) {
             echo '<br><small class="text-muted">Powered by ITFlow</small>';
         }
     ?>
-</p>
+</footer>
 
 
 <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/inc_confirm_modal.php'; ?>
@@ -70,3 +67,8 @@
 <script src="/js/confirm_modal.js"></script>
 
 <script src="/js/keepalive.js"></script>
+
+<script src="/js/n45_ui.js"></script>
+
+</body>
+</html>

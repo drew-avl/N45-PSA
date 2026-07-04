@@ -126,21 +126,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     <?php } ?>
     <link rel="stylesheet" href="../plugins/adminlte/css/adminlte.min.css">
     <link rel="stylesheet" href="../css/itflow_custom.css">
+    <link rel="stylesheet" href="../css/n45_ui.css">
 </head>
-<body class="hold-transition login-page dark-mode">
+<body class="hold-transition login-page dark-mode n45-auth-page">
 
-<div class="login-box">
-    <div class="login-logo">
-        <?php if (!empty($company_logo)) { ?>
-            <img alt="<?php echo nullable_htmlentities($company_name); ?> logo" height="110" width="380" class="img-fluid" src="<?php echo "/uploads/settings/$company_logo"; ?>">
-        <?php } else { ?>
-            <span class="text-primary text-bold"><i class="fas fa-paper-plane mr-2"></i>IT</span>Flow
-        <?php } ?>
-    </div>
+<div class="n45-auth-shell">
+    <section class="n45-auth-side">
+        <div>
+            <div class="n45-auth-kicker">Client Portal</div>
+            <h1><?php echo nullable_htmlentities($company_name); ?></h1>
+            <p>Access tickets, invoices, quotes, documents, and service history for your organization.</p>
+        </div>
+        <div class="n45-auth-footer">
+            <?php if (!$config_whitelabel_enabled) { ?>
+                Powered by ITFlow
+            <?php } ?>
+        </div>
+    </section>
 
-    <div class="card">
-        <div class="card-body login-card-body">
-            <p class="login-box-msg px-0">Client Portal</p>
+    <section class="n45-auth-card-wrap">
+        <div class="n45-auth-card">
+            <div class="n45-auth-logo">
+                <?php if (!empty($company_logo)) { ?>
+                    <img alt="<?php echo nullable_htmlentities($company_name); ?> logo" src="<?php echo "/uploads/settings/$company_logo"; ?>">
+                <?php } else { ?>
+                    <span class="n45-brand-mark" aria-hidden="true"><span>N45</span></span>
+                    <div>
+                        <div class="n45-auth-title mb-0">Client Portal</div>
+                        <div class="n45-auth-subtitle mb-0"><?php echo nullable_htmlentities($company_name); ?></div>
+                    </div>
+                <?php } ?>
+            </div>
+
+            <h2 class="n45-auth-title">Sign in</h2>
+            <p class="n45-auth-subtitle">Use your client portal credentials.</p>
 
             <?php if (isset($_SESSION['login_message'])) { ?>
                 <div class="alert alert-info"><?php echo nullable_htmlentities($_SESSION['login_message']); ?></div>
@@ -152,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             <?php } ?>
 
             <form method="post">
-                <div class="input-group mb-3">
+                <div class="input-group">
                     <input type="email" class="form-control" placeholder="Email" name="email" value="<?php echo htmlspecialchars($email, ENT_QUOTES); ?>" required autofocus>
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -161,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
                     </div>
                 </div>
 
-                <div class="input-group mb-3">
+                <div class="input-group">
                     <input type="password" class="form-control" placeholder="Password" name="password" required>
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -170,29 +189,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-block mb-3" name="login">Sign In</button>
+                <div class="n45-auth-actions">
+                    <button type="submit" class="btn btn-primary btn-block" name="login">Sign In</button>
+                    <?php if (!empty($azure_client_id)) { ?>
+                        <a href="/client/login_microsoft.php" class="btn btn-secondary btn-block">
+                            <i class="fas fa-building mr-2"></i>Login with Microsoft Entra
+                        </a>
+                    <?php } ?>
+                </div>
             </form>
 
             <?php if (!empty($config_smtp_host)) { ?>
-                <a href="/client/login_reset.php">Forgot password?</a>
-            <?php } ?>
-
-            <?php if (!empty($azure_client_id)) { ?>
-                <div class="col text-center mt-2">
-                    <a href="/client/login_microsoft.php">
-                        <button type="button" class="btn btn-secondary">Login with Microsoft Entra</button>
-                    </a>
+                <div class="mt-3">
+                    <a href="/client/login_reset.php">Forgot password?</a>
                 </div>
             <?php } ?>
         </div>
-    </div>
+    </section>
 </div>
-
-<?php
-if (!$config_whitelabel_enabled) {
-    echo '<small class="text-muted">Powered by ITFlow</small>';
-}
-?>
 
 <script src="../plugins/jquery/jquery.min.js"></script>
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
