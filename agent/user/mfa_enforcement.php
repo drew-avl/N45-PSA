@@ -45,6 +45,7 @@ $data = "otpauth://totp/ITFlow:$session_email?secret=$token";
 
     <!-- Theme style -->
     <link rel="stylesheet" href="../../plugins/adminlte/css/adminlte.min.css">
+    <link rel="stylesheet" href="../../css/itflow_custom.css">
     <link href="../../plugins/toastr/toastr.min.css" rel="stylesheet">
 
     <!-- jQuery -->
@@ -52,7 +53,7 @@ $data = "otpauth://totp/ITFlow:$session_email?secret=$token";
     <script src="../../plugins/toastr/toastr.min.js"></script>
 
 </head>
-<body class="hold-transition login-page">
+<body class="hold-transition login-page dark-mode">
     <?php require_once "../../includes/inc_alert_feedback.php"; ?>
     <div class="login-box">
         <div class="login-logo">

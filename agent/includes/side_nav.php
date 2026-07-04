@@ -1,5 +1,5 @@
 <!-- Main Sidebar Container -->
-<aside class="main-sidebar sidebar-dark-<?php echo nullable_htmlentities($config_theme); ?> d-print-none">
+<aside class="main-sidebar sidebar-dark-teal d-print-none">
 
     <a class="brand-link" href="/agent/dashboard.php">
         <div class="brand-image"></div>

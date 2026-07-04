@@ -26,7 +26,7 @@ $session_user_role_display = sanitizeInput($row['role_name']);
 $session_is_admin = isset($row['role_is_admin']) && $row['role_is_admin'] == 1;
 $session_user_config_force_mfa = intval($row['user_config_force_mfa']);
 $user_config_records_per_page = intval($row['user_config_records_per_page']);
-$user_config_theme_dark = intval($row['user_config_theme_dark']);
+$user_config_theme_dark = 1;
 
 // Check user type is agent aka 1
 if ($session_user_type !== 1) {
