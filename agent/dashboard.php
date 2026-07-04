@@ -34,24 +34,13 @@ $sql_years_select = mysqli_query($mysqli, "
 ");
 ?>
 
-<!-- Responsive chart helpers -->
-<style>
-  .chart-h-320 { position: relative; height: 320px; }
-  .chart-h-240 { position: relative; height: 240px; }
-  /* If you want charts to shrink on very small screens, you can tweak with media queries:
-  @media (max-width: 576px) {
-    .chart-h-320 { height: 240px; }
-    .chart-h-240 { height: 200px; }
-  } */
-</style>
-
-<div class="card card-body">
-    <form class="form-inline">
+<div class="n45-dashboard-toolbar">
+    <form>
         <input type="hidden" name="enable_financial" value="0">
         <input type="hidden" name="enable_technical" value="0">
 
-        <label for="year" class="mr-sm-2">Select Year:</label>
-        <select id="year" onchange="this.form.submit()" class="form-control mr-sm-3 col-sm-2 mb-3 mb-sm-0" name="year">
+        <label for="year" class="mb-0">Year</label>
+        <select id="year" onchange="this.form.submit()" class="form-control" name="year">
             <?php while ($row = mysqli_fetch_assoc($sql_years_select)) {
                 $year_select = $row['all_years'];
                 if (empty($year_select)) {
@@ -65,14 +54,14 @@ $sql_years_select = mysqli_query($mysqli, "
         </select>
 
         <?php if ($session_user_role == 1 || ($session_user_role == 3 && $config_module_enable_accounting == 1)) { ?>
-            <div class="custom-control custom-switch mr-3">
+            <div class="custom-control custom-switch n45-toggle">
                 <input type="checkbox" onchange="this.form.submit()" class="custom-control-input" id="customSwitch1" name="enable_financial" value="1" <?php if ($user_config_dashboard_financial_enable == 1) { echo "checked"; } ?>>
                 <label class="custom-control-label" for="customSwitch1">Financial</label>
             </div>
         <?php } ?>
 
         <?php if ($session_user_role >= 2 && $config_module_enable_ticketing == 1) { ?>
-            <div class="custom-control custom-switch">
+            <div class="custom-control custom-switch n45-toggle">
                 <input type="checkbox" onchange="this.form.submit()" class="custom-control-input" id="customSwitch2" name="enable_technical" value="1" <?php if ($user_config_dashboard_technical_enable == 1) { echo "checked"; } ?>>
                 <label class="custom-control-label" for="customSwitch2">Technical</label>
             </div>
@@ -174,251 +163,57 @@ if ($user_config_dashboard_financial_enable == 1) {
     $row = mysqli_fetch_assoc(mysqli_query($mysqli, "SELECT COUNT(vendor_id) AS vendors_added FROM vendors WHERE YEAR(vendor_created_at) = $year AND vendor_client_id = 0 AND vendor_archived_at IS NULL"));
     $vendors_added = intval($row['vendors_added']);
 ?>
-<div class="card card-body">
-    <!-- Icon Cards-->
-    <div class="row">
-        <div class="col-lg-4 col-md-6 col-sm-12">
-            <!-- small box -->
-            <a class="small-box bg-primary" href="payments.php?dtf=<?php echo $year; ?>-01-01&dtt=<?php echo $year; ?>-12-31">
-                <div class="inner">
-                    <h3><?php echo numfmt_format_currency($currency_format, $total_income, "$session_company_currency"); ?></h3>
-                    <p>Income</p>
-                    <hr>
-                    <small>Receivables: <?php echo numfmt_format_currency($currency_format, $receivables, "$session_company_currency"); ?></small>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-hand-holding-usd"></i>
-                </div>
-            </a>
-        </div>
-        <!-- ./col -->
+<section class="n45-dashboard-section">
+    <?php echo n45_section_header('Financial Operations', "Revenue, expenses, recurring activity, and growth signals for $year."); ?>
 
-        <div class="col-lg-4 col-md-6 col-sm-12">
-            <!-- small box -->
-            <a class="small-box bg-danger" href="expenses.php?dtf=<?php echo $year; ?>-01-01&dtt=<?php echo $year; ?>-12-31">
-                <div class="inner">
-                    <h3><?php echo numfmt_format_currency($currency_format, $total_expenses, "$session_company_currency"); ?></h3>
-                    <p>Expenses</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-shopping-cart"></i>
-                </div>
-            </a>
-        </div>
-        <!-- ./col -->
-
-        <div class="col-lg-4 col-md-6 col-sm-12">
-            <!-- small box -->
-            <a class="small-box bg-success" href="reports/profit_loss.php">
-                <div class="inner">
-                    <h3><?php echo numfmt_format_currency($currency_format, $profit, "$session_company_currency"); ?></h3>
-                    <p>Profit</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-balance-scale"></i>
-                </div>
-            </a>
-        </div>
-        <!-- ./col -->
-
-        <div class="col-lg-6 col-md-6 col-sm-12">
-            <!-- small box -->
-            <a class="small-box bg-info" href="reports/recurring_by_client.php">
-                <div class="inner">
-                    <h3><?php echo numfmt_format_currency($currency_format, $recurring_monthly_total, "$session_company_currency"); ?></h3>
-                    <p>Monthly Recurring Income</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-sync-alt"></i>
-                </div>
-            </a>
-        </div>
-        <!-- ./col -->
-
-        <div class="col-lg-6 col-md-6 col-sm-12">
-            <!-- small box -->
-            <a class="small-box bg-pink" href="recurring_expenses.php">
-                <div class="inner">
-                    <h3><?php echo numfmt_format_currency($currency_format, $recurring_expense_monthly_total, "$session_company_currency"); ?></h3>
-                    <p>Monthly Recurring Expense</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-clock"></i>
-                </div>
-            </a>
-        </div>
-        <!-- ./col -->
-
+    <div class="n45-grid n45-grid--metrics mb-3">
+        <?php echo n45_metric_card('Income', numfmt_format_currency($currency_format, $total_income, "$session_company_currency"), "payments.php?dtf=$year-01-01&dtt=$year-12-31", 'hand-holding-usd', 'Receivables: ' . numfmt_format_currency($currency_format, $receivables, "$session_company_currency")); ?>
+        <?php echo n45_metric_card('Expenses', numfmt_format_currency($currency_format, $total_expenses, "$session_company_currency"), "expenses.php?dtf=$year-01-01&dtt=$year-12-31", 'shopping-cart', '', 'danger'); ?>
+        <?php echo n45_metric_card('Profit', numfmt_format_currency($currency_format, $profit, "$session_company_currency"), 'reports/profit_loss.php', 'balance-scale', '', $profit < 0 ? 'danger' : 'success'); ?>
+        <?php echo n45_metric_card('Monthly Recurring Income', numfmt_format_currency($currency_format, $recurring_monthly_total, "$session_company_currency"), 'reports/recurring_by_client.php', 'sync-alt'); ?>
+        <?php echo n45_metric_card('Monthly Recurring Expense', numfmt_format_currency($currency_format, $recurring_expense_monthly_total, "$session_company_currency"), 'recurring_expenses.php', 'clock', '', 'warning'); ?>
         <?php if ($config_module_enable_ticketing && $config_module_enable_accounting) { ?>
-            <div class="col-lg-2 col-md-6 col-sm-12">
-                <!-- small box -->
-                <a class="small-box bg-secondary" href="reports/tickets_unbilled.php">
-                    <div class="inner">
-                        <h3><?php echo $unbilled_tickets; ?></h3>
-                        <p>Unbilled Ticket<?php if ($unbilled_tickets > 1 || $unbilled_tickets == 0) { echo "s"; } ?></p>
-                    </div>
-                    <div class="icon">
-                        <i class="fa fa-ticket-alt"></i>
-                    </div>
-                </a>
-            </div>
+            <?php echo n45_metric_card('Unbilled Tickets', $unbilled_tickets, 'reports/tickets_unbilled.php', 'ticket-alt'); ?>
         <?php } else { ?>
-            <div class="col-lg-3 col-md-6 col-sm-12">
-                <!-- small box -->
-                <a class="small-box bg-secondary" href="recurring_invoices.php?dtf=<?php echo $year; ?>-01-01&dtt=<?php echo $year; ?>-12-31">
-                    <div class="inner">
-                        <h3><?php echo $recurring_invoices_added; ?></h3>
-                        <p>Recurring Invoices Added</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fa fa-file-invoice"></i>
-                    </div>
-                </a>
-            </div>
+            <?php echo n45_metric_card('Recurring Invoices Added', $recurring_invoices_added, "recurring_invoices.php?dtf=$year-01-01&dtt=$year-12-31", 'file-invoice'); ?>
         <?php } ?>
+        <?php echo n45_metric_card('New Leads', $leads_added, "clients.php?leads=1&dtf=$year-01-01&dtt=$year-12-31", 'users'); ?>
+        <?php echo n45_metric_card('New Clients', $clients_added, "clients.php?dtf=$year-01-01&dtt=$year-12-31", 'users'); ?>
+        <?php echo n45_metric_card('New Vendors', $vendors_added, "vendors.php?dtf=$year-01-01&dtt=$year-12-31", 'building'); ?>
+        <?php echo n45_metric_card('Miles Traveled', number_format($total_miles, 2), "trips.php?dtf=$year-01-01&dtt=$year-12-31", 'route'); ?>
+    </div>
 
-        <div class="col-lg-2 col-6">
-            <!-- small box -->
-            <a class="small-box bg-secondary" href="clients.php?leads=1&dtf=<?php echo $year; ?>-01-01&dtt=<?php echo $year; ?>-12-31">
-                <div class="inner">
-                    <h3><?php echo $leads_added; ?></h3>
-                    <p>New Leads</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-users"></i>
-                </div>
-            </a>
-        </div>
-        <!-- ./col -->
+    <div class="n45-grid">
 
-        <div class="col-lg-2 col-6">
-            <!-- small box -->
-            <a class="small-box bg-secondary" href="clients.php?dtf=<?php echo $year; ?>-01-01&dtt=<?php echo $year; ?>-12-31">
-                <div class="inner">
-                    <h3><?php echo $clients_added; ?></h3>
-                    <p>New Clients</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-users"></i>
-                </div>
-            </a>
-        </div>
-        <!-- ./col -->
-
-        <div class="col-lg-2 col-6">
-            <!-- small box -->
-            <a class="small-box bg-secondary" href="vendors.php?dtf=<?php echo $year; ?>-01-01&dtt=<?php echo $year; ?>-12-31">
-                <div class="inner">
-                    <h3><?php echo $vendors_added; ?></h3>
-                    <p>New Vendors</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-building"></i>
-                </div>
-            </a>
-        </div>
-        <!-- ./col -->
-
-        <div class="col-lg-3 col-md-6 col-sm-12">
-            <!-- small box -->
-            <a class="small-box bg-secondary" href="trips.php?dtf=<?php echo $year; ?>-01-01&dtt=<?php echo $year; ?>-12-31">
-                <div class="inner">
-                    <h3><?php echo number_format($total_miles, 2); ?></h3>
-                    <p>Miles Traveled</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-route"></i>
-                </div>
-            </a>
-        </div>
-        <!-- ./col -->
-
-        <div class="col-md-12">
-            <div class="card card-dark mb-3">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-fw fa-chart-area mr-2"></i>Cash Flow</h3>
-                    <div class="card-tools">
-                        <a href="reports/income_summary.php" class="btn btn-tool">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <button type="button" class="btn btn-tool" data-card-widget="remove">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="chart-h-320">
-                        <canvas id="cashFlow"></canvas>
-                    </div>
-                </div>
+        <?php echo n45_panel_start('Cash Flow', 'chart-area', '<a href="reports/income_summary.php" class="n45-topbar-button" title="View income summary"><i class="fas fa-eye"></i></a>'); ?>
+            <div class="n45-chart-frame">
+                <canvas id="cashFlow"></canvas>
             </div>
+        <?php echo n45_panel_end(); ?>
+
+        <div class="n45-grid n45-grid--three">
+            <?php echo n45_panel_start('Income by Category', 'chart-pie'); ?>
+                <div class="n45-chart-frame n45-chart-frame--sm">
+                    <canvas id="incomeByCategoryPieChart"></canvas>
+                </div>
+            <?php echo n45_panel_end(); ?>
+
+            <?php echo n45_panel_start('Expenses by Category', 'shopping-cart'); ?>
+                <div class="n45-chart-frame n45-chart-frame--sm">
+                    <canvas id="expenseByCategoryPieChart"></canvas>
+                </div>
+            <?php echo n45_panel_end(); ?>
+
+            <?php echo n45_panel_start('Expenses by Vendor', 'building'); ?>
+                <div class="n45-chart-frame n45-chart-frame--sm">
+                    <canvas id="expenseByVendorPieChart"></canvas>
+                </div>
+            <?php echo n45_panel_end(); ?>
         </div>
 
-        <div class="col-lg-4">
-            <div class="card card-dark mb-3">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-fw fa-chart-pie mr-2"></i>Income by Category <small>(Top 5)</small></h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="remove">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="chart-h-240">
-                        <canvas id="incomeByCategoryPieChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-4">
-            <div class="card card-dark mb-3">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-fw fa-shopping-cart mr-2"></i>Expenses by Category <small>(Top 5)</small></h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="remove">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="chart-h-240">
-                        <canvas id="expenseByCategoryPieChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-4">
-            <div class="card card-dark mb-3">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-fw fa-building mr-2"></i>Expenses by Vendor <small>(Top 5)</small></h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="remove">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="chart-h-240">
-                        <canvas id="expenseByVendorPieChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card card-dark mb-3">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-fw fa-piggy-bank mr-2"></i>Account Balances</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="remove">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="table-responsive">
+        <div class="n45-grid n45-grid--three">
+            <?php echo n45_panel_start('Account Balances', 'piggy-bank'); ?>
+                <div class="n45-table-wrap">
                     <table class="table">
                         <tbody>
                             <?php while ($row = mysqli_fetch_assoc($sql_accounts)) {
@@ -453,20 +248,10 @@ if ($user_config_dashboard_financial_enable == 1) {
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div> <!-- .col -->
+            <?php echo n45_panel_end(); ?>
 
-        <div class="col-md-4">
-            <div class="card card-dark mb-3">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-fw fa-credit-card mr-2"></i>Latest Income</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="remove">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="table-responsive">
+            <?php echo n45_panel_start('Latest Income', 'credit-card'); ?>
+                <div class="n45-table-wrap">
                     <table class="table table-borderless table-sm">
                         <thead>
                             <tr>
@@ -494,20 +279,10 @@ if ($user_config_dashboard_financial_enable == 1) {
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div> <!-- .col -->
+            <?php echo n45_panel_end(); ?>
 
-        <div class="col-md-4">
-            <div class="card card-dark mb-3">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-fw fa-shopping-cart mr-2"></i>Latest Expenses</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="remove">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="table-responsive">
+            <?php echo n45_panel_start('Latest Expenses', 'shopping-cart'); ?>
+                <div class="n45-table-wrap">
                     <table class="table table-sm table-borderless">
                         <thead>
                             <tr>
@@ -534,31 +309,16 @@ if ($user_config_dashboard_financial_enable == 1) {
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div> <!-- .col -->
-
-        <div class="col-md-12">
-            <div class="card card-dark mb-3">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-fw fa-route mr-2"></i>Trip Flow</h3>
-                    <div class="card-tools">
-                        <a href="trips.php" class="btn btn-tool">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <button type="button" class="btn btn-tool" data-card-widget="remove">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="chart-h-320">
-                        <canvas id="tripFlow"></canvas>
-                    </div>
-                </div>
-            </div>
+            <?php echo n45_panel_end(); ?>
         </div>
-    </div> <!-- row -->
-</div> <!-- card -->
+
+        <?php echo n45_panel_start('Trip Flow', 'route', '<a href="trips.php" class="n45-topbar-button" title="View trips"><i class="fas fa-eye"></i></a>'); ?>
+            <div class="n45-chart-frame">
+                <canvas id="tripFlow"></canvas>
+            </div>
+        <?php echo n45_panel_end(); ?>
+    </div>
+</section>
 
 <?php } ?>
 
@@ -600,166 +360,72 @@ if ($user_config_dashboard_technical_enable == 1) {
     ");
 ?>
 
-<div class="card card-body">
-    <!-- Icon Cards-->
-    <div class="row">
-        <div class="col-lg-4 col-6">
-            <!-- small box -->
-            <a class="small-box bg-secondary" href="clients.php?dtf=<?php echo $year; ?>-01-01&dtt=<?php echo $year; ?>-12-31">
-                <div class="inner">
-                    <h3><?php echo $clients_added; ?></h3>
-                    <p>New Clients</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-users"></i>
-                </div>
-            </a>
-        </div>
-        <!-- ./col -->
+<section class="n45-dashboard-section">
+    <?php echo n45_section_header('Technical Operations', "Service desk load, documentation growth, and expiring operational assets for $year."); ?>
 
-        <div class="col-lg-4 col-6">
-            <a class="small-box bg-success" href="contacts.php">
-                <div class="inner">
-                    <h3><?php echo $contacts_added; ?></h3>
-                    <p>New Contacts</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-user"></i>
-                </div>
-            </a>
-        </div>
-        <!-- ./col -->
+    <div class="n45-grid n45-grid--metrics mb-3">
+        <?php echo n45_metric_card('New Clients', $clients_added, "clients.php?dtf=$year-01-01&dtt=$year-12-31", 'users'); ?>
+        <?php echo n45_metric_card('New Contacts', $contacts_added, 'contacts.php', 'user'); ?>
+        <?php echo n45_metric_card('New Assets', $assets_added, 'assets.php', 'desktop'); ?>
+        <?php echo n45_metric_card('Active Tickets', $active_tickets, 'tickets.php', 'ticket-alt', '', 'danger'); ?>
+        <?php echo n45_metric_card('Expiring Domains', $expiring_domains, 'domains.php?sort=domain_expire&order=ASC', 'globe', 'Next 30 days', 'warning'); ?>
+        <?php echo n45_metric_card('Expiring Certificates', $expiring_certificates, 'certificates.php?sort=certificate_expire&order=ASC', 'lock', 'Next 30 days', 'warning'); ?>
+    </div>
 
-        <div class="col-lg-4 col-6">
-            <a class="small-box bg-info" href="assets.php">
-                <div class="inner">
-                    <h3><?php echo $assets_added; ?></h3>
-                    <p>New Assets</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-desktop"></i>
-                </div>
-            </a>
-        </div>
-        <!-- ./col -->
+    <?php echo n45_panel_start('Your Open Tickets', 'life-ring'); ?>
+        <?php if ($your_tickets) { ?>
+            <div class="n45-table-wrap">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Number</th>
+                            <th>Subject</th>
+                            <th>Client</th>
+                            <th>Contact</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Last Response</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = mysqli_fetch_assoc($sql_your_tickets)) {
+                            $ticket_id = intval($row['ticket_id']);
+                            $ticket_prefix = nullable_htmlentities($row['ticket_prefix']);
+                            $ticket_number = intval($row['ticket_number']);
+                            $ticket_subject = nullable_htmlentities($row['ticket_subject']);
+                            $ticket_priority = nullable_htmlentities($row['ticket_priority']);
+                            $ticket_status_name = nullable_htmlentities($row['ticket_status_name']);
+                            $ticket_status_color = nullable_htmlentities($row['ticket_status_color']);
+                            $ticket_updated_at = nullable_htmlentities($row['ticket_updated_at']);
+                            $ticket_updated_at_time_ago = timeAgo($row['ticket_updated_at']);
+                            $ticket_updated_at_display = empty($ticket_updated_at) ? "<span class='text-danger'>Never</span>" : $ticket_updated_at_time_ago;
 
-        <div class="col-lg-4 col-6">
-            <a class="small-box bg-danger" href="tickets.php">
-                <div class="inner">
-                    <h3><?php echo $active_tickets; ?></h3>
-                    <p>Active Tickets</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-ticket-alt"></i>
-                </div>
-            </a>
-        </div>
-        <!-- ./col -->
-
-        <div class="col-lg-4 col-6">
-            <a class="small-box bg-warning" href="domains.php?sort=domain_expire&order=ASC">
-                <div class="inner">
-                    <h3><?php echo $expiring_domains; ?></h3>
-                    <p>Expiring Domains <small>30 Day</small></p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-globe"></i>
-                </div>
-            </a>
-        </div>
-        <!-- ./col -->
-
-        <div class="col-lg-4 col-6">
-            <a class="small-box bg-primary" href="certificates.php?sort=certificate_expire&order=ASC">
-                <div class="inner">
-                    <h3><?php echo $expiring_certificates; ?></h3>
-                    <p>Expiring Certificates<small>30 Day</small></p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-lock"></i>
-                </div>
-            </a>
-        </div>
-        <!-- ./col -->
-    </div> <!-- row -->
-
-    <?php if ($your_tickets) { ?>
-        <div class="row">
-            <div class="col-12">
-                <div class="card card-dark mb-3">
-                    <div class="card-header">
-                        <h3 class="card-title"><i class="fa fa-fw fa-life-ring mr-2"></i>Your Open Tickets</h3>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="remove">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="table-responsive-sm">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Number</th>
-                                    <th>Subject</th>
-                                    <th>Client</th>
-                                    <th>Contact</th>
-                                    <th>Priority</th>
-                                    <th>Status</th>
-                                    <th>Last Response</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php while ($row = mysqli_fetch_assoc($sql_your_tickets)) {
-                                    $ticket_id = intval($row['ticket_id']);
-                                    $ticket_prefix = nullable_htmlentities($row['ticket_prefix']);
-                                    $ticket_number = intval($row['ticket_number']);
-                                    $ticket_subject = nullable_htmlentities($row['ticket_subject']);
-                                    $ticket_priority = nullable_htmlentities($row['ticket_priority']);
-                                    $ticket_status_id = intval($row['ticket_status']);
-                                    $ticket_status_name = nullable_htmlentities($row['ticket_status_name']);
-                                    $ticket_status_color = nullable_htmlentities($row['ticket_status_color']);
-                                    $ticket_created_at = nullable_htmlentities($row['ticket_created_at']);
-                                    $ticket_created_at_time_ago = timeAgo($row['ticket_created_at']);
-                                    $ticket_updated_at = nullable_htmlentities($row['ticket_updated_at']);
-                                    $ticket_updated_at_time_ago = timeAgo($row['ticket_updated_at']);
-
-                                    $ticket_updated_at_display = empty($ticket_updated_at) ? (empty($ticket_closed_at) ? "<p class='text-danger'>Never</p>" : "<p>Never</p>") : $ticket_updated_at_time_ago;
-
-                                    $client_id = intval($row['ticket_client_id']);
-                                    $client_name = nullable_htmlentities($row['client_name']);
-                                    $contact_id = intval($row['ticket_contact_id']);
-                                    $contact_name = nullable_htmlentities($row['contact_name']);
-                                    if ($client_id) {
-                                        $has_client = "&client_id=$client_id";
-                                    } else {
-                                        $has_client = "";
-                                    }
-
-                                    $ticket_priority_color = $ticket_priority == "High" ? "danger" : ($ticket_priority == "Medium" ? "warning" : "info");
-                                    $contact_display = empty($contact_name) ? "-" : "<a href='contact_details.php?client_id=$client_id&contact_id=$contact_id'>$contact_name</a>";
-                                ?>
-                                    <tr class="<?php echo empty($ticket_updated_at) ? 'text-bold' : ''; ?>">
-                                        <td>
-                                            <a class="text-dark"
-                                                href="ticket.php?ticket_id=<?= "$ticket_id$has_client" ?>"><?= "$ticket_prefix$ticket_number" ?>
-                                            </a>
-                                        </td>
-                                        <td><a href="ticket.php?ticket_id=<?= "$ticket_id$has_client" ?>"><?= $ticket_subject ?></a></td>
-                                        <td><a href="tickets.php?client_id=<?php echo $client_id; ?>"><strong><?php echo $client_name; ?></strong></a></td>
-                                        <td><?php echo $contact_display; ?></td>
-                                        <td><span class='p-2 badge badge-pill badge-<?php echo $ticket_priority_color; ?>'><?php echo $ticket_priority; ?></span></td>
-                                        <td><span class='badge badge-pill text-light p-2' style="background-color: <?php echo $ticket_status_color; ?>"><?php echo $ticket_status_name; ?></span></td>
-                                        <td><?php echo $ticket_updated_at_display; ?></td>
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                            $client_id = intval($row['ticket_client_id']);
+                            $client_name = nullable_htmlentities($row['client_name']);
+                            $contact_id = intval($row['ticket_contact_id']);
+                            $contact_name = nullable_htmlentities($row['contact_name']);
+                            $has_client = $client_id ? "&client_id=$client_id" : "";
+                            $ticket_priority_color = $ticket_priority == "High" ? "danger" : ($ticket_priority == "Medium" ? "warning" : "success");
+                            $contact_display = empty($contact_name) ? "-" : "<a href='contact_details.php?client_id=$client_id&contact_id=$contact_id'>$contact_name</a>";
+                        ?>
+                            <tr class="<?php echo empty($ticket_updated_at) ? 'text-bold' : ''; ?>">
+                                <td><a href="ticket.php?ticket_id=<?= "$ticket_id$has_client" ?>"><?= "$ticket_prefix$ticket_number" ?></a></td>
+                                <td><a href="ticket.php?ticket_id=<?= "$ticket_id$has_client" ?>"><?= $ticket_subject ?></a></td>
+                                <td><a href="tickets.php?client_id=<?php echo $client_id; ?>"><strong><?php echo $client_name; ?></strong></a></td>
+                                <td><?php echo $contact_display; ?></td>
+                                <td><?php echo n45_status_badge($ticket_priority, $ticket_priority_color); ?></td>
+                                <td><?php echo n45_status_badge($ticket_status_name, 'neutral', "background-color: $ticket_status_color; color: #fff;"); ?></td>
+                                <td><?php echo $ticket_updated_at_display; ?></td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
             </div>
-        </div>
-    <?php } ?>
-</div> <!-- card -->
+        <?php } else { ?>
+            <?php echo n45_empty_state('No assigned open tickets', 'There are no active tickets assigned to you right now.', 'check-circle'); ?>
+        <?php } ?>
+    <?php echo n45_panel_end(); ?>
+</section>
 
 <?php } ?>
 
@@ -768,9 +434,10 @@ if ($user_config_dashboard_technical_enable == 1) {
 <?php if ($user_config_dashboard_financial_enable == 1) { ?>
 
 <script>
-    // Bootstrap-like defaults for Chart.js v4
+    // N45 defaults for Chart.js v4
     Chart.defaults.font.family = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-    Chart.defaults.color = '#292b2c';
+    Chart.defaults.color = '#bdc9da';
+    Chart.defaults.borderColor = 'rgba(44, 56, 76, 0.72)';
 
     // CASH FLOW
     (function () {
@@ -785,11 +452,11 @@ if ($user_config_dashboard_technical_enable == 1) {
                     {
                         label: "Income",
                         fill: false,
-                        borderColor: "#007bff",
-                        pointBackgroundColor: "#007bff",
-                        pointBorderColor: "#007bff",
+                        borderColor: "#2CDCC4",
+                        pointBackgroundColor: "#2CDCC4",
+                        pointBorderColor: "#2CDCC4",
                         pointHoverRadius: 5,
-                        pointHoverBackgroundColor: "#007bff",
+                        pointHoverBackgroundColor: "#2CDCC4",
                         pointBorderWidth: 2,
                         data: [
                             <?php
@@ -815,11 +482,11 @@ if ($user_config_dashboard_technical_enable == 1) {
                     {
                         label: "LY Income",
                         fill: false,
-                        borderColor: "#9932CC",
-                        pointBackgroundColor: "#9932CC",
-                        pointBorderColor: "#9932CC",
+                        borderColor: "#34C4E8",
+                        pointBackgroundColor: "#34C4E8",
+                        pointBorderColor: "#34C4E8",
                         pointHoverRadius: 5,
-                        pointHoverBackgroundColor: "#9932CC",
+                        pointHoverBackgroundColor: "#34C4E8",
                         pointBorderWidth: 2,
                         data: [
                             <?php
@@ -845,11 +512,11 @@ if ($user_config_dashboard_technical_enable == 1) {
                     {
                         label: "Projected",
                         fill: false,
-                        borderColor: "black",
-                        pointBackgroundColor: "black",
-                        pointBorderColor: "black",
+                        borderColor: "#7E8DA4",
+                        pointBackgroundColor: "#7E8DA4",
+                        pointBorderColor: "#7E8DA4",
                         pointHoverRadius: 5,
-                        pointHoverBackgroundColor: "black",
+                        pointHoverBackgroundColor: "#7E8DA4",
                         pointBorderWidth: 2,
                         data: [
                             <?php
@@ -871,11 +538,11 @@ if ($user_config_dashboard_technical_enable == 1) {
                         label: "Expense",
                         tension: 0.3, // v4 name; v2 used lineTension
                         fill: false,
-                        borderColor: "#dc3545",
-                        pointBackgroundColor: "#dc3545",
-                        pointBorderColor: "#dc3545",
+                        borderColor: "#F07082",
+                        pointBackgroundColor: "#F07082",
+                        pointBorderColor: "#F07082",
                         pointHoverRadius: 5,
-                        pointHoverBackgroundColor: "#dc3545",
+                        pointHoverBackgroundColor: "#F07082",
                         pointBorderWidth: 2,
                         data: [
                             <?php
@@ -908,7 +575,7 @@ if ($user_config_dashboard_technical_enable == 1) {
                         min: 0,
                         max: <?php $max = max(1000, $largest_expense_month, $largest_income_month, $largest_invoice_month); echo roundUpToNearestMultiple($max); ?>,
                         ticks: { maxTicksLimit: 5 },
-                        grid: { color: "rgba(0, 0, 0, .125)" }
+                        grid: { color: "rgba(44, 56, 76, 0.55)" }
                     }
                 },
                 plugins: {
@@ -931,13 +598,13 @@ if ($user_config_dashboard_technical_enable == 1) {
                     label: "Trip",
                     tension: 0.3,
                     fill: false,
-                    backgroundColor: "red",
-                    borderColor: "darkred",
+                    backgroundColor: "#34C4E8",
+                    borderColor: "#2CDCC4",
                     pointRadius: 5,
-                    pointBackgroundColor: "red",
-                    pointBorderColor: "red",
+                    pointBackgroundColor: "#34C4E8",
+                    pointBorderColor: "#34C4E8",
                     pointHoverRadius: 5,
-                    pointHoverBackgroundColor: "darkred",
+                    pointHoverBackgroundColor: "#2CDCC4",
                     pointBorderWidth: 2,
                     data: [
                         <?php
@@ -969,7 +636,7 @@ if ($user_config_dashboard_technical_enable == 1) {
                         min: 0,
                         max: <?php $max = max(1000, $largest_trip_miles_month); echo roundUpToNearestMultiple($max); ?>,
                         ticks: { maxTicksLimit: 5 },
-                        grid: { color: "rgba(0, 0, 0, .125)" }
+                        grid: { color: "rgba(44, 56, 76, 0.55)" }
                     },
                 },
                 plugins: {
