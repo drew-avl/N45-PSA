@@ -1,5 +1,5 @@
 <!-- Navbar -->
-<nav class="main-header navbar navbar-expand navbar-<?php if (isset($_GET['client_id'])) { echo "gray"; } else { echo nullable_htmlentities($config_theme); } ?> navbar-dark">
+<nav class="main-header navbar navbar-expand navbar-dark n45-main-navbar">
 
     <!-- Left navbar links -->
     <ul class="navbar-nav">
