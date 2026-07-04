@@ -194,10 +194,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     <!-- Theme style -->
     <link rel="stylesheet" href="../plugins/adminlte/css/adminlte.min.css">
+    <link rel="stylesheet" href="../css/itflow_custom.css">
 
 </head>
 
-<body class="hold-transition login-page">
+<body class="hold-transition login-page dark-mode">
 <div class="login-box">
     <div class="login-logo"><b><?php echo nullable_htmlentities($company_name_display); ?></b> <br>Password Reset</h2></div>
     <div class="card">

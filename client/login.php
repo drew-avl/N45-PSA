@@ -125,8 +125,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         <link rel="icon" type="image/x-icon" href="/uploads/favicon.ico">
     <?php } ?>
     <link rel="stylesheet" href="../plugins/adminlte/css/adminlte.min.css">
+    <link rel="stylesheet" href="../css/itflow_custom.css">
 </head>
-<body class="hold-transition login-page">
+<body class="hold-transition login-page dark-mode">
 
 <div class="login-box">
     <div class="login-logo">

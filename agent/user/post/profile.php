@@ -157,7 +157,7 @@ if (isset($_POST['edit_your_user_preferences'])) {
     validateCSRFToken($_POST['csrf_token']);
 
     $calendar_first_day = intval($_POST['calendar_first_day']);
-    $dark_mode = intval($_POST['dark_mode'] ?? 0);
+    $dark_mode = 1;
 
     // Calendar
     if (isset($calendar_first_day)) {

@@ -16,17 +16,12 @@ $user_config_calendar_first_day = intval($row['user_config_calendar_first_day'])
             <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
 
             <div class="form-group">
-                <h5>Dark Mode</h5>
+                <h5>Appearance</h5>
+                <input type="hidden" name="dark_mode" value="1">
 
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="btn btn-outline-primary <?php if ($user_config_theme_dark === 0) { echo "active"; } ?>">
-                    <input type="radio" name="dark_mode" id="light-mode" autocomplete="off" <?php if ($user_config_theme_dark === 0) { echo "checked"; } ?>>
-                    <i class="fas fa-sun mr-2"></i>Light
-                    </label>
-                    <label class="btn btn-outline-dark <?php if ($user_config_theme_dark === 1) { echo "active"; } ?>">
-                    <input type="radio" name="dark_mode" id="dark-mode" autocomplete="off" value="1" <?php if ($user_config_theme_dark === 1) { echo "checked"; } ?>>
-                    <i class="fas fa-moon mr-2"></i>Dark
-                    </label>
+                <div class="n45-theme-lock d-flex align-items-center justify-content-between">
+                    <span><i class="fas fa-moon mr-2"></i>N45 Dark</span>
+                    <span class="badge badge-primary">Active</span>
                 </div>
             </div>
 
