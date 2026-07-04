@@ -1,9 +1,12 @@
 <!-- Main Sidebar Container -->
-<aside class="main-sidebar sidebar-dark-teal d-print-none">
+<aside class="main-sidebar sidebar-dark-teal d-print-none n45-sidebar">
 
-    <a class="brand-link" href="/agent/dashboard.php">
-        <div class="brand-image"></div>
-        <span class="brand-text h4"><?php echo nullable_htmlentities($session_company_name); ?></span>
+    <a class="brand-link n45-brand-link" href="/agent/dashboard.php">
+        <?php echo n45_brand_mark(); ?>
+        <span class="brand-text n45-brand-copy">
+            <strong>N45 PSA</strong>
+            <small><?php echo nullable_htmlentities($session_company_name); ?></small>
+        </span>
     </a>
 
     <!-- Sidebar -->

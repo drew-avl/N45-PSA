@@ -532,34 +532,54 @@ $show_login_form = (!$show_role_choice && !$show_mfa_form);
 
     <link rel="stylesheet" href="plugins/adminlte/css/adminlte.min.css">
     <link rel="stylesheet" href="css/itflow_custom.css">
+    <link rel="stylesheet" href="css/n45_ui.css">
 </head>
-<body class="hold-transition login-page dark-mode">
+<body class="hold-transition login-page dark-mode n45-auth-page">
 
-<div class="login-box">
-    <div class="login-logo">
-        <?php if (!empty($company_logo)) { ?>
-            <img alt="<?=nullable_htmlentities($company_name)?> logo" height="110" width="380" class="img-fluid" src="<?php echo "uploads/settings/$company_logo"; ?>">
-        <?php } else { ?>
-            <span class="text-primary text-bold"><i class="fas fa-paper-plane mr-2"></i>IT</span>Flow
-        <?php } ?>
-    </div>
-
-    <div class="card">
-        <div class="card-body login-card-body">
-
-            <?php if (!empty($config_login_message)){ ?>
-                <p class="login-box-msg px-0"><?php echo nl2br($config_login_message); ?></p>
+<div class="n45-auth-shell">
+    <section class="n45-auth-side">
+        <div>
+            <div class="n45-auth-kicker">Technician Access</div>
+            <h1>N45 PSA</h1>
+            <p>Secure operations for service delivery, client work, documentation, and billing.</p>
+        </div>
+        <div class="n45-auth-footer">
+            <?php echo nullable_htmlentities($company_name); ?>
+            <?php if (!$config_whitelabel_enabled) { ?>
+                <span> | Powered by ITFlow</span>
             <?php } ?>
+        </div>
+    </section>
+
+    <section class="n45-auth-card-wrap">
+        <div class="n45-auth-card">
+            <div class="n45-auth-logo">
+                <?php if (!empty($company_logo)) { ?>
+                    <img alt="<?=nullable_htmlentities($company_name)?> logo" src="<?php echo "uploads/settings/$company_logo"; ?>">
+                <?php } else { ?>
+                    <span class="n45-brand-mark" aria-hidden="true"><span>N45</span></span>
+                    <div>
+                        <div class="n45-auth-title mb-0">N45 PSA</div>
+                        <div class="n45-auth-subtitle mb-0">Technician workspace</div>
+                    </div>
+                <?php } ?>
+            </div>
+
+            <h2 class="n45-auth-title">
+                <?php if ($show_mfa_form) { echo "Verify sign-in"; } elseif ($show_role_choice) { echo "Choose workspace"; } else { echo "Local technician fallback"; } ?>
+            </h2>
+            <p class="n45-auth-subtitle">
+                <?php if (!empty($config_login_message)) { echo nl2br($config_login_message); } else { echo "SSO remains the default sign-in path."; } ?>
+            </p>
 
             <?php if (isset($response)) { ?>
-                <p><?php echo $response; ?></p>
+                <?php echo $response; ?>
             <?php } ?>
 
             <form method="post">
 
                 <?php if ($show_login_form): ?>
-                    <!-- STEP 1: Email + Password -->
-                    <div class="input-group mb-3">
+                    <div class="input-group">
                         <input type="text" class="form-control"
                             placeholder="<?php if ($config_login_key_required) { if (!isset($_GET['key']) || $_GET['key'] !== $config_login_key_secret) { echo "Client "; } } echo "Email"; ?>"
                             name="email"
@@ -573,7 +593,7 @@ $show_login_form = (!$show_role_choice && !$show_mfa_form);
                         </div>
                     </div>
 
-                    <div class="input-group mb-3">
+                    <div class="input-group">
                         <input type="password" class="form-control" placeholder="Password" name="password" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
@@ -582,30 +602,29 @@ $show_login_form = (!$show_role_choice && !$show_mfa_form);
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-block mb-3" name="login">Sign In</button>
-
-                    <a href="/agent/openid_login.php" class="btn btn-outline-primary btn-block mb-3">
-                        <i class="fas fa-fw fa-sign-in-alt mr-2"></i>Sign in with SSO
-                    </a>
+                    <div class="n45-auth-actions">
+                        <button type="submit" class="btn btn-primary btn-block" name="login">Sign In</button>
+                        <a href="/agent/openid_login.php" class="btn btn-outline-primary btn-block">
+                            <i class="fas fa-fw fa-sign-in-alt mr-2"></i>Sign in with SSO
+                        </a>
+                    </div>
                 <?php endif; ?>
 
                 <?php if ($show_role_choice): ?>
-                    <!-- STEP 2: Role choice only -->
                     <input type="hidden" name="pending_login_token"
                            value="<?php echo htmlspecialchars($_SESSION['pending_dual_login']['token'] ?? '', ENT_QUOTES); ?>">
 
-                    <div class="mb-2 text-center">
-                        <button type="submit" class="btn btn-dark btn-block mb-2" name="role_choice" value="agent">
+                    <div class="n45-auth-actions">
+                        <button type="submit" class="btn btn-primary btn-block" name="role_choice" value="agent">
                             Log in as Agent
                         </button>
-                        <button type="submit" class="btn btn-light btn-block" name="role_choice" value="client">
+                        <button type="submit" class="btn btn-secondary btn-block" name="role_choice" value="client">
                             Log in as Client
                         </button>
                     </div>
                 <?php endif; ?>
 
                 <?php if ($show_mfa_form): ?>
-                    <!-- STEP 3: MFA only -->
                     <?php echo $token_field; ?>
 
                     <input type="hidden" name="pending_mfa_token"
@@ -618,20 +637,13 @@ $show_login_form = (!$show_role_choice && !$show_mfa_form);
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-dark btn-block mb-3" name="mfa_login">Verify & Sign In</button>
+                    <button type="submit" class="btn btn-primary btn-block" name="mfa_login">Verify & Sign In</button>
                 <?php endif; ?>
 
             </form>
-
         </div>
-    </div>
+    </section>
 </div>
-
-<?php
-if (!$config_whitelabel_enabled) {
-    echo '<small class="text-muted">Powered by ITFlow</small>';
-}
-?>
 
 <script src="plugins/jquery/jquery.min.js"></script>
 <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>

@@ -1,13 +1,12 @@
 <!-- Main Sidebar Container -->
-<aside class="main-sidebar sidebar-dark-teal d-print-none">
+<aside class="main-sidebar sidebar-dark-teal d-print-none n45-sidebar">
 
-    <a class="brand-link pb-1 mt-1" href="/agent/clients.php">
-        <p class="h5">
-            <i class="nav-icon fas fa-arrow-left ml-3 mr-2"></i>
-             <span class="brand-text">
-                 Back | <strong><?php echo $client_abbreviation; ?></strong>
-            </span>
-        </p>
+    <a class="brand-link n45-brand-link" href="/agent/clients.php">
+        <?php echo n45_brand_mark(); ?>
+        <span class="brand-text n45-brand-copy">
+            <strong><?php echo $client_abbreviation; ?></strong>
+            <small><i class="fas fa-arrow-left mr-1"></i>Back to clients</small>
+        </span>
     </a>
 
     <!-- Sidebar -->
