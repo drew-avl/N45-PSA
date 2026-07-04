@@ -12,12 +12,12 @@
     <ul class="navbar-nav ml-auto">
 
         <!-- SEARCH FORM -->
-        <form class="form-inline" action="/agent/global_search.php">
-            <div class="input-group input-group-sm">
+        <form class="form-inline n45-global-search" action="/agent/global_search.php" role="search">
+            <div class="input-group">
                 <input class="form-control form-control-navbar" type="search" placeholder="Search everywhere" name="query"
                     value="<?php if (isset($_GET['query'])) { echo nullable_htmlentities($_GET['query']); } ?>">
                 <div class="input-group-append">
-                    <button class="btn btn-navbar" type="submit">
+                    <button class="btn btn-navbar" type="submit" title="Search">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>

@@ -81,9 +81,15 @@ a:hover {
     color: var(--n45-text) !important;
 }
 
+.main-header .n45-global-search .input-group {
+    align-items: stretch;
+    flex-wrap: nowrap;
+}
+
 .main-header .form-control-navbar {
     min-width: 300px;
-    height: 36px;
+    height: 38px;
+    min-height: 38px;
     background: var(--n45-surface-muted);
     border: 1px solid var(--n45-border);
     border-right: 0;
@@ -98,7 +104,13 @@ a:hover {
 }
 
 .main-header .btn-navbar {
-    height: 36px;
+    align-items: center;
+    display: inline-flex;
+    height: 38px;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0;
+    width: 42px;
     background: var(--n45-surface-muted);
     border: 1px solid var(--n45-border);
     border-left: 0;
