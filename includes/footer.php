@@ -1,8 +1,5 @@
 <?php
 require_once "inc_confirm_modal.php";
-
-$n45_footer_path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
-$n45_is_guest_shell = strpos($n45_footer_path, '/guest/') === 0;
 ?>
 
 <?php
@@ -22,17 +19,10 @@ if (basename(dirname($_SERVER['REQUEST_URI'])) === 'guest') { ?>
 </p>
 <?php } ?>
 
-<?php if ($n45_is_guest_shell) { ?>
-</div><!-- /.container -->
-</div><!-- /.content -->
-</div><!-- /.content-wrapper -->
-</div><!-- ./wrapper -->
-<?php } else { ?>
-</div><!-- /.n45-page -->
-</main>
-</div><!-- /.n45-main -->
-</div><!-- /.n45-shell -->
-<?php } ?>
+</div><!-- /.container-fluid -->
+</main> <!-- /.content -->
+</div> <!-- /.content-wrapper -->
+</div> <!-- ./wrapper -->
 
 <!-- Set the browser window title to the clients name -->
 <script>document.title = <?php echo json_encode("$tab_title - $page_title"); ?>;</script>
@@ -62,7 +52,7 @@ if (basename(dirname($_SERVER['REQUEST_URI'])) === 'guest') { ?>
 <script src="/js/ajax_modal.js"></script>
 <script src="/js/confirm_modal.js"></script>
 <script src="/js/date_filter.js"></script>
-<script src="/js/n45-app.js"></script>
+<script src="/js/n45_ui.js"></script>
 
 </body>
 </html>

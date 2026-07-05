@@ -195,32 +195,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <!-- Theme style -->
     <link rel="stylesheet" href="../plugins/adminlte/css/adminlte.min.css">
     <link rel="stylesheet" href="../css/itflow_custom.css">
-    <link rel="stylesheet" href="../css/n45-app.css">
+    <link rel="stylesheet" href="../css/n45_ui.css">
 
 </head>
 
-<body class="n45-auth-page">
-<div class="n45-auth-shell">
-    <section class="n45-auth-side">
-        <div>
-            <div class="n45-auth-kicker">Client Portal</div>
-            <h1>Password Reset</h1>
-            <p>Reset local client portal credentials for <?php echo nullable_htmlentities($company_name_display); ?>.</p>
-        </div>
-        <div class="n45-auth-footer">
-            <?php echo nullable_htmlentities($company_name_display); ?>
-        </div>
-    </section>
-
-    <section class="n45-auth-card-wrap">
-        <div class="n45-auth-card">
-            <div class="n45-auth-logo">
-                <span class="n45-brand-mark" aria-hidden="true"><span>N45</span></span>
-                <div>
-                    <div class="n45-auth-title mb-0"><?php echo nullable_htmlentities($company_name_display); ?></div>
-                    <div class="n45-auth-subtitle mb-0">Client password reset</div>
-                </div>
-            </div>
+<body class="hold-transition login-page dark-mode n45-auth-page">
+<div class="login-box n45-auth-card">
+    <div class="login-logo n45-auth-title"><b><?php echo nullable_htmlentities($company_name_display); ?></b><br>Password Reset</div>
+    <div class="card n45-panel">
+        <div class="card-body login-card-body">
 
             <form method="post">
 
@@ -253,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                         <input type="hidden" name="email" value="<?php echo $email; ?>">
                         <input type="hidden" name="client" value="<?php echo $client; ?>">
 
-                        <button type="submit" class="btn btn-primary btn-block mb-3" name="password_reset_set_password">Reset password</button>
+                        <button type="submit" class="btn btn-success btn-block mb-3" name="password_reset_set_password">Reset password</button>
 
 
                     <?php } else {
@@ -277,14 +260,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-block mb-3" name="password_reset_email_request">Reset my password</button>
+                    <button type="submit" class="btn btn-success btn-block mb-3" name="password_reset_email_request">Reset my password</button>
 
                 <?php }
                 ?>
 
             </form>
 
-            <p class="text-danger">
+            <p class="login-box-msg text-danger">
                 <?php
                 // Show feedback from session
                 if (!empty($_SESSION['login_message'])) {
@@ -298,8 +281,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 
         </div>
-    </section>
+        <!-- /.login-card-body -->
+
+    </div>
+    <!-- /.div.card -->
+
 </div>
+<!-- /.login-box -->
 
 <!-- jQuery -->
 <script src="../plugins/jquery/jquery.min.js"></script>
