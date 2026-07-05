@@ -112,10 +112,49 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
 
 ?>
 
-<div class="n45-grid n45-grid--metrics mb-3">
-    <?php echo n45_metric_card('Draft', numfmt_format_currency($currency_format, $total_draft_amount, $session_company_currency), "?$url_query_strings_sort&status=Draft", 'pencil-ruler', "$draft_count draft"); ?>
-    <?php echo n45_metric_card('Unpaid', numfmt_format_currency($currency_format, $total_unpaid_amount, $session_company_currency), "?$url_query_strings_sort&status=Unpaid", 'hand-holding-usd', "$unpaid_count unpaid"); ?>
-    <?php echo n45_metric_card('Overdue', numfmt_format_currency($currency_format, $real_overdue_amount, $session_company_currency), "?$url_query_strings_sort&status=Overdue", 'exclamation-triangle', "$overdue_count overdue", 'danger'); ?>
+<div class="row">
+    <div class="col-lg-4">
+        <!-- small box -->
+        <a href="?<?php echo $url_query_strings_sort; ?>&status=Draft" class="small-box bg-secondary">
+            <div class="inner">
+                <h3><?php echo numfmt_format_currency($currency_format, $total_draft_amount, $session_company_currency); ?></h3>
+                <p><?php echo $draft_count; ?> Draft</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-pencil-ruler"></i>
+            </div>
+        </a>
+    </div>
+    <!-- ./col -->
+
+    <div class="col-lg-4">
+        <!-- small box -->
+        <a href="?<?php echo $url_query_strings_sort; ?>&status=Unpaid" class="small-box bg-info">
+            <div class="inner text-white">
+                <h3><?php echo numfmt_format_currency($currency_format, $total_unpaid_amount, $session_company_currency); ?></h3>
+                <p><?php echo $unpaid_count; ?> Unpaid</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-hand-holding-usd"></i>
+            </div>
+        </a>
+    </div>
+    <!-- ./col -->
+
+    <div class="col-lg-4">
+        <!-- small box -->
+        <a href="?<?php echo $url_query_strings_sort; ?>&status=Overdue" class="small-box bg-danger">
+            <div class="inner">
+                <h3><?php echo numfmt_format_currency($currency_format, $real_overdue_amount, $session_company_currency); ?></h3>
+                <p><?php echo $overdue_count; ?> Overdue</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-exclamation-triangle"></i>
+            </div>
+        </a>
+    </div>
+    <!-- ./col -->
+
 </div>
 
 <div class="card card-dark">

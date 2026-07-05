@@ -2,8 +2,8 @@
 /*
  * N45 UI helpers.
  *
- * Presentation-only helpers for the custom N45 shell. These functions avoid
- * auth, routing, database mutation, CSRF, and form handling behavior.
+ * These helpers only render presentation chrome. They intentionally avoid
+ * route, auth, permission, form, CSRF, and database behavior.
  */
 
 if (!function_exists('n45_safe')) {
@@ -21,24 +21,10 @@ if (!function_exists('n45_safe')) {
     }
 }
 
-if (!function_exists('n45_attr')) {
-    function n45_attr($value)
-    {
-        return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
-    }
-}
-
 if (!function_exists('n45_current_path')) {
     function n45_current_path()
     {
         return parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
-    }
-}
-
-if (!function_exists('n45_current_file')) {
-    function n45_current_file()
-    {
-        return basename(parse_url($_SERVER['PHP_SELF'] ?? n45_current_path(), PHP_URL_PATH) ?: '');
     }
 }
 
@@ -102,16 +88,16 @@ if (!function_exists('n45_page_subtitle')) {
         $area = $area ?: n45_current_area();
 
         if ($area === 'client-workspace' && !empty($client_name)) {
-            return 'Client workspace, service history, billing, documentation, and assets.';
+            return 'Operational workspace for ' . $client_name;
         }
 
         $subtitles = [
-            'admin' => 'Platform controls, access, integrations, automation, and system operations.',
-            'account' => 'Personal profile, security, preferences, and activity.',
+            'admin' => 'System controls, access, integrations, and platform configuration.',
+            'account' => 'Personal settings, security, and activity.',
             'client-portal' => 'Service access for your organization.',
             'guest' => 'Secure shared access.',
             'reports' => 'Operational reporting and decision support.',
-            'operations' => 'Service desk, clients, assets, billing, field work, and delivery operations.',
+            'operations' => 'Tickets, clients, assets, credentials, billing, and field work.',
         ];
 
         return $subtitles[$area] ?? ($session_company_name ?? 'N45 PSA');
@@ -123,7 +109,7 @@ if (!function_exists('n45_body_classes')) {
     {
         $area = n45_current_area();
 
-        return 'n45-app n45-app--' . n45_attr($area);
+        return 'hold-transition sidebar-mini layout-fixed layout-navbar-fixed dark-mode n45-app n45-app--' . $area;
     }
 }
 
@@ -134,54 +120,33 @@ if (!function_exists('n45_brand_mark')) {
     }
 }
 
-if (!function_exists('n45_is_active_path')) {
-    function n45_is_active_path($matches)
+if (!function_exists('n45_page_header')) {
+    function n45_page_header($title = null, $subtitle = null)
     {
-        $matches = is_array($matches) ? $matches : [$matches];
-        $currentPath = n45_current_path();
-        $currentFile = n45_current_file();
+        global $page_title, $client_name;
 
-        foreach ($matches as $match) {
-            if (!$match) {
-                continue;
-            }
-
-            $matchPath = parse_url((string) $match, PHP_URL_PATH) ?: (string) $match;
-
-            if ($matchPath === $currentPath || basename($matchPath) === $currentFile) {
-                return true;
-            }
+        if (defined('N45_HIDE_PAGE_HEADER') && N45_HIDE_PAGE_HEADER) {
+            return '';
         }
 
-        return false;
-    }
-}
+        $area = n45_current_area();
+        $title = $title ?: ($page_title ?? n45_area_label($area));
 
-if (!function_exists('n45_icon')) {
-    function n45_icon($icon, $classes = '')
-    {
-        $icon = $icon ?: 'circle';
-        $classes = trim('fas fa-' . $icon . ' ' . $classes);
-
-        return '<i class="' . n45_attr($classes) . '" aria-hidden="true"></i>';
-    }
-}
-
-if (!function_exists('n45_has_permission')) {
-    function n45_has_permission($permission, $minimum = 1)
-    {
-        if (!function_exists('lookupUserPermission')) {
-            return false;
+        if ($area === 'client-workspace' && !empty($client_name)) {
+            $title = $client_name;
         }
 
-        return lookupUserPermission($permission) >= $minimum;
-    }
-}
+        $subtitle = $subtitle ?: n45_page_subtitle($area);
+        $section = n45_area_label($area);
 
-if (!function_exists('n45_file_exists_public')) {
-    function n45_file_exists_public($path)
-    {
-        $path = '/' . ltrim((string) $path, '/');
-        return file_exists($_SERVER['DOCUMENT_ROOT'] . $path);
+        return '
+            <section class="n45-page-hero">
+                <div class="n45-page-hero__copy">
+                    <div class="n45-eyebrow">' . n45_safe($section) . '</div>
+                    <h1>' . n45_safe($title) . '</h1>
+                    <p>' . n45_safe($subtitle) . '</p>
+                </div>
+            </section>
+        ';
     }
 }

@@ -68,7 +68,7 @@
 
 <script src="/js/keepalive.js"></script>
 
-<script src="/js/n45-app.js"></script>
+<script src="/js/n45_ui.js"></script>
 
 </body>
 </html>

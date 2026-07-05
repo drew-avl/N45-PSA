@@ -6,7 +6,7 @@
 
 header("X-Frame-Options: DENY");
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/ui/n45_shell.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/n45_ui.php';
 
 ?>
 
@@ -38,11 +38,11 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/ui/n45_shell.php';
     <link rel="stylesheet" href="/plugins/intl-tel-input/css/intlTelInput.min.css">
     <link rel="stylesheet" href="/plugins/adminlte/css/adminlte.min.css">
     <link rel="stylesheet" href="/css/itflow_custom.css">
-    <link rel="stylesheet" href="/css/n45-app.css">
+    <link rel="stylesheet" href="/css/n45_ui.css">
 
     <!-- Scripts -->
     <script src="/plugins/jquery/jquery.min.js"></script>
     <script src="/plugins/toastr/toastr.min.js"></script>
 </head>
 <body class="<?php echo n45_body_classes(); ?>">
-    <div class="n45-shell">
+    <div class="wrapper text-sm n45-shell">

@@ -532,9 +532,9 @@ $show_login_form = (!$show_role_choice && !$show_mfa_form);
 
     <link rel="stylesheet" href="plugins/adminlte/css/adminlte.min.css">
     <link rel="stylesheet" href="css/itflow_custom.css">
-    <link rel="stylesheet" href="css/n45-app.css">
+    <link rel="stylesheet" href="css/n45_ui.css">
 </head>
-<body class="n45-auth-page">
+<body class="hold-transition login-page dark-mode n45-auth-page">
 
 <div class="n45-auth-shell">
     <section class="n45-auth-side">
