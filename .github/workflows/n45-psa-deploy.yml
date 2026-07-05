@@ -1,0 +1,27 @@
+name: N45 PSA Deploy
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: n45-psa-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy N45-PSA to ops01
+    runs-on: [self-hosted, n45, ops01, psa, production]
+
+    steps:
+      - name: Confirm runner
+        run: |
+          hostname
+          whoami
+          pwd
+
+      - name: Deploy production
+        run: |
+          sudo /usr/local/bin/deploy-n45-psa.sh
