@@ -3,7 +3,6 @@ $(document).on('click', '.ajax-modal', function (e) {
   e.preventDefault();
 
   const $trigger  = $(this);
-  const $modalHost = $('.n45-main').length ? $('.n45-main') : $('body');
 
   // Prefer data-modal-url, fallback to href
   let modalUrl = $trigger.data('modal-url') || $trigger.attr('href') || '#';
@@ -21,7 +20,7 @@ $(document).on('click', '.ajax-modal', function (e) {
     <div id="modal-loading-spinner" class="text-center p-5">
       <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
     </div>`;
-  $modalHost.append(loadingSpinner);
+  $('.content-wrapper').append(loadingSpinner);
 
   // Make AJAX request
   $.ajax({
@@ -37,15 +36,15 @@ $(document).on('click', '.ajax-modal', function (e) {
       }
 
       const modalHtml = `
-        <div class="modal fade n45-modal" id="${modalId}" tabindex="-1">
-          <div class="modal-dialog modal-${modalSize} modal-dialog-scrollable">
+        <div class="modal fade" id="${modalId}" tabindex="-1">
+          <div class="modal-dialog modal-${modalSize}">
             <div class="modal-content border-dark">
               ${response.content}
             </div>
           </div>
         </div>`;
 
-      $modalHost.append(modalHtml);
+      $('.content-wrapper').append(modalHtml);
       const $modal = $('#' + modalId);
       $modal.modal('show');
 

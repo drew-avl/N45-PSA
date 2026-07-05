@@ -5,8 +5,6 @@
  */
 
 header("X-Frame-Options: DENY"); // Legacy
-
-require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/ui/n45_helpers.php';
 ?>
 
 <!DOCTYPE html>
@@ -31,17 +29,14 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/ui/n45_helpers.php';
     <!-- Theme style -->
     <link rel="stylesheet" href="/plugins/adminlte/css/adminlte.min.css">
     <link rel="stylesheet" href="/css/itflow_custom.css">
-    <link rel="stylesheet" href="/css/n45-app.css">
 
 </head>
-<body class="n45-client-portal">
 
-<nav class="navbar navbar-expand-lg navbar-dark n45-client-nav">
+<!-- Navbar -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/client/index.php">
-            <?php echo n45_brand_mark(); ?>
-            <span><?php echo nullable_htmlentities($session_company_name); ?></span>
-        </a>
+        <a class="navbar-brand" href="index.php"><?php echo nullable_htmlentities($session_company_name); ?></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -115,7 +110,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/ui/n45_helpers.php';
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
                         <?php echo stripslashes(nullable_htmlentities($session_contact_name)); ?>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right">
+                    <div class="dropdown-menu">
                         <a class="dropdown-item" href="/client/profile.php"><i class="fas fa-fw fa-user mr-2"></i>Account</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="/client/post.php?logout"><i class="fas fa-fw fa-sign-out-alt mr-2"></i>Sign out</a>
@@ -126,25 +121,32 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/ui/n45_helpers.php';
     </div>
 </nav>
 
-<main class="n45-client-shell">
-    <section class="n45-client-hero">
-        <div class="n45-client-person">
+<br>
+
+<!-- Page content container -->
+<div class="container">
+
+    <div class="row mb-3">
+        <div class="col-md-1 text-center">
             <?php if (!empty($session_contact_photo)) { ?>
-                <img src="/uploads/clients/<?= $session_client_id ?>/<?= $session_contact_photo ?>" alt="" class="n45-client-avatar">
+                <img src="/uploads/clients/<?= $session_client_id ?>/<?= $session_contact_photo ?>" alt="..." height="50" width="50" class="img-circle img-responsive">
+
             <?php } else { ?>
-                <span class="n45-client-avatar"><?php echo $session_contact_initials; ?></span>
+                <span class="fa-stack fa-2x rounded-left">
+                    <i class="fa fa-circle fa-stack-2x text-secondary"></i>
+                    <span class="fa fa-stack-1x text-white"><?php echo $session_contact_initials; ?></span>
+                </span>
             <?php } ?>
-            <div>
-                <div class="n45-eyebrow">Client Portal</div>
-                <h1><?php echo stripslashes(nullable_htmlentities($session_contact_name)); ?></h1>
-                <p><?php echo nullable_htmlentities($session_company_name); ?></p>
-            </div>
         </div>
 
-        <?php if ($session_company_logo) { ?>
-            <img class="n45-client-logo" src="<?php echo "/uploads/settings/$session_company_logo"; ?>" alt="<?php echo nullable_htmlentities($session_company_name); ?> logo">
-        <?php } ?>
-    </section>
+        <div class="col-md-11 p-0">
+                <?php if ($session_company_logo) { ?>
+                    <img height="48" width="142" class="img-fluid float-right" src="<?php echo "/uploads/settings/$session_company_logo"; ?>">
+                <?php } ?>
+            <h4>Welcome, <strong><?php echo stripslashes(nullable_htmlentities($session_contact_name)); ?></strong>!</h4>
+        </div>
+    </div>
+    <hr>
 
     <?php
     //Alert Feedback

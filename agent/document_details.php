@@ -194,17 +194,8 @@ $page_title = $row['document_name'];
                 </button>
                 <a class="btn btn-success mr-1" href="post.php?export_document=<?= $document_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>"><i class='fas fa-fw fa-file-pdf' title="PDF Export"></i></a>
                 <button type="button" class="btn btn-secondary mr-4" onclick="window.print();"><i class="fas fa-fw fa-print" title="Print"></i></button>
-                <form method="post" action="post.php" class="d-inline m-0">
-                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                    <input type="hidden" name="archive_document" value="<?= $document_id ?>">
-                    <button type="submit" class="btn btn-warning mr-1 confirm-link" title="Archive"><i class='fas fa-fw fa-archive'></i></button>
-                </form>
-                <form method="post" action="post.php" class="d-inline m-0">
-                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                    <input type="hidden" name="delete_document" value="<?= $document_id ?>">
-                    <input type="hidden" name="from" value="document_details">
-                    <button type="submit" class="btn btn-danger confirm-link" title="Delete"><i class='fas fa-fw fa-trash-alt'></i></button>
-                </form>
+                <a class="btn btn-warning mr-1 confirm-link" href="post.php?archive_document=<?= $document_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" title="Archive"><i class='fas fa-fw fa-archive'></i></a>
+                <a class="btn btn-danger confirm-link" href="post.php?delete_document=<?= $document_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>&from=document_details" title="Delete"><i class='fas fa-fw fa-trash-alt'></i></a>
             </div>
         </div>
         <div class="card card-body bg-light">
@@ -235,15 +226,9 @@ $page_title = $row['document_name'];
                 ?>
                 <div class="ml-2">
                     <a href="files.php?client_id=<?= $client_id ?>&folder_id=<?= $folder_id ?>&q=<?= $file_name ?>" target="_blank"><?= $file_name ?></a>
-                    <form method="post" action="post.php" class="d-inline ml-2">
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                        <input type="hidden" name="unlink_file_from_document" value="1">
-                        <input type="hidden" name="file_id" value="<?= $file_id ?>">
-                        <input type="hidden" name="document_id" value="<?= $document_id ?>">
-                        <button type="submit" class="btn btn-link p-0 confirm-link float-right" title="Unlink File">
-                            <i class="fas fa-fw fa-unlink text-secondary"></i>
-                        </button>
-                    </form>
+                    <a class="confirm-link" href="post.php?unlink_file_from_document&file_id=<?= $file_id ?>&document_id=<?= $document_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                        <i class="fas fa-fw fa-unlink text-secondary float-right" title="Unlink File"></i>
+                    </a>
                 </div>
                 <?php
                 }
@@ -276,15 +261,9 @@ $page_title = $row['document_name'];
                         data-modal-size="lg"
                         data-modal-url="modals/contact/contact_details.php?id=<?= $contact_id ?>">
                         <?php echo $contact_name; ?></a>
-                    <form method="post" action="post.php" class="d-inline m-0">
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                        <input type="hidden" name="unlink_contact_from_document" value="1">
-                        <input type="hidden" name="contact_id" value="<?= $contact_id ?>">
-                        <input type="hidden" name="document_id" value="<?= $document_id ?>">
-                        <button type="submit" class="btn btn-link p-0 confirm-link float-right" title="Unlink Contact">
-                            <i class="fas fa-fw fa-unlink text-secondary"></i>
-                        </button>
-                    </form>
+                    <a class="confirm-link float-right" href="post.php?unlink_contact_from_document&contact_id=<?php echo $contact_id; ?>&document_id=<?php echo $document_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                        <i class="fas fa-fw fa-unlink text-secondary" title="Unlink Contact"></i>
+                    </a>
                 </div>
                 <?php
                 }
@@ -317,15 +296,9 @@ $page_title = $row['document_name'];
                         data-modal-url="modals/asset/asset_details.php?id=<?= $asset_id ?>">
                         <?php echo $asset_name; ?>
                     </a>
-                    <form method="post" action="post.php" class="d-inline m-0">
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                        <input type="hidden" name="unlink_asset_from_document" value="1">
-                        <input type="hidden" name="asset_id" value="<?= $asset_id ?>">
-                        <input type="hidden" name="document_id" value="<?= $document_id ?>">
-                        <button type="submit" class="btn btn-link p-0 confirm-link float-right" title="Unlink Asset">
-                            <i class="fas fa-fw fa-unlink text-secondary"></i>
-                        </button>
-                    </form>
+                    <a class="confirm-link float-right" href="post.php?unlink_asset_from_document&asset_id=<?php echo $asset_id; ?>&document_id=<?php echo $document_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                        <i class="fas fa-fw fa-unlink text-secondary" title="Unlink Asset"></i>
+                    </a>
                 </div>
             <?php
             }
@@ -355,15 +328,9 @@ $page_title = $row['document_name'];
                 ?>
                 <div class="ml-2">
                     <a href="software.php?client_id=<?php echo $client_id; ?>&q=<?php echo $software_name; ?>" target="_blank"><?php echo $software_name; ?></a>
-                    <form method="post" action="post.php" class="d-inline m-0">
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                        <input type="hidden" name="unlink_software_from_document" value="1">
-                        <input type="hidden" name="software_id" value="<?= $software_id ?>">
-                        <input type="hidden" name="document_id" value="<?= $document_id ?>">
-                        <button type="submit" class="btn btn-link p-0 confirm-link float-right" title="Unlink License">
-                            <i class="fas fa-fw fa-unlink text-secondary"></i>
-                        </button>
-                    </form>
+                    <a class="confirm-link float-right" href="post.php?unlink_software_from_document&software_id=<?php echo $software_id; ?>&document_id=<?php echo $document_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                        <i class="fas fa-fw fa-unlink text-secondary" title="Unlink License"></i>
+                    </a>
                 </div>
                 <?php
                 }
@@ -395,15 +362,9 @@ $page_title = $row['document_name'];
                     <a class="ajax-modal" href="#" data-modal-url="modals/vendor/vendor_details.php?id=<?= $vendor_id ?>">
                         <?php echo $vendor_name; ?>
                     </a>
-                    <form method="post" action="post.php" class="d-inline m-0">
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                        <input type="hidden" name="unlink_vendor_from_document" value="1">
-                        <input type="hidden" name="vendor_id" value="<?= $vendor_id ?>">
-                        <input type="hidden" name="document_id" value="<?= $document_id ?>">
-                        <button type="submit" class="btn btn-link p-0 confirm-link float-right" title="Unlink Vendor">
-                            <i class="fas fa-fw fa-unlink text-secondary"></i>
-                        </button>
-                    </form>
+                    <a class="confirm-link float-right" href="post.php?unlink_vendor_from_document&vendor_id=<?php echo $vendor_id; ?>&document_id=<?php echo $document_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                        <i class="fas fa-fw fa-unlink text-secondary" title="Unlink Vendor"></i>
+                    </a>
                 </div>
             <?php
             }
@@ -454,13 +415,9 @@ $page_title = $row['document_name'];
                         data-modal-url="modals/document/document_version_view.php?id=<?= $document_version_id ?>">
                         <?php echo "$document_version_created_date | $document_version_author"; ?>
                     </a>
-                    <form method="post" action="post.php" class="d-inline m-0">
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                        <input type="hidden" name="delete_document_version" value="<?= $document_version_id ?>">
-                        <button type="submit" class="btn btn-link p-0 confirm-link float-right" title="Delete Version">
-                            <i class="fas fa-fw fa-trash-alt text-secondary"></i>
-                        </button>
-                    </form>
+                    <a class="confirm-link float-right" href="post.php?delete_document_version=<?php echo $document_version_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                        <i class="fas fa-fw fa-trash-alt text-secondary"></i>
+                    </a>
                 </div>
                 <?php
                 }

@@ -226,22 +226,14 @@ if (isset($_GET['invoice_id'])) {
                                 </button>
                                 <div class="dropdown-menu">
                                     <?php if (!empty($config_smtp_host) && !empty($contact_email)) { ?>
-                                        <form method="post" action="post.php" class="m-0">
-                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                            <input type="hidden" name="email_invoice" value="<?= $invoice_id ?>">
-                                            <button type="submit" class="dropdown-item">
-                                                <i class="fas fa-fw fa-paper-plane mr-2"></i>Send Email
-                                            </button>
-                                        </form>
+                                        <a class="dropdown-item" href="post.php?email_invoice=<?= $invoice_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                            <i class="fas fa-fw fa-paper-plane mr-2"></i>Send Email
+                                        </a>
                                         <div class="dropdown-divider"></div>
                                     <?php } ?>
-                                    <form method="post" action="post.php" class="m-0">
-                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                        <input type="hidden" name="mark_invoice_sent" value="<?= $invoice_id ?>">
-                                        <button type="submit" class="dropdown-item">
-                                            <i class="fas fa-fw fa-check mr-2"></i>Mark Sent
-                                        </button>
-                                    </form>
+                                    <a class="dropdown-item" href="post.php?mark_invoice_sent=<?= $invoice_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                        <i class="fas fa-fw fa-check mr-2"></i>Mark Sent
+                                    </a>
                                 </div>
                             <?php } ?>
 
@@ -262,13 +254,9 @@ if (isset($_GET['invoice_id'])) {
                             <?php } ?>
 
                             <?php if (($invoice_status == 'Sent' || $invoice_status == 'Viewed') && $invoice_amount == 0 && $invoice_status !== 'Non-Billable') { ?>
-                                <form method="post" action="post.php" class="d-inline m-0">
-                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                    <input type="hidden" name="mark_invoice_non-billable" value="<?= $invoice_id ?>">
-                                    <button type="submit" class="btn btn-dark">
-                                        Mark Non-Billable
-                                    </button>
-                                </form>
+                                <a class="btn btn-dark" href="post.php?mark_invoice_non-billable=<?= $invoice_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                    Mark Non-Billable
+                                </a>
                             <?php } ?>
 
                         <?php } ?>
@@ -303,36 +291,24 @@ if (isset($_GET['invoice_id'])) {
                                 <a class="dropdown-item" href="post.php?export_invoice_packing_slip=<?= $invoice_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" target="_blank">
                                     <i class="fa fa-fw fa-box-open text-secondary mr-2"></i>Packing Slip
                                 </a>
-                                <?php if (!empty($config_smtp_host) && !empty($contact_email)) { ?>
-                                    <form method="post" action="post.php" class="m-0">
-                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                        <input type="hidden" name="email_invoice" value="<?= $invoice_id ?>">
-                                        <button type="submit" class="dropdown-item">
-                                            <i class="fa fa-fw fa-paper-plane text-secondary mr-2"></i>Send Email
-                                        </button>
-                                    </form>
+                                <?php if (!empty($config_smtp_provider) && !empty($contact_email)) { ?>
+                                    <a class="dropdown-item" href="post.php?email_invoice=<?= $invoice_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                        <i class="fa fa-fw fa-paper-plane text-secondary mr-2"></i>Send Email
+                                    </a>
                                 <?php } ?>
                                 <a class="dropdown-item clipboardjs" href="#" data-clipboard-text="https://<?= $config_base_url ?>/guest/guest_view_invoice.php?invoice_id=<?php echo "$invoice_id&url_key=$invoice_url_key"; ?>">
                                     <i class="fa fa-fw fa-copy text-secondary mr-2"></i>Copy Guest URL
                                 </a>
                                 <?php if ($invoice_status !== 'Cancelled' && $invoice_status !== 'Paid' && $invoice_status !== 'Non-Billable') { ?>
                                     <div class="dropdown-divider"></div>
-                                    <form method="post" action="post.php" class="m-0">
-                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                        <input type="hidden" name="cancel_invoice" value="<?= $invoice_id ?>">
-                                        <button type="submit" class="dropdown-item text-danger text-bold confirm-link">
-                                            <i class="fa fa-fw fa-times mr-2"></i>Cancel
-                                        </button>
-                                    </form>
+                                    <a class="dropdown-item text-danger text-bold confirm-link" href="post.php?cancel_invoice=<?= $invoice_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                        <i class="fa fa-fw fa-times mr-2"></i>Cancel
+                                    </a>
                                 <?php } ?>
                                 <div class="dropdown-divider"></div>
-                                <form method="post" action="post.php" class="m-0">
-                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                    <input type="hidden" name="delete_invoice" value="<?= $invoice_id ?>">
-                                    <button type="submit" class="dropdown-item text-danger text-bold confirm-link">
-                                        <i class="fas fa-fw fa-trash mr-2"></i>Delete
-                                    </button>
-                                </form>
+                                <a class="dropdown-item text-danger text-bold confirm-link" href="post.php?delete_invoice=<?= $invoice_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                    <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                </a>
                             </div>
                         </div>
 
@@ -454,11 +430,7 @@ if (isset($_GET['invoice_id'])) {
                                                                 <i class="fa fa-fw fa-edit mr-2"></i>Edit
                                                             </a>
                                                             <div class="dropdown-divider"></div>
-                                                            <form method="post" action="post.php" class="m-0">
-                                                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                                                <input type="hidden" name="delete_invoice_item" value="<?= $item_id ?>">
-                                                                <button type="submit" class="dropdown-item text-danger confirm-link"><i class="fa fa-fw fa-trash mr-2"></i>Delete</button>
-                                                            </form>
+                                                            <a class="dropdown-item text-danger confirm-link" href="post.php?delete_invoice_item=<?= $item_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>"><i class="fa fa-fw fa-trash mr-2"></i>Delete</a>
                                                         </div>
                                                     </div>
                                                 </div>

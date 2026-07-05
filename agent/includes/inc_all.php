@@ -9,9 +9,9 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/page_title.php';
 
 // Layout UI
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/header.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/top_nav.php';
 require_once 'includes/get_side_nav_counts.php';
 require_once 'includes/side_nav.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/top_nav.php';
 
 // Wrapper & alerts
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/inc_wrapper.php';

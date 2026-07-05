@@ -112,10 +112,49 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
 
 ?>
 
-<div class="n45-grid n45-grid--metrics mb-3">
-    <?php echo n45_metric_card('Draft', numfmt_format_currency($currency_format, $total_draft_amount, $session_company_currency), "?$url_query_strings_sort&status=Draft", 'pencil-ruler', "$draft_count draft"); ?>
-    <?php echo n45_metric_card('Unpaid', numfmt_format_currency($currency_format, $total_unpaid_amount, $session_company_currency), "?$url_query_strings_sort&status=Unpaid", 'hand-holding-usd', "$unpaid_count unpaid"); ?>
-    <?php echo n45_metric_card('Overdue', numfmt_format_currency($currency_format, $real_overdue_amount, $session_company_currency), "?$url_query_strings_sort&status=Overdue", 'exclamation-triangle', "$overdue_count overdue", 'danger'); ?>
+<div class="row">
+    <div class="col-lg-4">
+        <!-- small box -->
+        <a href="?<?php echo $url_query_strings_sort; ?>&status=Draft" class="small-box bg-secondary">
+            <div class="inner">
+                <h3><?php echo numfmt_format_currency($currency_format, $total_draft_amount, $session_company_currency); ?></h3>
+                <p><?php echo $draft_count; ?> Draft</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-pencil-ruler"></i>
+            </div>
+        </a>
+    </div>
+    <!-- ./col -->
+
+    <div class="col-lg-4">
+        <!-- small box -->
+        <a href="?<?php echo $url_query_strings_sort; ?>&status=Unpaid" class="small-box bg-info">
+            <div class="inner text-white">
+                <h3><?php echo numfmt_format_currency($currency_format, $total_unpaid_amount, $session_company_currency); ?></h3>
+                <p><?php echo $unpaid_count; ?> Unpaid</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-hand-holding-usd"></i>
+            </div>
+        </a>
+    </div>
+    <!-- ./col -->
+
+    <div class="col-lg-4">
+        <!-- small box -->
+        <a href="?<?php echo $url_query_strings_sort; ?>&status=Overdue" class="small-box bg-danger">
+            <div class="inner">
+                <h3><?php echo numfmt_format_currency($currency_format, $real_overdue_amount, $session_company_currency); ?></h3>
+                <p><?php echo $overdue_count; ?> Overdue</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-exclamation-triangle"></i>
+            </div>
+        </a>
+    </div>
+    <!-- ./col -->
+
 </div>
 
 <div class="card card-dark">
@@ -347,7 +386,7 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
                             <?php if (!$client_url) { ?>
                             <td class="text-bold"><a href="invoices.php?client_id=<?php echo $client_id; ?>"><?php echo $client_name; ?></a></td>
                             <?php } ?>
-                            <td class="text-bold text-right"><?php echo numfmt_format_currency($currency_format, $invoice_amount, $invoice_currency_code); ?></td>
+                            <td class="text-right text-monospace"><?php echo numfmt_format_currency($currency_format, $invoice_amount, $invoice_currency_code); ?></td>
                             <td><?php echo $invoice_date; ?></td>
                             <td class="<?php echo $overdue_color; ?>"><?php echo $invoice_due; ?></td>
                             <td><?php echo $category_name; ?></td>
@@ -383,7 +422,7 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
                                             <i class="fas fa-fw fa-copy mr-2"></i>Copy
                                         </a>
                                         <div class="dropdown-divider"></div>
-                                        <?php if (!empty($config_smtp_host)) { ?>
+                                        <?php if (!empty($config_smtp_provider)) { ?>
                                             <a class="dropdown-item" href="post.php?email_invoice=<?= $invoice_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
                                                 <i class="fas fa-fw fa-paper-plane mr-2"></i>Send Email
                                             </a>

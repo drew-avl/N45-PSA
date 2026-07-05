@@ -458,7 +458,7 @@ if (isset($_GET['contact_id'])) {
                                             <small class="text-muted"><?= $asset_model ?></small>
                                         </div>
                                     </td>
-                                    <td><?= $asset_serial_display ?></td>
+                                    <td class="text-monospace"><?= $asset_serial_display ?></td>
 
                                     <td><?= $asset_install_date_display ?></td>
                                     <td><?= $asset_status ?></td>
@@ -475,31 +475,19 @@ if (isset($_GET['contact_id'])) {
                                                     <i class="fas fa-fw fa-copy mr-2"></i>Copy
                                                 </a>
                                                 <div class="dropdown-divider"></div>
-                                                <form method="post" action="post.php" class="m-0">
-                                                    <input type="hidden" name="unlink_asset_from_contact" value="1">
-                                                    <input type="hidden" name="contact_id" value="<?= $contact_id ?>">
-                                                    <input type="hidden" name="asset_id" value="<?= $asset_id ?>">
-                                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                                    <button type="submit" class="dropdown-item" title="Unlink">
-                                                        <i class="fas fa-fw fa-unlink mr-2"></i>Unlink
-                                                    </button>
-                                                </form>
+                                                <a class="dropdown-item"
+                                                    href="post.php?unlink_asset_from_contact&contact_id=<?= $contact_id ?>&asset_id=<?= $asset_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>"
+                                                    class="btn btn-secondary btn-sm" title="Unlink">
+                                                    <i class="fas fa-fw fa-unlink mr-2"></i>Unlink
+                                                </a>
                                                 <?php if ($session_user_role == 3) { ?>
                                                     <div class="dropdown-divider"></div>
-                                                    <form method="post" action="post.php" class="m-0">
-                                                        <input type="hidden" name="archive_asset" value="<?= $asset_id ?>">
-                                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
-                                                        <button type="submit" class="dropdown-item text-danger">
-                                                            <i class="fas fa-fw fa-archive mr-2"></i>Archive
-                                                        </button>
-                                                    </form>
-                                                    <form method="post" action="post.php" class="m-0">
-                                                        <input type="hidden" name="delete_asset" value="<?=  $asset_id ?>">
-                                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                                        <button type="submit" class="dropdown-item text-danger text-bold">
-                                                            <i class="fas fa-fw fa-trash mr-2"></i>Delete
-                                                        </button>
-                                                    </form>
+                                                    <a class="dropdown-item text-danger" href="post.php?archive_asset=<?= $asset_id ?>&csrf_token=<?php echo $_SESSION['csrf_token'] ?>">
+                                                        <i class="fas fa-fw fa-archive mr-2"></i>Archive
+                                                    </a>
+                                                    <a class="dropdown-item text-danger text-bold" href="post.php?delete_asset=<?=  $asset_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                                        <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                                    </a>
                                                 <?php } ?>
                                             </div>
                                         </div>
@@ -629,24 +617,16 @@ if (isset($_GET['contact_id'])) {
                                                     <i class="fas fa-fw fa-share-alt mr-2"></i>Share
                                                 </a>
                                                 <div class="dropdown-divider"></div>
-                                                <form method="post" action="post.php" class="m-0">
-                                                    <input type="hidden" name="unlink_credential_from_contact" value="1">
-                                                    <input type="hidden" name="contact_id" value="<?php echo $contact_id; ?>">
-                                                    <input type="hidden" name="credential_id" value="<?php echo $credential_id; ?>">
-                                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                                    <button type="submit" class="dropdown-item" title="Unlink">
-                                                        <i class="fas fa-fw fa-unlink mr-2"></i>Unlink
-                                                    </button>
-                                                </form>
+                                                <a class="dropdown-item"
+                                                    href="post.php?unlink_credential_from_contact&contact_id=<?php echo $contact_id; ?>&credential_id=<?php echo $credential_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>"
+                                                    class="btn btn-secondary btn-sm" title="Unlink">
+                                                    <i class="fas fa-fw fa-unlink mr-2"></i>Unlink
+                                                </a>
                                                 <?php if ($session_user_role == 3) { ?>
                                                     <div class="dropdown-divider"></div>
-                                                    <form method="post" action="post.php" class="m-0">
-                                                        <input type="hidden" name="delete_credential" value="<?php echo $credential_id; ?>">
-                                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                                        <button type="submit" class="dropdown-item text-danger text-bold">
-                                                            <i class="fas fa-fw fa-trash mr-2"></i>Delete
-                                                        </button>
-                                                    </form>
+                                                    <a class="dropdown-item text-danger text-bold" href="post.php?delete_credential=<?php echo $credential_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                                        <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                                    </a>
                                                 <?php } ?>
                                             </div>
                                         </div>
@@ -733,13 +713,7 @@ if (isset($_GET['contact_id'])) {
                                     <td><?php echo $software_license_type; ?></td>
                                     <td><?php echo "$seat_count / $software_seats"; ?></td>
                                     <td class="text-center">
-                                        <form method="post" action="post.php" class="d-inline">
-                                            <input type="hidden" name="unlink_software_from_contact" value="1">
-                                            <input type="hidden" name="contact_id" value="<?php echo $contact_id; ?>">
-                                            <input type="hidden" name="software_id" value="<?php echo $software_id; ?>">
-                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                            <button type="submit" class="btn btn-secondary btn-sm" title="Remove License"><i class="fas fa-fw fa-unlink"></i></button>
-                                        </form>
+                                        <a href="post.php?unlink_software_from_contact&contact_id=<?php echo $contact_id; ?>&software_id=<?php echo $software_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" class="btn btn-secondary btn-sm" title="Remove License"><i class="fas fa-fw fa-unlink"></i></a>
                                     </td>
                                 </tr>
 
@@ -802,23 +776,15 @@ if (isset($_GET['contact_id'])) {
                                                     <i class="fas fa-fw fa-edit mr-2"></i>Edit
                                                 </a>
                                                 <div class="dropdown-divider"></div>
-                                                <form method="post" action="post.php" class="m-0">
-                                                    <input type="hidden" name="force_recurring_ticket" value="<?php echo $recurring_ticket_id; ?>">
-                                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
-                                                    <button type="submit" class="dropdown-item">
-                                                        <i class="fa fa-fw fa-paper-plane text-secondary mr-2"></i>Force Reoccur
-                                                    </button>
-                                                </form>
+                                                <a class="dropdown-item" href="post.php?force_recurring_ticket=<?php echo $recurring_ticket_id; ?>&csrf_token=<?php echo $_SESSION['csrf_token'] ?>">
+                                                    <i class="fa fa-fw fa-paper-plane text-secondary mr-2"></i>Force Reoccur
+                                                </a>
                                                 <?php
                                                 if ($session_user_role == 3) { ?>
                                                 <div class="dropdown-divider"></div>
-                                                <form method="post" action="post.php" class="m-0">
-                                                    <input type="hidden" name="delete_recurring_ticket" value="<?php echo $recurring_ticket_id; ?>">
-                                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                                    <button type="submit" class="dropdown-item text-danger text-bold confirm-link">
-                                                        <i class="fas fa-fw fa-trash mr-2"></i>Delete
-                                                    </button>
-                                                </form>
+                                                <a class="dropdown-item text-danger text-bold confirm-link" href="post.php?delete_recurring_ticket=<?php echo $recurring_ticket_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                                    <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                                </a>
                                             </div>
                                             <?php } ?>
                                         </div>
@@ -969,13 +935,7 @@ if (isset($_GET['contact_id'])) {
                                     <td><?php echo $service_category; ?></td>
                                     <td><?php echo $service_importance; ?></td>
                                     <td class="text-center">
-                                        <form method="post" action="post.php" class="d-inline">
-                                            <input type="hidden" name="unlink_service_from_contact" value="1">
-                                            <input type="hidden" name="contact_id" value="<?php echo $contact_id; ?>">
-                                            <input type="hidden" name="service_id" value="<?php echo $service_id; ?>">
-                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                            <button type="submit" class="btn btn-secondary btn-sm" title="Unlink"><i class="fas fa-fw fa-unlink"></i></button>
-                                        </form>
+                                        <a href="post.php?unlink_service_from_contact&contact_id=<?php echo $contact_id; ?>&service_id=<?php echo $service_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" class="btn btn-secondary btn-sm" title="Unlink"><i class="fas fa-fw fa-unlink"></i></a>
                                     </td>
                                 </tr>
 
@@ -1041,13 +1001,7 @@ if (isset($_GET['contact_id'])) {
                                             data-modal-url="modals/document/document_view.php?id=<?= $document_id ?>">
                                             <i class="fas fa-fw fa-eye"></i>
                                         </a>
-                                        <form method="post" action="post.php" class="d-inline">
-                                            <input type="hidden" name="unlink_contact_from_document" value="1">
-                                            <input type="hidden" name="contact_id" value="<?php echo $contact_id; ?>">
-                                            <input type="hidden" name="document_id" value="<?php echo $document_id; ?>">
-                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                            <button type="submit" class="btn btn-secondary btn-sm" title="Unlink"><i class="fas fa-fw fa-unlink"></i></button>
-                                        </form>
+                                        <a href="post.php?unlink_contact_from_document&contact_id=<?php echo $contact_id; ?>&document_id=<?php echo $document_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" class="btn btn-secondary btn-sm" title="Unlink"><i class="fas fa-fw fa-unlink"></i></a>
                                     </td>
                                 </tr>
 
@@ -1107,16 +1061,10 @@ if (isset($_GET['contact_id'])) {
                                         <div class="text-secondary"><?php echo $file_description; ?></div>
                                     </td>
                                     <td><?php echo $file_mime_type; ?></td>
-                                    <td><?php echo $file_size_KB; ?> KB</td>
+                                    <td><span class="text-monospace"><?php echo $file_size_KB; ?></span> KB</td>
                                     <td><?php echo $file_created_at; ?></td>
                                     <td class="text-center">
-                                        <form method="post" action="post.php" class="d-inline">
-                                            <input type="hidden" name="unlink_contact_from_file" value="1">
-                                            <input type="hidden" name="contact_id" value="<?php echo $contact_id; ?>">
-                                            <input type="hidden" name="file_id" value="<?php echo $file_id; ?>">
-                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                            <button type="submit" class="btn btn-secondary btn-sm" title="Unlink"><i class="fas fa-fw fa-unlink"></i></button>
-                                        </form>
+                                        <a href="post.php?unlink_contact_from_file&contact_id=<?php echo $contact_id; ?>&file_id=<?php echo $file_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" class="btn btn-secondary btn-sm" title="Unlink"><i class="fas fa-fw fa-unlink"></i></a>
                                     </td>
                                 </tr>
 
@@ -1188,22 +1136,14 @@ if (isset($_GET['contact_id'])) {
                                                 <i class="fas fa-ellipsis-h"></i>
                                             </button>
                                             <div class="dropdown-menu">
-                                                <form method="post" action="post.php" class="m-0">
-                                                    <input type="hidden" name="archive_contact_note" value="<?php echo $contact_note_id; ?>">
-                                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                                    <button type="submit" class="dropdown-item text-danger">
-                                                        <i class="fas fa-fw fa-archive mr-2"></i>Archive
-                                                    </button>
-                                                </form>
+                                                <a class="dropdown-item text-danger" href="post.php?archive_contact_note=<?php echo $contact_note_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                                    <i class="fas fa-fw fa-archive mr-2"></i>Archive
+                                                </a>
                                                 <?php if ($session_user_role == 3) { ?>
                                                     <div class="dropdown-divider"></div>
-                                                    <form method="post" action="post.php" class="m-0">
-                                                        <input type="hidden" name="delete_contact_note" value="<?php echo $contact_note_id; ?>">
-                                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                                        <button type="submit" class="dropdown-item text-danger text-bold">
-                                                            <i class="fas fa-fw fa-trash mr-2"></i>Delete
-                                                        </button>
-                                                    </form>
+                                                    <a class="dropdown-item text-danger text-bold" href="post.php?delete_contact_note=<?php echo $contact_note_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                                        <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                                    </a>
                                                 <?php } ?>
                                             </div>
                                         </div>

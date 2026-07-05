@@ -1,9 +1,62 @@
 /*
- * ITFlow compatibility utilities.
- *
- * The N45 visual system now lives in /css/n45-app.css. Keep this file limited
- * to small behavior/layout utilities that are used by existing PHP views.
- */
+   For screens below 576px (xs):
+   - Make the button full-width, display:block
+*/
+:root {
+  --n45-teal: #14998f;
+  --n45-teal-dark: #0f756f;
+  --n45-teal-soft: rgba(20, 153, 143, 0.12);
+}
+
+a {
+  color: var(--n45-teal-dark);
+}
+
+a:hover {
+  color: var(--n45-teal);
+}
+
+.text-primary {
+  color: var(--n45-teal) !important;
+}
+
+.btn-primary {
+  background-color: var(--n45-teal);
+  border-color: var(--n45-teal);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:not(:disabled):not(.disabled):active {
+  background-color: var(--n45-teal-dark);
+  border-color: var(--n45-teal-dark);
+}
+
+.btn-outline-primary {
+  color: var(--n45-teal);
+  border-color: var(--n45-teal);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  color: #fff;
+  background-color: var(--n45-teal);
+  border-color: var(--n45-teal);
+}
+
+.form-control:focus {
+  border-color: var(--n45-teal);
+  box-shadow: 0 0 0 0.2rem var(--n45-teal-soft);
+}
+
+.brand-link .brand-text,
+.login-logo {
+  letter-spacing: 0;
+}
+
+.navbar-dark.bg-dark {
+  background-color: var(--n45-teal-dark) !important;
+}
 
 @media (max-width: 575.98px) {
   .btn-responsive {
@@ -12,6 +65,10 @@
   }
 }
 
+/*
+   For screens 576px (sm) and above:
+   - Revert to an inline style
+*/
 @media (min-width: 576px) {
   .btn-responsive {
     display: inline-block;
@@ -32,23 +89,28 @@
 }
 
 .star-toggle i {
-    color: #7e8da4;
+    cursor: pointer;
     font-size: 1.2rem;
+    color: #adb5bd;
 }
 
 .star-toggle input:checked + i {
-    color: #e8c267;
+    color: #f1c40f;
+    font-weight: 900;
 }
 
 .checkbox-column {
-    width: 1%;
-    white-space: nowrap;
+    width: 40px;
+    min-width: 40px;
+    text-align: center;
 }
 
 .checkbox-column .form-check {
+    padding-left: 0;
     margin-bottom: 0;
 }
 
 .checkbox-column .form-check-input {
-    margin-left: 0;
+    position: static;
+    margin: 0;
 }

@@ -111,7 +111,7 @@ if (isset($_POST['add_ticket'])) {
     }
 
     // E-mail client
-    if ((!empty($config_smtp_host) || !empty($config_smtp_provider)) && $config_ticket_client_general_notifications == 1) {
+    if ((!empty($config_smtp_provider) || !empty($config_smtp_provider)) && $config_ticket_client_general_notifications == 1) {
 
         // Get contact/ticket details
         $sql = mysqli_query($mysqli, "SELECT contact_name, contact_email, ticket_prefix, ticket_number, ticket_category, ticket_subject, ticket_details, ticket_priority, ticket_status, ticket_created_by, ticket_assigned_to, ticket_client_id FROM tickets
@@ -273,7 +273,7 @@ if (isset($_POST['edit_ticket'])) {
     $client_id = intval($row['ticket_client_id']);
 
     // Notify new contact if selected
-    if ($notify && (!empty($config_smtp_host) || !empty($config_smtp_provider))) {
+    if ($notify && (!empty($config_smtp_provider) || !empty($config_smtp_provider))) {
 
         // Get Company Name Phone Number and Sanitize for Email Sending
         $sql = mysqli_query($mysqli, "SELECT company_name, company_phone, company_phone_country_code FROM companies WHERE company_id = 1");
@@ -406,7 +406,7 @@ if (isset($_POST['edit_ticket_contact'])) {
     $contact_email = sanitizeInput($row['contact_email']);
 
     // Notify new contact (if selected, valid & configured)
-    if ($notify && filter_var($contact_email, FILTER_VALIDATE_EMAIL) && (!empty($config_smtp_host) || !empty($config_smtp_provider))) {
+    if ($notify && filter_var($contact_email, FILTER_VALIDATE_EMAIL) && (!empty($config_smtp_provider) || !empty($config_smtp_provider))) {
 
         // Get Company Phone Number
         $sql = mysqli_query($mysqli, "SELECT company_name, company_phone, company_phone_country_code FROM companies WHERE company_id = 1");
@@ -530,7 +530,7 @@ if (isset($_POST['add_ticket_watcher'])) {
             mysqli_query($mysqli, "INSERT INTO ticket_watchers SET watcher_email = '$watcher_email', watcher_ticket_id = $ticket_id");
 
             // Notify watcher
-            if ($notify && (!empty($config_smtp_host) || !empty($config_smtp_provider))) {
+            if ($notify && (!empty($config_smtp_provider))) {
 
 
 
@@ -563,14 +563,13 @@ if (isset($_POST['add_ticket_watcher'])) {
 
 }
 
-if (isset($_POST['delete_ticket_watcher']) || isset($_GET['delete_ticket_watcher'])) {
+if (isset($_GET['delete_ticket_watcher'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $watcher_id = intval($_POST['delete_ticket_watcher'] ?? $_GET['delete_ticket_watcher']);
+    $watcher_id = intval($_GET['delete_ticket_watcher']);
 
     // Get ticket / watcher details for logging
     $sql = mysqli_query($mysqli, "SELECT watcher_email, ticket_prefix, ticket_number, ticket_status_name, ticket_client_id, ticket_id FROM ticket_watchers
@@ -605,15 +604,14 @@ if (isset($_POST['delete_ticket_watcher']) || isset($_GET['delete_ticket_watcher
 
 }
 
-if (isset($_POST['delete_ticket_additional_asset']) || isset($_GET['delete_ticket_additional_asset'])) {
+if (isset($_GET['delete_ticket_additional_asset'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $asset_id = intval($_POST['delete_ticket_additional_asset'] ?? $_GET['delete_ticket_additional_asset']);
-    $ticket_id = intval($_POST['ticket_id'] ?? $_GET['ticket_id']);
+    $asset_id = intval($_GET['delete_ticket_additional_asset']);
+    $ticket_id = intval($_GET['ticket_id']);
 
     // Get ticket / asset details for logging
     $sql = mysqli_query($mysqli, "SELECT asset_name, ticket_prefix, ticket_number, ticket_status_name, ticket_client_id FROM assets
@@ -815,7 +813,7 @@ if (isset($_POST['assign_ticket'])) {
         mysqli_query($mysqli, "INSERT INTO notifications SET notification_type = 'Ticket', notification = 'Ticket $ticket_prefix$ticket_number - Subject: $ticket_subject has been assigned to you by $session_name', notification_action = '/agent/ticket.php?ticket_id=$ticket_id$client_uri', notification_client_id = $client_id, notification_user_id = $assigned_to");
 
         // Email Notification
-        if (!empty($config_smtp_host) || !empty($config_smtp_provider)) {
+        if (!empty($config_smtp_provider)) {
 
             // Sanitize Config vars from get_settings.php
             $config_ticket_from_name = sanitizeInput($config_ticket_from_name);
@@ -849,14 +847,13 @@ if (isset($_POST['assign_ticket'])) {
 
 }
 
-if (isset($_POST['delete_ticket']) || isset($_GET['delete_ticket'])) {
+if (isset($_GET['delete_ticket'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_support', 3);
 
-    $ticket_id = intval($_POST['delete_ticket'] ?? $_GET['delete_ticket']);
+    $ticket_id = intval($_GET['delete_ticket']);
 
     // Get Ticket and Client ID for logging and alert message
     $sql = mysqli_query($mysqli, "SELECT ticket_prefix, ticket_number, ticket_subject, ticket_status, ticket_closed_at, ticket_client_id FROM tickets WHERE ticket_id = $ticket_id");
@@ -1028,7 +1025,7 @@ if (isset($_POST['bulk_assign_ticket'])) {
             mysqli_query($mysqli, "INSERT INTO notifications SET notification_type = 'Ticket', notification = '$ticket_count Tickets have been assigned to you by $session_name', notification_action = 'tickets.php?status=Open&assigned=$assign_to', notification_client_id = $client_id, notification_user_id = $assign_to");
 
             // Agent Email Notification
-            if (!empty($config_smtp_host) || !empty($config_smtp_provider)) {
+            if (!empty($config_smtp_provider)) {
 
                 // Sanitize Config vars from get_settings.php
                 $config_ticket_from_name = sanitizeInput($config_ticket_from_name);
@@ -1303,7 +1300,7 @@ if (isset($_POST['bulk_resolve_tickets'])) {
                 customAction('ticket_resolve', $ticket_id);
 
                 // Client notification email
-                if ((!empty($config_smtp_host) || !empty($config_smtp_provider)) && $config_ticket_client_general_notifications == 1 && $private_note == 0) {
+                if ((!empty($config_smtp_provider)) && $config_ticket_client_general_notifications == 1 && $private_note == 0) {
 
                     // Get Contact details
                     $ticket_sql = mysqli_query($mysqli, "SELECT contact_name, contact_email FROM tickets
@@ -1489,7 +1486,7 @@ if (isset($_POST['bulk_ticket_reply'])) {
             $company_phone = sanitizeInput(formatPhoneNumber($row['company_phone'], $row['company_phone_country_code']));
 
             // Send e-mail to client if public update & email is set up
-            if ($private_note == 0 && (!empty($config_smtp_host) || !empty($config_smtp_provider))) {
+            if ($private_note == 0 && (!empty($config_smtp_provider))) {
 
                 $subject = "Ticket update - [$ticket_prefix$ticket_number] - $ticket_subject";
                 $body = "<i style=\'color: #808080\'>##- Please type your reply above this line -##</i><br><br>Hello $contact_name,<br><br>Your ticket regarding $ticket_subject has been updated.<br><br>--------------------------------<br>$ticket_reply<br>--------------------------------<br><br>Ticket: $ticket_prefix$ticket_number<br>Subject: $ticket_subject<br>Status: $ticket_status_name<br>Portal: <a href=\'https://$config_base_url/guest/guest_view_ticket.php?ticket_id=$ticket_id&url_key=$url_key\'>View ticket</a><br><br>--<br>$company_name - Support<br>$from_email<br>$company_phone";
@@ -1825,7 +1822,7 @@ if (isset($_POST['add_ticket_reply'])) {
         $company_phone = sanitizeInput(formatPhoneNumber($row['company_phone'], $row['company_phone_country_code']));
 
         // Send e-mail to client if public update & email is set up
-        if ($ticket_reply_type == 'Public' && $send_email == 1 && (!empty($config_smtp_host) || !empty($config_smtp_provider))) {
+        if ($ticket_reply_type == 'Public' && $send_email == 1 && (!empty($config_smtp_provider))) {
 
             // Slightly different email subject/text depending on if this update set auto-close
 
@@ -1964,14 +1961,13 @@ if (isset($_POST['redact_ticket_reply'])) {
 
 }
 
-if (isset($_POST['archive_ticket_reply']) || isset($_GET['archive_ticket_reply'])) {
+if (isset($_GET['archive_ticket_reply'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $ticket_reply_id = intval($_POST['archive_ticket_reply'] ?? $_GET['archive_ticket_reply']);
+    $ticket_reply_id = intval($_GET['archive_ticket_reply']);
 
     $ticket_id = intval(getFieldById('ticket_replies', $ticket_reply_id, 'ticket_reply_ticket_id'));
     $client_id = intval(getFieldById('tickets', $ticket_id, 'ticket_client_id'));
@@ -2102,15 +2098,13 @@ if (isset($_POST['change_client_ticket'])) {
 
 }
 
-if (isset($_POST['resolve_ticket']) || isset($_GET['resolve_ticket'])) {
+if (isset($_GET['resolve_ticket'])) {
 
-    // Prefer POST for state changes; fall back to GET for compatibility
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $ticket_id = intval($_POST['resolve_ticket'] ?? $_GET['resolve_ticket']);
+    $ticket_id = intval($_GET['resolve_ticket']);
 
     $sql = mysqli_query($mysqli, "SELECT * FROM tickets WHERE ticket_id = $ticket_id");
     $row = mysqli_fetch_assoc($sql);
@@ -2137,7 +2131,7 @@ if (isset($_POST['resolve_ticket']) || isset($_GET['resolve_ticket'])) {
     customAction('ticket_resolve', $ticket_id);
 
     // Client notification email
-    if ((!empty($config_smtp_host) || !empty($config_smtp_provider)) && $config_ticket_client_general_notifications == 1) {
+    if ((!empty($config_smtp_provider)) && $config_ticket_client_general_notifications == 1) {
 
         // Get details
         $ticket_sql = mysqli_query($mysqli, "SELECT contact_name, contact_email, ticket_prefix, ticket_number, ticket_subject, ticket_status_name, ticket_assigned_to, ticket_url_key FROM tickets
@@ -2216,14 +2210,13 @@ if (isset($_POST['resolve_ticket']) || isset($_GET['resolve_ticket'])) {
 
 }
 
-    if (isset($_POST['close_ticket']) || isset($_GET['close_ticket'])) {
+if (isset($_GET['close_ticket'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $ticket_id = intval($_POST['close_ticket'] ?? $_GET['close_ticket']);
+    $ticket_id = intval($_GET['close_ticket']);
     $client_id = intval(getFieldById('tickets', $ticket_id, 'ticket_client_id'));
 
     // Don't Enforce Client Access if Ticket doesn't have an assigned client
@@ -2240,7 +2233,7 @@ if (isset($_POST['resolve_ticket']) || isset($_GET['resolve_ticket'])) {
     customAction('ticket_close', $ticket_id);
 
     // Client notification email
-    if ((!empty($config_smtp_host) || !empty($config_smtp_provider)) && $config_ticket_client_general_notifications == 1) {
+    if ((!empty($config_smtp_provider)) && $config_ticket_client_general_notifications == 1) {
 
         // Get details
         $ticket_sql = mysqli_query($mysqli, "SELECT contact_name, contact_email, ticket_prefix, ticket_number, ticket_subject, ticket_url_key FROM tickets
@@ -2316,14 +2309,13 @@ if (isset($_POST['resolve_ticket']) || isset($_GET['resolve_ticket'])) {
 
 }
 
-if (isset($_POST['reopen_ticket']) || isset($_GET['reopen_ticket'])) {
+if (isset($_GET['reopen_ticket'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $ticket_id = intval($_POST['reopen_ticket'] ?? $_GET['reopen_ticket']);
+    $ticket_id = intval($_GET['reopen_ticket']);
 
     $client_id = intval(getFieldById('tickets', $ticket_id, 'ticket_client_id'));
 
@@ -2810,14 +2802,13 @@ if (isset($_POST['edit_ticket_schedule'])) {
 
 }
 
-if (isset($_POST['cancel_ticket_schedule']) || isset($_GET['cancel_ticket_schedule'])) {
+if (isset($_GET['cancel_ticket_schedule'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $ticket_id = intval($_POST['cancel_ticket_schedule'] ?? $_GET['cancel_ticket_schedule']);
+    $ticket_id = intval($_GET['cancel_ticket_schedule']);
 
     $sql = mysqli_query($mysqli, "SELECT * FROM tickets WHERE ticket_id = $ticket_id");
     $row = mysqli_fetch_assoc($sql);

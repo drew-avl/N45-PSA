@@ -103,13 +103,9 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
                                     </a>
                                     <?php if (!$ticket_status_active) { ?>
                                         <div class="dropdown-divider"></div>
-                                        <form method="post" action="post.php" class="m-0">
-                                            <input type="hidden" name="delete_ticket_status" value="<?php echo $ticket_status_id; ?>">
-                                            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                                            <button type="submit" class="dropdown-item text-danger text-bold confirm-link">
-                                                <i class="fas fa-fw fa-trash mr-2"></i>Delete
-                                            </button>
-                                        </form>
+                                        <a class="dropdown-item text-danger text-bold confirm-link" href="post.php?delete_ticket_status=<?php echo $ticket_status_id; ?>&csrf_token=<?php echo $_SESSION['csrf_token']; ?>">
+                                            <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                        </a>
                                     <?php } ?>
                                 </div>
                             </div>

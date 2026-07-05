@@ -1,6 +1,6 @@
 <?php $show_add_credit = 0; // Remove once credits is added hides the button ?>
 
-<div class="card d-print-none n45-client-summary">
+<div class="card d-print-none">
     <div class="card-header pb-1 pt-2 px-3">
         <div class="card-title">
             <a href="#" data-toggle="collapse" data-target="#clientHeader"><h4 class="text-dark" data-toggle="tooltip" data-placement="right" title="Client ID: <?php echo $client_id; ?>"><strong><?php echo $client_name; ?></strong> <?php if ($client_archived_at) { echo "(archived)"; } ?></h4></a>
@@ -40,22 +40,14 @@
 
                     <?php if (empty($client_archived_at)) { ?>
                         <div class="dropdown-divider"></div>
-                        <form method="post" action="post.php" class="m-0">
-                            <input type="hidden" name="archive_client" value="<?php echo $client_id; ?>">
-                            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
-                            <button type="submit" class="dropdown-item text-danger confirm-link">
-                                <i class="fas fa-fw fa-archive mr-2"></i>Archive Client
-                            </button>
-                        </form>
+                        <a class="dropdown-item text-danger confirm-link" href="post.php?archive_client=<?php echo $client_id; ?>&csrf_token=<?php echo $_SESSION['csrf_token'] ?>">
+                            <i class="fas fa-fw fa-archive mr-2"></i>Archive Client
+                        </a>
                     <?php } else { ?>
                         <div class="dropdown-divider"></div>
-                        <form method="post" action="post.php" class="m-0">
-                            <input type="hidden" name="restore_client" value="<?= $client_id ?>">
-                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                            <button type="submit" class="dropdown-item text-primary confirm-link">
-                                <i class="fas fa-fw fa-archive mr-2"></i>Restore Client
-                            </button>
-                        </form>
+                        <a class="dropdown-item text-primary confirm-link" href="post.php?restore_client=<?= $client_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                            <i class="fas fa-fw fa-archive mr-2"></i>Restore Client
+                        </a>
                     <?php } ?>
 
                     <?php if (lookupUserPermission("module_client") >= 3 && $client_archived_at) { ?>
@@ -74,7 +66,7 @@
 
 <div class="collapse <?php if (basename($_SERVER["PHP_SELF"]) == "client_overview.php") { echo "show"; } ?>" id="clientHeader">
 
-    <div class="card-group mb-3 n45-client-summary-grid">
+    <div class="card-group mb-3">
         <div class="card card-body px-3 py-2">
             <h5>Primary Location</h5>
             <?php if (!empty($location_address)) { ?>
@@ -175,7 +167,7 @@
             </div>
             <?php if(!empty($client_tax_id_number)) { ?>
             <div class="ml-1 mt-1 text-secondary">Tax ID
-                <span class="text-dark float-right"><?php echo $client_tax_id_number; ?></span>
+                <span class="text-dark float-right text-monospace"><?php echo $client_tax_id_number; ?></span>
             </div>
             <?php } ?>
         </div>

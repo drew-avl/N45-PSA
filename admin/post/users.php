@@ -69,7 +69,7 @@ if (isset($_POST['add_user'])) {
         $password = mysqli_real_escape_string($mysqli, $_POST['password']);
 
         $subject = "Your new $company_name ITFlow account";
-        $body = "Hello $name,<br><br>An ITFlow account has been setup for you. Please change your password upon login. <br><br>Username: $email <br>Password: $password<br>Login URL: https://$config_base_url/login.php?key=$config_login_key_secret<br><br>--<br>$company_name - Support<br>$config_ticket_from_email";
+        $body = "Hello $name,<br><br>An ITFlow account has been setup for you. Please change your password upon login. <br><br>Username: $email <br>Password: $password<br>Login URL: https://$config_base_url/login.php?source=local&key=$config_login_key_secret<br><br>--<br>$company_name - Support<br>$config_ticket_from_email";
 
         $data = [
             [
@@ -178,12 +178,11 @@ if (isset($_POST['edit_user'])) {
 
 }
 
-if (isset($_POST['activate_user']) || isset($_GET['activate_user'])) {
+if (isset($_GET['activate_user'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
-    $user_id = intval($_POST['activate_user'] ?? $_GET['activate_user']);
+    $user_id = intval($_GET['activate_user']);
 
     $user_name = sanitizeInput(getFieldById('users', $user_id, 'user_name'));
 
@@ -197,12 +196,11 @@ if (isset($_POST['activate_user']) || isset($_GET['activate_user'])) {
 
 }
 
-if (isset($_POST['disable_user']) || isset($_GET['disable_user'])) {
+if (isset($_GET['disable_user'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
-    $user_id = intval($_POST['disable_user'] ?? $_GET['disable_user']);
+    $user_id = intval($_GET['disable_user']);
 
     $user_name = sanitizeInput(getFieldById('users', $user_id, 'user_name'));
 
@@ -220,12 +218,11 @@ if (isset($_POST['disable_user']) || isset($_GET['disable_user'])) {
 
 }
 
-if (isset($_POST['revoke_remember_me']) || isset($_GET['revoke_remember_me'])) {
+if (isset($_GET['revoke_remember_me'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
-    $user_id = intval($_POST['revoke_remember_me'] ?? $_GET['revoke_remember_me']);
+    $user_id = intval($_GET['revoke_remember_me']);
 
     $user_name = sanitizeInput(getFieldById('users', $user_id, 'user_name'));
 

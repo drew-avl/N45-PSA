@@ -1,4 +1,4 @@
-<div class="modal fade n45-modal" id="confirmationModal" tabindex="-1">
+<div class="modal fade" id="confirmationModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

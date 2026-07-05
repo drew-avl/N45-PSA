@@ -46,12 +46,11 @@ if (isset($_POST['edit_ai_model'])) {
 
 }
 
-if (isset($_POST['delete_ai_model']) || isset($_GET['delete_ai_model'])) {
+if (isset($_GET['delete_ai_model'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
-    $model_id = intval($_POST['delete_ai_model'] ?? $_GET['delete_ai_model']);
+    $model_id = intval($_GET['delete_ai_model']);
 
     $model_name = sanitizeInput(getFieldById('ai_models', $model_id, 'ai_model_name'));
 

@@ -164,14 +164,13 @@ if (isset($_POST['add_invoice_copy'])) {
 
 }
 
-if (isset($_POST['mark_invoice_sent']) || isset($_GET['mark_invoice_sent'])) {
+if (isset($_GET['mark_invoice_sent'])) {
 
-    $is_post = isset($_POST['mark_invoice_sent']);
-    validateCSRFToken($is_post ? $_POST['csrf_token'] : $_GET['csrf_token']);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_sales', 2);
 
-    $invoice_id = intval($is_post ? $_POST['mark_invoice_sent'] : $_GET['mark_invoice_sent']);
+    $invoice_id = intval($_GET['mark_invoice_sent']);
 
     // Get Invoice Number and Prefix and Client ID for Logging
     $sql = mysqli_query($mysqli,"SELECT invoice_prefix, invoice_number, invoice_client_id FROM invoices WHERE invoice_id = $invoice_id");
@@ -194,14 +193,13 @@ if (isset($_POST['mark_invoice_sent']) || isset($_GET['mark_invoice_sent'])) {
 
 }
 
-if (isset($_POST['mark_invoice_non-billable']) || isset($_GET['mark_invoice_non-billable'])) {
+if (isset($_GET['mark_invoice_non-billable'])) {
 
-    $is_post = isset($_POST['mark_invoice_non-billable']);
-    validateCSRFToken($is_post ? $_POST['csrf_token'] : $_GET['csrf_token']);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_sales', 2);
 
-    $invoice_id = intval($is_post ? $_POST['mark_invoice_non-billable'] : $_GET['mark_invoice_non-billable']);
+    $invoice_id = intval($_GET['mark_invoice_non-billable']);
 
     // Get Invoice Number and Prefix and Client ID for Logging
     $sql = mysqli_query($mysqli,"SELECT invoice_prefix, invoice_number, invoice_client_id FROM invoices WHERE invoice_id = $invoice_id");
@@ -224,14 +222,13 @@ if (isset($_POST['mark_invoice_non-billable']) || isset($_GET['mark_invoice_non-
 
 }
 
-if (isset($_POST['cancel_invoice']) || isset($_GET['cancel_invoice'])) {
+if (isset($_GET['cancel_invoice'])) {
 
-    $is_post = isset($_POST['cancel_invoice']);
-    validateCSRFToken($is_post ? $_POST['csrf_token'] : $_GET['csrf_token']);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_sales', 2);
 
-    $invoice_id = intval($is_post ? $_POST['cancel_invoice'] : $_GET['cancel_invoice']);
+    $invoice_id = intval($_GET['cancel_invoice']);
 
     // Get Invoice Number and Prefix and Client ID for Logging
     $sql = mysqli_query($mysqli,"SELECT invoice_prefix, invoice_number, invoice_client_id FROM invoices WHERE invoice_id = $invoice_id");
@@ -254,14 +251,13 @@ if (isset($_POST['cancel_invoice']) || isset($_GET['cancel_invoice'])) {
 
 }
 
-if (isset($_POST['delete_invoice']) || isset($_GET['delete_invoice'])) {
+if (isset($_GET['delete_invoice'])) {
 
-    $is_post = isset($_POST['delete_invoice']);
-    validateCSRFToken($is_post ? $_POST['csrf_token'] : $_GET['csrf_token']);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_sales', 3);
 
-    $invoice_id = intval($is_post ? $_POST['delete_invoice'] : $_GET['delete_invoice']);
+    $invoice_id = intval($_GET['delete_invoice']);
 
     // Get Invoice Number and Prefix and Client ID for Logging
     $sql = mysqli_query($mysqli,"SELECT invoice_prefix, invoice_number, invoice_client_id FROM invoices WHERE invoice_id = $invoice_id");
