@@ -1,31 +1,32 @@
 <!-- Navbar -->
-<nav class="main-header navbar navbar-expand navbar-dark n45-topbar">
+<nav class="main-header navbar navbar-expand navbar-<?php echo nullable_htmlentities($config_theme); ?> navbar-dark">
 
-    <ul class="navbar-nav n45-topbar-left">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
         <li class="nav-item">
-            <a class="nav-link n45-icon-button" data-widget="pushmenu" data-enable-remember="TRUE" data-n45-sidebar-toggle href="#" aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </a>
-        </li>
-        <li class="nav-item n45-topbar-product">
-            <strong>N45 PSA</strong>
-            <span><?php echo n45_area_label(); ?></span>
+            <a class="nav-link" data-widget="pushmenu" data-enable-remember="TRUE" href="#"><i class="fas fa-bars"></i></a>
         </li>
     </ul>
 
-    <form class="form-inline n45-global-search" action="/agent/global_search.php" role="search">
-        <div class="input-group">
-            <input class="form-control form-control-navbar" type="search" placeholder="Search clients, tickets, assets, credentials" name="query"
-                value="<?php if (isset($_GET['query'])) { echo nullable_htmlentities($_GET['query']); } ?>">
-            <div class="input-group-append">
-                <button class="btn btn-navbar" type="submit" title="Search">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-        </div>
-    </form>
+    <!-- Center navbar links -->
+    <ul class="navbar-nav ml-auto">
 
-    <ul class="navbar-nav n45-topbar-actions ml-auto">
+        <!-- SEARCH FORM -->
+        <form class="form-inline" action="/agent/global_search.php">
+            <div class="input-group input-group-sm">
+                <input class="form-control form-control-navbar" type="search" placeholder="Search everywhere" name="query"
+                    value="<?php if (isset($_GET['query'])) { echo nullable_htmlentities($_GET['query']); } ?>">
+                <div class="input-group-append">
+                    <button class="btn btn-navbar" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </ul>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
 
         <!--Custom Nav Link -->
         <?php
@@ -47,7 +48,7 @@
             ?>
 
         <li class="nav-item" title="<?php echo $custom_link_name; ?>">
-            <a href="<?php echo $custom_link_uri; ?>" <?php echo $target; ?> class="nav-link n45-icon-button">
+            <a href="<?php echo $custom_link_uri; ?>" <?php echo $target; ?> class="nav-link">
                 <i class="fas fa-<?php echo $custom_link_icon; ?> nav-icon"></i>
             </a>
         </li>
@@ -63,7 +64,7 @@
         ?>
 
         <li class="nav-item">
-            <a class="nav-link ajax-modal n45-icon-button" href="#" data-modal-url="/modals/notifications.php" aria-label="Notifications">
+            <a class="nav-link ajax-modal" href="#" data-modal-url="/modals/notifications.php">
                 <i class="fas fa-bell"></i>
                 <?php if ($num_notifications) { ?>
                 <span class="badge badge-light badge-pill navbar-badge position-absolute" style="top: 1px; right: 3px;">
@@ -73,7 +74,7 @@
             </a>
         </li>
 
-        <li class="nav-item dropdown user-menu n45-user-menu">
+        <li class="nav-item dropdown user-menu">
             <a href="#" class="nav-link" data-toggle="dropdown">
                 <?php if (empty($session_avatar)) { ?>
                 <i class="fas fa-user-circle mr-1"></i>
@@ -85,7 +86,8 @@
                     class="d-none d-md-inline dropdown-toggle"><?php echo stripslashes(nullable_htmlentities($session_name)); ?></span>
             </a>
             <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <li class="user-header n45-user-header">
+                <!-- User image -->
+                <li class="user-header bg-gray-dark">
                     <?php if (empty($session_avatar)) { ?>
                     <i class="fas fa-user-circle fa-6x"></i>
                     <?php }else{ ?>
@@ -97,7 +99,8 @@
                         <small><?php echo nullable_htmlentities($session_user_role_display); ?></small>
                     </p>
                 </li>
-                <li class="user-footer n45-user-footer">
+                <!-- Menu Footer-->
+                <li class="user-footer">
                     <?php if ($session_is_admin) { ?>
                         <a href="/admin" class="btn btn-default btn-block btn-flat mb-2"><i class="fas fa-user-shield mr-2"></i>Administration</a>
                     <?php } ?>

@@ -20,7 +20,7 @@ if (basename(dirname($_SERVER['REQUEST_URI'])) === 'guest') { ?>
 <?php } ?>
 
 </div><!-- /.container-fluid -->
-</main> <!-- /.content -->
+</div> <!-- /.content -->
 </div> <!-- /.content-wrapper -->
 </div> <!-- ./wrapper -->
 
@@ -52,7 +52,6 @@ if (basename(dirname($_SERVER['REQUEST_URI'])) === 'guest') { ?>
 <script src="/js/ajax_modal.js"></script>
 <script src="/js/confirm_modal.js"></script>
 <script src="/js/date_filter.js"></script>
-<script src="/js/n45_ui.js"></script>
 
 </body>
 </html>
