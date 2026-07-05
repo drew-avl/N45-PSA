@@ -3,24 +3,24 @@
    - Make the button full-width, display:block
 */
 :root {
-    --n45-bg: #081020;
-    --n45-surface: #101c2c;
-    --n45-surface-muted: #0d1728;
-    --n45-border: #2c384c;
-    --n45-border-soft: #1d2a3e;
-    --n45-text: #eef5ff;
-    --n45-muted: #9aa8bd;
-    --n45-sidebar: #081020;
-    --n45-sidebar-hover: #101c30;
-    --n45-sidebar-active: rgba(44, 220, 196, 0.14);
-    --n45-accent: #2cdcc4;
-    --n45-accent-hover: #30ccd0;
-    --n45-accent-soft: rgba(44, 220, 196, 0.12);
-    --n45-success: #2cdcc4;
-    --n45-warning: #d3a84d;
-    --n45-danger: #ef6f7b;
-    --n45-shadow: 0 18px 38px rgba(0, 0, 0, 0.32);
-    --n45-shadow-soft: 0 12px 26px rgba(0, 0, 0, 0.24);
+    --n45-bg: #f5f7fa;
+    --n45-surface: #ffffff;
+    --n45-surface-muted: #f8fafc;
+    --n45-border: #d9e1ea;
+    --n45-border-soft: #edf1f5;
+    --n45-text: #1d2733;
+    --n45-muted: #637083;
+    --n45-sidebar: #101820;
+    --n45-sidebar-hover: #1b2733;
+    --n45-sidebar-active: #e9f3ff;
+    --n45-accent: #1167b1;
+    --n45-accent-hover: #0d5797;
+    --n45-accent-soft: #e9f3ff;
+    --n45-success: #16845b;
+    --n45-warning: #b7791f;
+    --n45-danger: #c2414b;
+    --n45-shadow: 0 12px 28px rgba(16, 24, 32, 0.08);
+    --n45-shadow-soft: 0 8px 18px rgba(16, 24, 32, 0.05);
     --n45-radius: 8px;
     --n45-radius-sm: 6px;
 }
@@ -44,19 +44,6 @@ a:hover {
     color: var(--n45-accent-hover);
 }
 
-.text-dark {
-    color: var(--n45-text) !important;
-}
-
-.text-muted {
-    color: var(--n45-muted) !important;
-}
-
-.bg-light {
-    background-color: var(--n45-surface-muted) !important;
-    color: var(--n45-text) !important;
-}
-
 .wrapper,
 .content-wrapper {
     background: var(--n45-bg);
@@ -76,9 +63,9 @@ a:hover {
 
 .main-header.navbar {
     min-height: 58px;
-    background: rgba(8, 16, 32, 0.96) !important;
+    background: rgba(255, 255, 255, 0.96) !important;
     border-bottom: 1px solid var(--n45-border);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03);
+    box-shadow: 0 1px 0 rgba(16, 24, 32, 0.03);
     color: var(--n45-text);
 }
 
@@ -94,18 +81,9 @@ a:hover {
     color: var(--n45-text) !important;
 }
 
-.main-header .n45-global-search {
-    margin: 0 0.75rem;
-}
-.main-header .n45-global-search .input-group {
-    align-items: stretch;
-    flex-wrap: nowrap;
-}
-
 .main-header .form-control-navbar {
     min-width: 300px;
-    height: 38px;
-    min-height: 38px;
+    height: 36px;
     background: var(--n45-surface-muted);
     border: 1px solid var(--n45-border);
     border-right: 0;
@@ -120,13 +98,7 @@ a:hover {
 }
 
 .main-header .btn-navbar {
-    align-items: center;
-    display: inline-flex;
-    height: 38px;
-    justify-content: center;
-    min-height: 38px;
-    padding: 0;
-    width: 42px;
+    height: 36px;
     background: var(--n45-surface-muted);
     border: 1px solid var(--n45-border);
     border-left: 0;
@@ -183,7 +155,7 @@ a:hover {
 
 .nav-sidebar .nav-item > .nav-link.active {
     background: var(--n45-sidebar-active) !important;
-    color: var(--n45-accent) !important;
+    color: #0d4f86 !important;
     box-shadow: none !important;
     font-weight: 700;
 }
@@ -205,16 +177,14 @@ a:hover {
 }
 
 .nav-sidebar .active .badge {
-    background: var(--n45-accent);
-    color: #081020 !important;
+    background: #cfe5ff;
+    color: #0d4f86 !important;
 }
 
 .card {
-    background: var(--n45-surface);
     border: 1px solid var(--n45-border);
     border-radius: var(--n45-radius);
     box-shadow: var(--n45-shadow-soft);
-    color: var(--n45-text);
 }
 
 .card-header {
@@ -265,7 +235,7 @@ a:hover {
 }
 
 .table-hover tbody tr:hover {
-    background: rgba(44, 220, 196, 0.07);
+    background: #f4f8fc;
 }
 
 .btn {
@@ -279,14 +249,13 @@ a:hover {
 .btn-info {
     background: var(--n45-accent);
     border-color: var(--n45-accent);
-    color: #081020;
+    color: #ffffff;
 }
 
 .btn-primary:hover,
 .btn-info:hover {
     background: var(--n45-accent-hover);
     border-color: var(--n45-accent-hover);
-    color: #081020;
 }
 
 .btn-default,
@@ -301,7 +270,7 @@ a:hover {
 .btn-light:hover,
 .btn-secondary:hover {
     background: var(--n45-surface-muted);
-    border-color: var(--n45-accent);
+    border-color: #c7d2df;
     color: var(--n45-text);
 }
 
@@ -324,32 +293,19 @@ a:hover {
 .form-control,
 .custom-select,
 .select2-container--bootstrap4 .select2-selection {
-    background: var(--n45-surface-muted);
     border-color: var(--n45-border);
     border-radius: var(--n45-radius-sm);
     color: var(--n45-text);
-}
-
-.form-control::placeholder {
-    color: var(--n45-muted);
-    opacity: 1;
-}
-
-.input-group-text {
-    background: var(--n45-surface-muted);
-    border-color: var(--n45-border);
-    color: var(--n45-muted);
 }
 
 .form-control:focus,
 .custom-select:focus,
 .select2-container--bootstrap4.select2-container--focus .select2-selection {
     border-color: var(--n45-accent);
-    box-shadow: 0 0 0 0.16rem rgba(44, 220, 196, 0.16);
+    box-shadow: 0 0 0 0.16rem rgba(17, 103, 177, 0.14);
 }
 
 .dropdown-menu {
-    background: var(--n45-surface);
     border: 1px solid var(--n45-border);
     border-radius: var(--n45-radius);
     box-shadow: var(--n45-shadow);
@@ -374,7 +330,6 @@ a:hover {
 
 .badge-primary {
     background: var(--n45-accent);
-    color: #081020;
 }
 
 .badge-danger {
@@ -388,7 +343,6 @@ a:hover {
 }
 
 .modal-content {
-    background: var(--n45-surface);
     border: 0;
     border-radius: var(--n45-radius);
     box-shadow: 0 24px 60px rgba(16, 24, 32, 0.22);
@@ -415,25 +369,25 @@ a:hover {
     border-radius: var(--n45-radius-sm);
 }
 
-.navbar.bg-dark {
+body:not(.dark-mode) .navbar.bg-dark {
     background: #101820 !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 8px 24px rgba(16, 24, 32, 0.14);
 }
 
-.navbar.bg-dark .navbar-brand {
+body:not(.dark-mode) .navbar.bg-dark .navbar-brand {
     font-weight: 800;
     letter-spacing: 0;
 }
 
-.navbar.bg-dark .nav-link {
+body:not(.dark-mode) .navbar.bg-dark .nav-link {
     border-radius: var(--n45-radius-sm);
     color: #c8d2de;
 }
 
-.navbar.bg-dark .nav-link:hover,
-.navbar.bg-dark .nav-link.active,
-.navbar.bg-dark .nav-item.active .nav-link {
+body:not(.dark-mode) .navbar.bg-dark .nav-link:hover,
+body:not(.dark-mode) .navbar.bg-dark .nav-link.active,
+body:not(.dark-mode) .navbar.bg-dark .nav-item.active .nav-link {
     background: rgba(255, 255, 255, 0.1);
     color: #ffffff;
 }
@@ -444,33 +398,23 @@ a:hover {
     box-shadow: var(--n45-shadow);
 }
 
-.login-page,
-.register-page {
-    background: var(--n45-bg);
-}
-
-.login-card-body {
-    background: var(--n45-surface);
-    color: var(--n45-text);
-}
-
 .login-logo {
     font-weight: 800;
     letter-spacing: 0;
 }
 
 .dark-mode {
-    --n45-bg: #081020;
-    --n45-surface: #101c2c;
-    --n45-surface-muted: #0d1728;
-    --n45-border: #2c384c;
-    --n45-border-soft: #1d2a3e;
-    --n45-text: #eef5ff;
-    --n45-muted: #9aa8bd;
-    --n45-sidebar: #081020;
-    --n45-sidebar-hover: #101c30;
-    --n45-sidebar-active: rgba(44, 220, 196, 0.14);
-    --n45-accent-soft: rgba(44, 220, 196, 0.12);
+    --n45-bg: #0f141a;
+    --n45-surface: #171d24;
+    --n45-surface-muted: #111820;
+    --n45-border: #2a3440;
+    --n45-border-soft: #202a35;
+    --n45-text: #e6edf5;
+    --n45-muted: #9aa7b5;
+    --n45-sidebar: #0a0f14;
+    --n45-sidebar-hover: #141d27;
+    --n45-sidebar-active: #dbeeff;
+    --n45-accent-soft: #12314d;
 }
 
 .dark-mode .main-header.navbar,
@@ -486,7 +430,7 @@ a:hover {
 }
 
 .dark-mode .table-hover tbody tr:hover {
-    background: rgba(44, 220, 196, 0.07);
+    background: #151d26;
 }
 
 .dark-mode .table thead th {
@@ -499,14 +443,6 @@ a:hover {
     background: var(--n45-surface-muted);
     border-color: var(--n45-border);
     color: var(--n45-text);
-}
-
-.n45-theme-lock {
-    background: var(--n45-surface-muted);
-    border: 1px solid var(--n45-border);
-    border-radius: var(--n45-radius);
-    color: var(--n45-text);
-    padding: 1rem;
 }
 
 @media (max-width: 575.98px) {

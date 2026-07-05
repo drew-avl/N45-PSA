@@ -634,22 +634,23 @@ $show_login_form = (!$show_role_choice && !$show_mfa_form);
     <?php } ?>
 
     <link rel="stylesheet" href="plugins/adminlte/css/adminlte.min.css">
-    <link rel="stylesheet" href="css/itflow_custom.css">
-    <link rel="stylesheet" href="css/n45_ui.css">
 </head>
-<body class="hold-transition login-page dark-mode n45-auth-page">
+<body class="hold-transition login-page">
 
-<div class="n45-auth-shell">
-    <section class="n45-auth-side">
-        <div>
-            <div class="n45-auth-kicker">Technician Access</div>
-            <h1>N45 PSA</h1>
-            <p>Secure operations for service delivery, client work, documentation, and billing.</p>
-        </div>
-        <div class="n45-auth-footer">
-            <?php echo nullable_htmlentities($company_name); ?>
-            <?php if (!$config_whitelabel_enabled) { ?>
-                <span> | Powered by ITFlow</span>
+<div class="login-box">
+    <div class="login-logo">
+        <?php if (!empty($company_logo)) { ?>
+            <img alt="<?=nullable_htmlentities($company_name)?> logo" height="110" width="380" class="img-fluid" src="<?php echo "uploads/settings/$company_logo"; ?>">
+        <?php } else { ?>
+            <span class="text-primary text-bold"><i class="fas fa-paper-plane mr-2"></i>IT</span>Flow
+        <?php } ?>
+    </div>
+
+    <div class="card">
+        <div class="card-body login-card-body">
+
+            <?php if (!empty($config_login_message)){ ?>
+                <p class="login-box-msg px-0"><?php echo nl2br($config_login_message); ?></p>
             <?php } ?>
 
             <?php if (isset($response)) { ?>
@@ -661,8 +662,8 @@ $show_login_form = (!$show_role_choice && !$show_mfa_form);
                 <?php if ($show_login_form): ?>
                     <!-- STEP 1: Email + Password -->
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control"
-                            placeholder="Email"
+                        <input type="text" class="form-control"
+                            placeholder="<?php if ($config_login_key_required) { if (!isset($_GET['key']) || $_GET['key'] !== $config_login_key_secret) { echo "Client "; } } echo "Email"; ?>"
                             name="email"
                             value="<?php echo htmlspecialchars($email ?? '', ENT_QUOTES); ?>"
                             required autofocus
@@ -684,9 +685,25 @@ $show_login_form = (!$show_role_choice && !$show_mfa_form);
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-block mb-3" name="login">Sign In</button>
+
                     <a href="/agent/openid_login.php" class="btn btn-outline-primary btn-block mb-3">
-                        <i class="fas fa-sign-in-alt mr-2"></i>Sign in with SSO
+                        <i class="fas fa-fw fa-sign-in-alt mr-2"></i>Sign in with SSO
                     </a>
+                <?php endif; ?>
+
+                <?php if ($show_role_choice): ?>
+                    <!-- STEP 2: Role choice only -->
+                    <input type="hidden" name="pending_login_token"
+                           value="<?php echo htmlspecialchars($_SESSION['pending_dual_login']['token'] ?? '', ENT_QUOTES); ?>">
+
+                    <div class="mb-2 text-center">
+                        <button type="submit" class="btn btn-dark btn-block mb-2" name="role_choice" value="agent">
+                            Log in as Agent
+                        </button>
+                        <button type="submit" class="btn btn-light btn-block" name="role_choice" value="client">
+                            Log in as Client
+                        </button>
+                    </div>
                 <?php endif; ?>
 
                 <?php if ($show_mfa_form): ?>

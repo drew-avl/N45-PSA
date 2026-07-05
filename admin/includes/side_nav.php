@@ -1,11 +1,12 @@
 <!-- Main Sidebar Container -->
-<aside class="main-sidebar sidebar-dark-teal d-print-none n45-sidebar">
-    <a class="brand-link n45-brand-link" href="/agent/<?php echo $config_start_page ?>">
-        <?php echo n45_brand_mark(); ?>
-        <span class="brand-text n45-brand-copy">
-            <strong>Administration</strong>
-            <small><i class="fas fa-arrow-left mr-1"></i>Back to workspace</small>
-        </span>
+<aside class="main-sidebar sidebar-dark-<?php echo nullable_htmlentities($config_theme); ?> d-print-none">
+    <a class="brand-link pb-1 mt-1" href="/agent/<?php echo $config_start_page ?>">
+        <p class="h6">
+            <i class="nav-icon fas fa-arrow-left ml-3 mr-2"></i>
+            <span class="brand-text">
+                Back | <strong>Administration</strong>
+            </span>
+        </p>
     </a>
 
     <!-- Sidebar -->

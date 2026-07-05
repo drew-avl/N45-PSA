@@ -194,15 +194,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     <!-- Theme style -->
     <link rel="stylesheet" href="../plugins/adminlte/css/adminlte.min.css">
-    <link rel="stylesheet" href="../css/itflow_custom.css">
-    <link rel="stylesheet" href="../css/n45_ui.css">
 
 </head>
 
-<body class="hold-transition login-page dark-mode n45-auth-page">
-<div class="login-box n45-auth-card">
-    <div class="login-logo n45-auth-title"><b><?php echo nullable_htmlentities($company_name_display); ?></b><br>Password Reset</div>
-    <div class="card n45-panel">
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo"><b><?php echo nullable_htmlentities($company_name_display); ?></b><br>Password Reset</div>
+    <div class="card">
         <div class="card-body login-card-body">
 
             <form method="post">
