@@ -131,7 +131,7 @@ $config_date_format = "M d, Y";
 $config_time_format = "g:i A";
 
 // Theme
-$config_theme = 'teal';
+$config_theme = $row['config_theme'];
 
 // Telemetry
 $config_telemetry = intval($row['config_telemetry']);
