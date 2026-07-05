@@ -126,17 +126,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     <?php } ?>
     <link rel="stylesheet" href="../plugins/adminlte/css/adminlte.min.css">
     <link rel="stylesheet" href="../css/itflow_custom.css">
+    <link rel="stylesheet" href="../css/n45_ui.css">
 </head>
-<body class="hold-transition login-page">
+<body class="hold-transition login-page dark-mode n45-auth-page">
 
-<div class="login-box">
-    <div class="login-logo">
-        <?php if (!empty($company_logo)) { ?>
-            <img alt="<?php echo nullable_htmlentities($company_name); ?> logo" height="110" width="380" class="img-fluid" src="<?php echo "/uploads/settings/$company_logo"; ?>">
-        <?php } else { ?>
-            <span class="text-primary text-bold">N45</span> Client Portal
-        <?php } ?>
-    </div>
+<div class="n45-auth-shell">
+    <section class="n45-auth-side">
+        <div>
+            <div class="n45-auth-kicker">Client Portal</div>
+            <h1><?php echo nullable_htmlentities($company_name); ?></h1>
+            <p>Access tickets, invoices, quotes, documents, and service history for your organization.</p>
+        </div>
+        <div class="n45-auth-footer">
+            <?php if (!$config_whitelabel_enabled) { ?>
+                Powered by ITFlow
+            <?php } ?>
+        </div>
+    </section>
+
+    <section class="n45-auth-card-wrap">
+        <div class="n45-auth-card">
+            <div class="n45-auth-logo">
+                <?php if (!empty($company_logo)) { ?>
+                    <img alt="<?php echo nullable_htmlentities($company_name); ?> logo" src="<?php echo "/uploads/settings/$company_logo"; ?>">
+                <?php } else { ?>
+                    <span class="n45-brand-mark" aria-hidden="true"><span>N45</span></span>
+                    <div>
+                        <div class="n45-auth-title mb-0">Client Portal</div>
+                        <div class="n45-auth-subtitle mb-0"><?php echo nullable_htmlentities($company_name); ?></div>
+                    </div>
+                <?php } ?>
+            </div>
 
     <div class="card">
         <div class="card-body login-card-body">

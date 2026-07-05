@@ -1,6 +1,7 @@
  <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
+    <div class="content-wrapper n45-main">
 
       <!-- Main content -->
-      <div class="content mt-3 p-0 px-md-2">
-        <div class="container-fluid">
+      <main class="content n45-content">
+        <div class="container-fluid n45-container">
+          <?php if (function_exists('n45_page_header')) { echo n45_page_header(); } ?>

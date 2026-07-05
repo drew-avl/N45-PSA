@@ -635,23 +635,21 @@ $show_login_form = (!$show_role_choice && !$show_mfa_form);
 
     <link rel="stylesheet" href="plugins/adminlte/css/adminlte.min.css">
     <link rel="stylesheet" href="css/itflow_custom.css">
+    <link rel="stylesheet" href="css/n45_ui.css">
 </head>
-<body class="hold-transition login-page">
+<body class="hold-transition login-page dark-mode n45-auth-page">
 
-<div class="login-box">
-    <div class="login-logo">
-        <?php if (!empty($company_logo)) { ?>
-            <img alt="<?=nullable_htmlentities($company_name)?> logo" height="110" width="380" class="img-fluid" src="<?php echo "uploads/settings/$company_logo"; ?>">
-        <?php } else { ?>
-            <span class="text-primary text-bold">N45</span> PSA
-        <?php } ?>
-    </div>
-
-    <div class="card">
-        <div class="card-body login-card-body">
-
-            <?php if (!empty($config_login_message)){ ?>
-                <p class="login-box-msg px-0"><?php echo nl2br($config_login_message); ?></p>
+<div class="n45-auth-shell">
+    <section class="n45-auth-side">
+        <div>
+            <div class="n45-auth-kicker">Technician Access</div>
+            <h1>N45 PSA</h1>
+            <p>Secure operations for service delivery, client work, documentation, and billing.</p>
+        </div>
+        <div class="n45-auth-footer">
+            <?php echo nullable_htmlentities($company_name); ?>
+            <?php if (!$config_whitelabel_enabled) { ?>
+                <span> | Powered by ITFlow</span>
             <?php } ?>
 
             <?php if (isset($response)) { ?>

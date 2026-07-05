@@ -16,14 +16,14 @@
             <ul class="nav nav-pills nav-sidebar flex-column mt-2" data-widget="treeview" data-accordion="false">
 
                 <li class="nav-header">CUSTOM HEADER</li>
-         
+
                 <li class="nav-item">
                     <a href="index.php" class="nav-link <?php if (basename($_SERVER["PHP_SELF"]) == "index.php") { echo "active"; } ?>">
                         <i class="far fa-circle nav-icon"></i>
                         <p>custom</p>
                     </a>
                 </li>
-        
+
             </ul>
 
         </nav>
@@ -36,10 +36,3 @@
     </div>
     <!-- /.sidebar -->
 </aside>
-
-
-
-
-
-
-
