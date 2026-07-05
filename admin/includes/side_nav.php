@@ -41,12 +41,6 @@
                         <p>API Keys</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="/admin/integrations.php" class="nav-link <?php if (basename($_SERVER["PHP_SELF"]) == "integrations.php") {echo "active";} ?>">
-                        <i class="nav-icon fas fa-plug"></i>
-                        <p>Integrations</p>
-                    </a>
-                </li>
                 <li class="nav-header">TAGS & CATEGORIES</li>
 
                 <li class="nav-item">
