@@ -295,8 +295,8 @@ if (isset($_GET['client_id'])) {
 }
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/header.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/top_nav.php';
 require_once 'includes/client_side_nav.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/top_nav.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/inc_wrapper.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/inc_alert_feedback.php';
 require_once 'includes/inc_client_top_head.php';

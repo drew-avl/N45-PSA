@@ -126,9 +126,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     <?php } ?>
     <link rel="stylesheet" href="../plugins/adminlte/css/adminlte.min.css">
     <link rel="stylesheet" href="../css/itflow_custom.css">
-    <link rel="stylesheet" href="../css/n45_ui.css">
+    <link rel="stylesheet" href="../css/n45-app.css">
 </head>
-<body class="hold-transition login-page dark-mode n45-auth-page">
+<body class="n45-auth-page">
 
 <div class="n45-auth-shell">
     <section class="n45-auth-side">
