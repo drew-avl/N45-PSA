@@ -28,7 +28,7 @@ if (isset($_GET['calendar_id'])) {
 
 <div class="row">
 
-    <div class="col-md-3">
+    <div class="col-md-3 d-print-none">
         <div class="card">
             <div class="card-header bg-dark">
                 <h3 class="card-title">Calendars</h3>
@@ -58,13 +58,9 @@ if (isset($_GET['calendar_id'])) {
                             </a>
                             <?php if ($session_user_role == 3) { ?>
                                 <div class="dropdown-divider"></div>
-                                <form method="post" action="post.php" class="m-0">
-                                    <input type="hidden" name="delete_calendar" value="<?= $calendar_id ?>">
-                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                    <button type="submit" class="dropdown-item text-danger text-bold confirm-link">
-                                        <i class="fas fa-fw fa-trash mr-2"></i>Delete
-                                    </button>
-                                </form>
+                                <a class="dropdown-item text-danger text-bold confirm-link" href="post.php?delete_calendar=<?= $calendar_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                    <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                </a>
                             <?php } ?>
                         </div>
                     </div>
@@ -149,19 +145,23 @@ while ($row = mysqli_fetch_assoc($sql)) {
 <?php require_once "../includes/footer.php";
 ?>
 
-<script src='/plugins/fullcalendar/dist/index.global.js'></script>
+<!-- FullCalendar v7: theme + CSS are now separate plugins, must be loaded alongside the core bundle -->
+<link href='/plugins/fullcalendar/skeleton.css' rel='stylesheet' />
+<link href='/plugins/fullcalendar/themes/classic/theme.css' rel='stylesheet' />
+<link href='/plugins/fullcalendar/themes/classic/palette.css' rel='stylesheet' />
+<script src='/plugins/fullcalendar/fullcalendar.global.js'></script>
+<script src='/plugins/fullcalendar/themes/classic/global.js'></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
-            themeSystem: 'bootstrap',
-            defaultView: 'dayGridMonth',
-            customButtons: {
+            initialView: 'dayGridMonth',
+            buttons: {
                 newEvent: {
                     text: 'New Event',
-                    bootstrapFontAwesome: 'fas fa-plus',
+                    iconClass: 'fas fa-plus',
                     click: function() {
                         $("#addCalendarEventModal").modal();
                     }

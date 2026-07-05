@@ -42,12 +42,11 @@ if (isset($_POST['edit_tag'])) {
 
 }
 
-if (isset($_POST['delete_tag']) || isset($_GET['delete_tag'])) {
+if (isset($_GET['delete_tag'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
-    $tag_id = intval($_POST['delete_tag'] ?? $_GET['delete_tag']);
+    $tag_id = intval($_GET['delete_tag']);
 
     $tag_name = sanitizeInput(getFieldById('tags', $tag_id, 'tag_name'));
 

@@ -42,12 +42,11 @@ if (isset($_POST['edit_category'])) {
 
 }
 
-if (isset($_POST['archive_category']) || isset($_GET['archive_category'])) {
+if (isset($_GET['archive_category'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
-    $category_id = intval($_POST['archive_category'] ?? $_GET['archive_category']);
+    $category_id = intval($_GET['archive_category']);
 
     // Get Category Name and Type for logging
     $sql = mysqli_query($mysqli,"SELECT category_name, category_type FROM categories WHERE category_id = $category_id");
@@ -65,12 +64,11 @@ if (isset($_POST['archive_category']) || isset($_GET['archive_category'])) {
 
 }
 
-if (isset($_POST['restore_category']) || isset($_GET['restore_category'])) {
+if (isset($_GET['restore_category'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
-    $category_id = intval($_POST['restore_category'] ?? $_GET['restore_category']);
+    $category_id = intval($_GET['restore_category']);
 
     // Get Category Name and Type for logging
     $sql = mysqli_query($mysqli,"SELECT category_name, category_type FROM categories WHERE category_id = $category_id");
@@ -88,12 +86,11 @@ if (isset($_POST['restore_category']) || isset($_GET['restore_category'])) {
 
 }
 
-if (isset($_POST['delete_category']) || isset($_GET['delete_category'])) {
+if (isset($_GET['delete_category'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
-    $category_id = intval($_POST['delete_category'] ?? $_GET['delete_category']);
+    $category_id = intval($_GET['delete_category']);
 
     // Get Category Name and Type for logging
     $sql = mysqli_query($mysqli,"SELECT category_name, category_type FROM categories WHERE category_id = $category_id");

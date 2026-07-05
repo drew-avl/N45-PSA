@@ -140,18 +140,14 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
                                     </button>
                                     <div class="dropdown-menu">
                                         <?php if ($api_key_expire > date("Y-m-d H:i:s")) { ?>
-                                            <form method="post" action="post.php" class="m-0">
-                                                <input type="hidden" name="revoke_api_key" value="<?php echo $api_key_id; ?>">
-                                                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
-                                                <button type="submit" class="dropdown-item text-danger text-bold confirm-link"><i class="fas fa-fw fa-times mr-2"></i>Revoke</button>
-                                            </form>
+                                            <a class="dropdown-item text-danger text-bold confirm-link" href="post.php?revoke_api_key=<?php echo $api_key_id; ?>&csrf_token=<?php echo $_SESSION['csrf_token'] ?>">
+                                                <i class="fas fa-fw fa-times mr-2"></i>Revoke
+                                            </a>
                                         <?php } ?>
                                         <?php if ($api_key_expire < date("Y-m-d H:i:s")) { ?>
-                                            <form method="post" action="post.php" class="m-0">
-                                                <input type="hidden" name="delete_api_key" value="<?php echo $api_key_id; ?>">
-                                                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
-                                                <button type="submit" class="dropdown-item text-danger text-bold confirm-link"><i class="fas fa-fw fa-times mr-2"></i>Delete</button>
-                                            </form>
+                                            <a class="dropdown-item text-danger text-bold confirm-link" href="post.php?delete_api_key=<?php echo $api_key_id; ?>&csrf_token=<?php echo $_SESSION['csrf_token'] ?>">
+                                                <i class="fas fa-fw fa-times mr-2"></i>Delete
+                                            </a>
                                         <?php } ?>
                                     </div>
                                 </div>

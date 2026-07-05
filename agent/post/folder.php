@@ -59,14 +59,13 @@ if (isset($_POST['rename_folder'])) {
 
 }
 
-if (isset($_POST['delete_folder']) || isset($_GET['delete_folder'])) {
+if (isset($_GET['delete_folder'])) {
 
-    $is_post = isset($_POST['delete_folder']);
-    validateCSRFToken($is_post ? $_POST['csrf_token'] : $_GET['csrf_token']);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_support', 3);
 
-    $folder_id = intval($is_post ? $_POST['delete_folder'] : $_GET['delete_folder']);
+    $folder_id = intval($_GET['delete_folder']);
 
     // Get Folder Name Client ID for Logging
     $sql = mysqli_query($mysqli,"SELECT folder_name, folder_client_id FROM folders WHERE folder_id = $folder_id");

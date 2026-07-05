@@ -84,13 +84,9 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
                                         </a>
 
                                         <div class="dropdown-divider"></div>
-                                        <form method="post" action="post.php" class="m-0">
-                                            <input type="hidden" name="delete_module" value="<?= $module_id ?>">
-                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                            <button type="submit" class="dropdown-item text-danger confirm-link">
-                                                <i class="fas fa-fw fa-archive mr-2"></i>Delete
-                                            </button>
-                                        </form>
+                                        <a class="dropdown-item text-danger confirm-link" href="post.php?delete_module=<?= $module_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                            <i class="fas fa-fw fa-archive mr-2"></i>Delete
+                                        </a>
 
                                     </div>
                                 </div>

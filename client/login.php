@@ -158,8 +158,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
                 <?php } ?>
             </div>
 
-            <h2 class="n45-auth-title">Sign in</h2>
-            <p class="n45-auth-subtitle">Use your client portal credentials.</p>
+    <div class="card">
+        <div class="card-body login-card-body">
+            <p class="login-box-msg">Use your client portal credentials.</p>
 
             <?php if (isset($_SESSION['login_message'])) { ?>
                 <div class="alert alert-info"><?php echo nullable_htmlentities($_SESSION['login_message']); ?></div>
@@ -171,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             <?php } ?>
 
             <form method="post">
-                <div class="input-group">
+                <div class="input-group mb-3">
                     <input type="email" class="form-control" placeholder="Email" name="email" value="<?php echo htmlspecialchars($email, ENT_QUOTES); ?>" required autofocus>
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -180,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
                     </div>
                 </div>
 
-                <div class="input-group">
+                <div class="input-group mb-3">
                     <input type="password" class="form-control" placeholder="Password" name="password" required>
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -189,23 +190,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
                     </div>
                 </div>
 
-                <div class="n45-auth-actions">
-                    <button type="submit" class="btn btn-primary btn-block" name="login">Sign In</button>
-                    <?php if (!empty($azure_client_id)) { ?>
-                        <a href="/client/login_microsoft.php" class="btn btn-secondary btn-block">
-                            <i class="fas fa-building mr-2"></i>Login with Microsoft Entra
-                        </a>
-                    <?php } ?>
-                </div>
+                <button type="submit" class="btn btn-primary btn-block mb-3" name="login">Sign In</button>
+
+                <?php if (!empty($azure_client_id)) { ?>
+                    <a href="/client/login_microsoft.php" class="btn btn-secondary btn-block mb-3">
+                        <i class="fas fa-building mr-2"></i>Login with Microsoft Entra
+                    </a>
+                <?php } ?>
             </form>
 
             <?php if (!empty($config_smtp_host)) { ?>
-                <div class="mt-3">
-                    <a href="/client/login_reset.php">Forgot password?</a>
-                </div>
+                <a href="/client/login_reset.php">Forgot password?</a>
             <?php } ?>
         </div>
-    </section>
+    </div>
+
+    <?php if (!$config_whitelabel_enabled) { ?>
+        <p class="text-center mt-3"><small class="text-muted">Powered by ITFlow</small></p>
+    <?php } ?>
 </div>
 
 <script src="../plugins/jquery/jquery.min.js"></script>

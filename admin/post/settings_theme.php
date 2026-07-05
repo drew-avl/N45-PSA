@@ -6,13 +6,13 @@ if (isset($_POST['edit_theme_settings'])) {
 
     validateCSRFToken($_POST['csrf_token']);
 
-    $theme = 'teal';
+    $theme = preg_replace("/[^0-9a-zA-Z-]/", "", sanitizeInput($_POST['edit_theme_settings']));
 
     mysqli_query($mysqli,"UPDATE settings SET config_theme = '$theme' WHERE company_id = 1");
 
-    logAction("Settings", "Edit", "$session_name kept the N45 dark theme active");
+    logAction("Settings", "Edit", "$session_name edited theme settings $dark_mode");
 
-    flash_alert("N45 dark theme is active");
+    flash_alert("Changed theme to <strong>$theme</strong>");
 
     redirect();
 
@@ -50,10 +50,9 @@ if (isset($_POST['edit_favicon_settings'])) {
 
 }
 
-if (isset($_POST['reset_favicon']) || isset($_GET['reset_favicon'])) {
+if (isset($_GET['reset_favicon'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
     if (file_exists("../uploads/favicon.ico")) {
         unlink("../uploads/favicon.ico");

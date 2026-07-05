@@ -125,6 +125,7 @@ if (isset($_POST['code']) && $_POST['state'] == session_id()) {
                 $_SESSION['user_id'] = $user_id;
                 $_SESSION['user_type'] = 2;
                 $_SESSION['contact_id'] = $contact_id;
+                $_SESSION['csrf_token'] = randomString(32);
                 $_SESSION['login_method'] = "azure";
 
                 // Logging
@@ -153,5 +154,5 @@ if (isset($_POST['code']) && $_POST['state'] == session_id()) {
 
 // If the user is just sat on the page, redirect them to log in to try again
 if (empty($_GET)) {
-    echo "<script> setTimeout(function() { window.location = \"/client/\"; },1000);</script>";
+    echo "<script> setTimeout(function() { window.location = \"/client/login.php\"; },1000);</script>";
 }

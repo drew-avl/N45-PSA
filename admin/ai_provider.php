@@ -80,11 +80,9 @@ $num_rows = mysqli_num_rows($sql);
                                         <i class="fas fa-fw fa-edit mr-2"></i>Edit
                                     </a>
                                     <div class="dropdown-divider"></div>
-                                    <form method="post" action="post.php" class="m-0">
-                                        <input type="hidden" name="delete_ai_provider" value="<?php echo $provider_id; ?>">
-                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
-                                        <button type="submit" class="dropdown-item text-danger confirm-link"><i class="fas fa-fw fa-trash mr-2"></i>Delete</button>
-                                    </form>
+                                    <a class="dropdown-item text-danger confirm-link" href="post.php?delete_ai_provider=<?php echo $provider_id; ?>&csrf_token=<?php echo $_SESSION['csrf_token'] ?>">
+                                        <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                    </a>
                                 </div>
                             </div>
                         </td>

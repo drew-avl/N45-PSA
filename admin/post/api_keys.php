@@ -31,12 +31,11 @@ if (isset($_POST['add_api_key'])) {
 
 }
 
-if (isset($_POST['revoke_api_key']) || isset($_GET['revoke_api_key'])) {
+if (isset($_GET['revoke_api_key'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
-    $api_key_id = intval($_POST['revoke_api_key'] ?? $_GET['revoke_api_key']);
+    $api_key_id = intval($_GET['revoke_api_key']);
 
     // Get API Key Name
     $row = mysqli_fetch_assoc(mysqli_query($mysqli,"SELECT api_key_name, api_key_client_id FROM api_keys WHERE api_key_id = $api_key_id"));
@@ -53,12 +52,11 @@ if (isset($_POST['revoke_api_key']) || isset($_GET['revoke_api_key'])) {
 
 }
 
-if (isset($_POST['delete_api_key']) || isset($_GET['delete_api_key'])) {
+if (isset($_GET['delete_api_key'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
-    $api_key_id = intval($_POST['delete_api_key'] ?? $_GET['delete_api_key']);
+    $api_key_id = intval($_GET['delete_api_key']);
 
     // Get API Key Name
     $row = mysqli_fetch_assoc(mysqli_query($mysqli,"SELECT api_key_name, api_key_client_id FROM api_keys WHERE api_key_id = $api_key_id"));

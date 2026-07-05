@@ -2202,6 +2202,14 @@ CREATE TABLE `settings` (
   `config_invoice_overdue_reminders` varchar(200) DEFAULT NULL,
   `config_azure_client_id` varchar(200) DEFAULT NULL,
   `config_azure_client_secret` varchar(200) DEFAULT NULL,
+  `config_openid_enabled` tinyint(1) DEFAULT 0,
+  `config_openid_client_id` varchar(500) DEFAULT NULL,
+  `config_openid_client_secret` varchar(500) DEFAULT NULL,
+  `config_openid_discovery_url` varchar(500) DEFAULT NULL,
+  `config_openid_decryption_key_claim` varchar(255) DEFAULT 'encryption_key',
+  `config_openid_scopes` varchar(500) DEFAULT 'openid profile email',
+  `config_openid_response_type` varchar(50) DEFAULT 'code',
+  `config_site_encryption_master_key` varchar(255) DEFAULT NULL,
   `config_module_enable_itdoc` tinyint(1) NOT NULL DEFAULT 1,
   `config_module_enable_accounting` tinyint(1) NOT NULL DEFAULT 1,
   `config_client_portal_enable` tinyint(1) NOT NULL DEFAULT 1,
@@ -2865,13 +2873,40 @@ CREATE TABLE `users` (
   `user_password_reset_token_expire` datetime DEFAULT NULL,
   `user_avatar` varchar(200) DEFAULT NULL,
   `user_specific_encryption_ciphertext` varchar(200) DEFAULT NULL,
+  `user_sso_decryption_key` varchar(32) DEFAULT NULL,
   `user_php_session` varchar(255) DEFAULT NULL,
   `user_extension_key` varchar(18) DEFAULT NULL,
   `user_created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `user_updated_at` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   `user_archived_at` datetime DEFAULT NULL,
   `user_role_id` int(11) DEFAULT 0,
-  PRIMARY KEY (`user_id`)
+  PRIMARY KEY (`user_id`),
+  KEY `idx_user_auth_method` (`user_auth_method`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `sso_auth_log`
+--
+
+DROP TABLE IF EXISTS `sso_auth_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sso_auth_log` (
+  `sso_log_id` int(11) NOT NULL AUTO_INCREMENT,
+  `sso_log_type` varchar(50) NOT NULL,
+  `sso_log_provider` varchar(50) NOT NULL,
+  `sso_log_user_email` varchar(200) DEFAULT NULL,
+  `sso_log_user_id` int(11) DEFAULT NULL,
+  `sso_log_status` varchar(50) NOT NULL,
+  `sso_log_message` text DEFAULT NULL,
+  `sso_log_ip` varchar(50) DEFAULT NULL,
+  `sso_log_user_agent` varchar(500) DEFAULT NULL,
+  `sso_log_created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`sso_log_id`),
+  KEY `idx_sso_user_id` (`sso_log_user_id`),
+  KEY `idx_sso_provider` (`sso_log_provider`),
+  KEY `idx_sso_created_at` (`sso_log_created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

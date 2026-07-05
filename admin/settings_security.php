@@ -24,7 +24,7 @@ require_once "includes/inc_all_admin.php";
             </div>
 
             <div class="form-group">
-                <label>Login key secret value <small class="text-secondary">(This must be provided in the URL as /login.php?key=<?php echo nullable_htmlentities($config_login_key_secret)?>)</small></label>
+                <label>Login key secret value <small class="text-secondary">(This must be provided in the URL as /login.php?source=local&amp;key=<?php echo nullable_htmlentities($config_login_key_secret)?>)</small></label>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fa fa-fw fa-key"></i></span>

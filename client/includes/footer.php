@@ -5,17 +5,20 @@
  */
 ?>
 
-<!-- Close client shell -->
-</main>
+<!-- Close container -->
+</div>
 
-<footer class="n45-client-footer">
+<br>
+<hr>
+
+<p class="text-center">
     <?php
         echo nullable_htmlentities($session_company_name);
         if (!$config_whitelabel_enabled) {
             echo '<br><small class="text-muted">Powered by ITFlow</small>';
         }
     ?>
-</footer>
+</p>
 
 
 <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/inc_confirm_modal.php'; ?>

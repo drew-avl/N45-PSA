@@ -82,6 +82,7 @@ $company_logo          = $row['company_logo'];
 $config_start_page     = nullable_htmlentities($row['config_start_page']);
 $config_login_message  = nullable_htmlentities($row['config_login_message']);
 
+$config_smtp_provider       = $row['config_smtp_provider'];
 $config_smtp_host       = $row['config_smtp_host'];
 $config_smtp_port       = intval($row['config_smtp_port']);
 $config_smtp_encryption = $row['config_smtp_encryption'];
@@ -253,9 +254,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['login']) || isset($_
             $selectedRow  = null;
             $selectedType = null; // 1 agent, 2 client
 
-            if ($agentRow !== null) {
-                $selectedRow  = $agentRow;
-                $selectedType = 1;
+            // Dual role
+            if ($agentRow !== null && $clientRow !== null) {
+
+                if ($role_choice === 'agent') {
+                    $selectedRow  = $agentRow;
+                    $selectedType = 1;
+                } elseif ($role_choice === 'client') {
+                    $selectedRow  = $clientRow;
+                    $selectedType = 2;
+                } else {
+                    // Show role choice screen
+                    $show_role_choice = true;
+
+                    // If this is the first time (Step 1), we need to stash allowed ids and (optional) decrypted agent encryption key
+                    // WITHOUT storing password.
+                    if ($is_login_step) {
+
+                        $pending_token = bin2hex(random_bytes(32));
+
+                        // If agent has user-specific encryption ciphertext, decrypt it NOW while password is present.
+                        $agent_master_key = null;
+                        $agent_cipher = $agentRow['user_specific_encryption_ciphertext'] ?? null;
+                        if (!empty($agent_cipher)) {
+                            $agent_master_key = decryptUserSpecificKey($agent_cipher, $password);
+                        }
+
+                        $_SESSION['pending_dual_login'] = [
+                            'email'            => $email,
+                            'agent_user_id'    => intval($agentRow['user_id']),
+                            'client_user_id'   => intval($clientRow['user_id']),
+                            'agent_master_key' => $agent_master_key, // may be null
+                            'token'            => $pending_token,
+                            'created'          => time()
+                        ];
+                    }
+                }
+
+            } else {
+                // Single role
+                if ($agentRow !== null) {
+                    $selectedRow  = $agentRow;
+                    $selectedType = 1;
+                } else {
+                    $selectedRow  = $clientRow;
+                    $selectedType = 2;
+                }
             }
 
             // Proceed if selected
@@ -357,7 +401,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['login']) || isset($_
                         "));
                         $ua_prev_logins = sanitizeInput($sql_ua_prev_logins['ua_previous_logins']);
 
-                        if (!empty($config_smtp_host) && $ip_previous_logins == 0 && $ua_prev_logins == 0) {
+                        if (!empty($config_smtp_provider) && $ip_previous_logins == 0 && $ua_prev_logins == 0) {
                             $subject = "$config_app_name new login for $user_name";
                             $body    = "Hi $user_name, <br><br>A recent successful login to your $config_app_name account was considered a little unusual. If this was you, you can safely ignore this email!<br><br>IP Address: $session_ip<br> User Agent: $session_user_agent <br><br>If you did not perform this login, your credentials may be compromised. <br><br>Thanks, <br>ITFlow";
 
@@ -404,13 +448,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['login']) || isset($_
                         } else {
                             // Step 1: initial login (password available in this request)
                             if (!empty($user_encryption_ciphertext)) {
-                                // Use SSO-aware decryption
-                                $site_encryption_master_key = decryptUserMasterKey(
-                                    $user_encryption_ciphertext,
-                                    $password,
-                                    $selectedRow['user_auth_method'] ?? 'local',
-                                    $selectedRow['user_sso_decryption_key'] ?? null
-                                );
+                                $site_encryption_master_key = decryptUserSpecificKey($user_encryption_ciphertext, $password);
                             }
                         }
 
@@ -445,12 +483,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['login']) || isset($_
                             }
                         } else {
                             if (!empty($user_encryption_ciphertext)) {
-                                $agent_master_key = decryptUserMasterKey(
-                                    $user_encryption_ciphertext,
-                                    $password,
-                                    $selectedRow['user_auth_method'] ?? 'local',
-                                    $selectedRow['user_sso_decryption_key'] ?? null
-                                );
+                                $agent_master_key = decryptUserSpecificKey($user_encryption_ciphertext, $password);
                             }
                         }
 
@@ -483,7 +516,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['login']) || isset($_
                             $session_user_id = $user_id;
                             logAction("Login", "MFA Failed", "$user_email failed MFA", 0, $user_id);
 
-                            if (!empty($config_smtp_host)) {
+                            if (!empty($config_smtp_provider)) {
                                 $subject = "Important: $config_app_name failed 2FA login attempt for $user_name";
                                 $body    = "Hi $user_name, <br><br>A recent login to your $config_app_name account was unsuccessful due to an incorrect 2FA code. If you did not attempt this login, your credentials may be compromised. <br><br>Thanks, <br>ITFlow";
                                 $data    = [[
@@ -504,6 +537,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['login']) || isset($_
                         }
                     }
 
+                // =========================
+                // CLIENT FLOW
+                // =========================
+                } elseif ($selectedType === 2) {
+
+                    if ($config_client_portal_enable != 1) {
+                        header("HTTP/1.1 401 Unauthorized");
+
+                        logAction("Client Login", "Failed", "Client portal disabled; login attempt using $email");
+
+                        $response = "
+                          <div class='alert alert-danger'>
+                            Incorrect username or password.
+                          </div>";
+                    } else {
+
+                        // Client login user id can be clobbered by SELECT users.*, contacts.*, clients.* collisions.
+                        // Prefer contact_user_id (ties to the portal user), fallback to user_id if present.
+                        $user_id = intval($selectedRow['contact_user_id'] ?? 0);
+                        if ($user_id === 0) {
+                            $user_id = intval($selectedRow['user_id'] ?? 0);
+                        }
+
+                        $client_id        = intval($selectedRow['contact_client_id'] ?? 0);
+                        $contact_id       = intval($selectedRow['contact_id'] ?? 0);
+                        $user_auth_method = sanitizeInput($selectedRow['user_auth_method'] ?? '');
+
+                        if ($client_id && $contact_id && $user_auth_method === 'local') {
+
+                            $_SESSION['client_logged_in'] = true;
+                            $_SESSION['client_id']        = $client_id;
+                            $_SESSION['user_id']          = $user_id;
+                            $_SESSION['user_type']        = 2;
+                            $_SESSION['contact_id']       = $contact_id;
+                            $_SESSION['login_method']     = "local";
+
+                            // Keep consistent with agent flow (helps any shared session checks)
+                            $_SESSION['logged']     = true;
+                            $_SESSION['csrf_token'] = randomString(32);
+
+                            // Option B: set session_user_id BEFORE logAction()
+                            $session_user_id = $user_id;
+                            logAction("Client Login", "Success", "Client contact $user_email successfully logged in locally", $client_id, $user_id);
+
+                            // Clear any pending sessions (avoid stale dual-role/MFA state)
+                            unset($_SESSION['pending_dual_login']);
+                            unset($_SESSION['pending_mfa_login']);
+
+                            header("Location: client/index.php");
+                            exit();
+
+                        } else {
+
+                            // if we have a users.user_id, log it
+                            $session_user_id = $user_id ?: 0;
+                            logAction(
+                                "Client Login",
+                                "Failed",
+                                "Failed client portal login attempt using $email (invalid auth method or missing contact/client)",
+                                $client_id ?? 0,
+                                $user_id
+                            );
+
+                            header("HTTP/1.1 401 Unauthorized");
+                            $response = "
+                              <div class='alert alert-danger'>
+                                Incorrect username or password.
+                              </div>";
+                        }
+                    }
                 }
             }
         }
@@ -548,40 +651,18 @@ $show_login_form = (!$show_role_choice && !$show_mfa_form);
             <?php if (!$config_whitelabel_enabled) { ?>
                 <span> | Powered by ITFlow</span>
             <?php } ?>
-        </div>
-    </section>
-
-    <section class="n45-auth-card-wrap">
-        <div class="n45-auth-card">
-            <div class="n45-auth-logo">
-                <?php if (!empty($company_logo)) { ?>
-                    <img alt="<?=nullable_htmlentities($company_name)?> logo" src="<?php echo "uploads/settings/$company_logo"; ?>">
-                <?php } else { ?>
-                    <span class="n45-brand-mark" aria-hidden="true"><span>N45</span></span>
-                    <div>
-                        <div class="n45-auth-title mb-0">N45 PSA</div>
-                        <div class="n45-auth-subtitle mb-0">Technician workspace</div>
-                    </div>
-                <?php } ?>
-            </div>
-
-            <h2 class="n45-auth-title">
-                <?php if ($show_mfa_form) { echo "Verify sign-in"; } elseif ($show_role_choice) { echo "Choose workspace"; } else { echo "Local technician fallback"; } ?>
-            </h2>
-            <p class="n45-auth-subtitle">
-                <?php if (!empty($config_login_message)) { echo nl2br($config_login_message); } else { echo "SSO remains the default sign-in path."; } ?>
-            </p>
 
             <?php if (isset($response)) { ?>
-                <?php echo $response; ?>
+                <p><?php echo $response; ?></p>
             <?php } ?>
 
             <form method="post">
 
                 <?php if ($show_login_form): ?>
-                    <div class="input-group">
-                        <input type="text" class="form-control"
-                            placeholder="<?php if ($config_login_key_required) { if (!isset($_GET['key']) || $_GET['key'] !== $config_login_key_secret) { echo "Client "; } } echo "Email"; ?>"
+                    <!-- STEP 1: Email + Password -->
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control"
+                            placeholder="Email"
                             name="email"
                             value="<?php echo htmlspecialchars($email ?? '', ENT_QUOTES); ?>"
                             required autofocus
@@ -593,7 +674,7 @@ $show_login_form = (!$show_role_choice && !$show_mfa_form);
                         </div>
                     </div>
 
-                    <div class="input-group">
+                    <div class="input-group mb-3">
                         <input type="password" class="form-control" placeholder="Password" name="password" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
@@ -602,29 +683,14 @@ $show_login_form = (!$show_role_choice && !$show_mfa_form);
                         </div>
                     </div>
 
-                    <div class="n45-auth-actions">
-                        <button type="submit" class="btn btn-primary btn-block" name="login">Sign In</button>
-                        <a href="/agent/openid_login.php" class="btn btn-outline-primary btn-block">
-                            <i class="fas fa-fw fa-sign-in-alt mr-2"></i>Sign in with SSO
-                        </a>
-                    </div>
-                <?php endif; ?>
-
-                <?php if ($show_role_choice): ?>
-                    <input type="hidden" name="pending_login_token"
-                           value="<?php echo htmlspecialchars($_SESSION['pending_dual_login']['token'] ?? '', ENT_QUOTES); ?>">
-
-                    <div class="n45-auth-actions">
-                        <button type="submit" class="btn btn-primary btn-block" name="role_choice" value="agent">
-                            Log in as Agent
-                        </button>
-                        <button type="submit" class="btn btn-secondary btn-block" name="role_choice" value="client">
-                            Log in as Client
-                        </button>
-                    </div>
+                    <button type="submit" class="btn btn-primary btn-block mb-3" name="login">Sign In</button>
+                    <a href="/agent/openid_login.php" class="btn btn-outline-primary btn-block mb-3">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Sign in with SSO
+                    </a>
                 <?php endif; ?>
 
                 <?php if ($show_mfa_form): ?>
+                    <!-- STEP 3: MFA only -->
                     <?php echo $token_field; ?>
 
                     <input type="hidden" name="pending_mfa_token"
@@ -637,13 +703,20 @@ $show_login_form = (!$show_role_choice && !$show_mfa_form);
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-block" name="mfa_login">Verify & Sign In</button>
+                    <button type="submit" class="btn btn-dark btn-block mb-3" name="mfa_login">Verify & Sign In</button>
                 <?php endif; ?>
 
             </form>
+
         </div>
-    </section>
+    </div>
 </div>
+
+<?php
+if (!$config_whitelabel_enabled) {
+    echo '<small class="text-muted">Powered by ITFlow</small>';
+}
+?>
 
 <script src="plugins/jquery/jquery.min.js"></script>
 <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>

@@ -135,14 +135,13 @@ if(isset($_GET['restore_credential'])){
 
 }
 
-if (isset($_POST['delete_credential']) || isset($_GET['delete_credential'])) {
+if (isset($_GET['delete_credential'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_credential', 3);
 
-    $credential_id = intval($_POST['delete_credential'] ?? $_GET['delete_credential']);
+    $credential_id = intval($_GET['delete_credential']);
 
     // Get Credential Name and Client ID for logging and alert message
     $sql = mysqli_query($mysqli,"SELECT credential_name, credential_client_id FROM credentials WHERE credential_id = $credential_id");

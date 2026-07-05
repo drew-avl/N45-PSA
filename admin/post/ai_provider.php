@@ -46,12 +46,11 @@ if (isset($_POST['edit_ai_provider'])) {
 
 }
 
-if (isset($_POST['delete_ai_provider']) || isset($_GET['delete_ai_provider'])) {
+if (isset($_GET['delete_ai_provider'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
     
-    $provider_id = intval($_POST['delete_ai_provider'] ?? $_GET['delete_ai_provider']);
+    $provider_id = intval($_GET['delete_ai_provider']);
 
     $provider_name = sanitizeInput(getFieldById('ai_providers', $provider_id, 'ai_provider_name'));
 

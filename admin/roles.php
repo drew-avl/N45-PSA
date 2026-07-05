@@ -121,13 +121,9 @@ $num_rows = mysqli_fetch_row(mysqli_query($mysqli, "SELECT FOUND_ROWS()"));
 
                                             <?php if (empty($role_archived_at) && $role_user_count == 0) { ?>
                                                 <div class="dropdown-divider"></div>
-                                                <form method="post" action="post.php" class="m-0">
-                                                    <input type="hidden" name="archive_role" value="<?php echo $role_id; ?>">
-                                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
-                                                    <button type="submit" class="dropdown-item text-danger confirm-link">
-                                                        <i class="fas fa-fw fa-archive mr-2"></i>Archive
-                                                    </button>
-                                                </form>
+                                                <a class="dropdown-item text-danger confirm-link" href="post.php?archive_role=<?php echo $role_id; ?>&csrf_token=<?php echo $_SESSION['csrf_token'] ?>">
+                                                    <i class="fas fa-fw fa-archive mr-2"></i>Archive
+                                                </a>
                                             <?php } ?>
 
                                         </div>

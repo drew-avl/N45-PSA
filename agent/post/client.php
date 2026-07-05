@@ -330,15 +330,13 @@ if (isset($_POST['edit_client'])) {
 
 }
 
-if (isset($_POST['archive_client']) || isset($_GET['archive_client'])) {
+if (isset($_GET['archive_client'])) {
 
-    // Prefer POST for destructive actions; keep GET fallback for compatibility
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_client', 2);
 
-    $client_id = intval($_POST['archive_client'] ?? $_GET['archive_client']);
+    $client_id = intval($_GET['archive_client']);
 
     // Archive client
     mysqli_query($mysqli, "UPDATE clients SET client_archived_at = NOW() WHERE client_id = $client_id");
@@ -362,14 +360,13 @@ if (isset($_POST['archive_client']) || isset($_GET['archive_client'])) {
 
 }
 
-if (isset($_POST['restore_client']) || isset($_GET['restore_client'])) {
+if (isset($_GET['restore_client'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_client', 2);
 
-    $client_id = intval($_POST['restore_client'] ?? $_GET['restore_client']);
+    $client_id = intval($_GET['restore_client']);
 
     // Get Client Name
     $client_name = sanitizeInput(getFieldById('clients', $client_id, 'client_name'));
@@ -384,14 +381,13 @@ if (isset($_POST['restore_client']) || isset($_GET['restore_client'])) {
 
 }
 
-if (isset($_POST['delete_client']) || isset($_GET['delete_client'])) {
+if (isset($_GET['delete_client'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_client', 3);
 
-    $client_id = intval($_POST['delete_client'] ?? $_GET['delete_client']);
+    $client_id = intval($_GET['delete_client']);
 
     // Get Client Name
     $client_name = sanitizeInput(getFieldById('clients', $client_id, 'client_name'));

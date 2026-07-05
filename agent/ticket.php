@@ -383,33 +383,21 @@ if (isset($_GET['ticket_id'])) {
                             if (empty($ticket_closed_at)) { ?>
 
                                 <?php if (empty($ticket_closed_at) && !empty($ticket_resolved_at)) { ?>
-                                    <form method="post" action="post.php" class="d-inline">
-                                        <input type="hidden" name="reopen_ticket" value="<?= $ticket_id ?>">
-                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                        <button type="submit" class="btn btn-light btn-sm ml-3">
-                                            <i class="fas fa-fw fa-redo mr-2"></i>Reopen
-                                        </button>
-                                    </form>
+                                    <a href="post.php?reopen_ticket=<?= $ticket_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" class="btn btn-light btn-sm ml-3">
+                                        <i class="fas fa-fw fa-redo mr-2"></i>Reopen
+                                    </a>
                                 <?php } ?>
 
                                 <?php if (empty($ticket_resolved_at) && $task_count == $completed_task_count) { ?>
-                                    <form method="post" action="post.php" class="d-inline">
-                                        <input type="hidden" name="resolve_ticket" value="<?php echo $ticket_id; ?>">
-                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
-                                        <button type="submit" class="btn btn-dark btn-sm confirm-link ml-3" id="ticket_close">
-                                            <i class="fas fa-fw fa-check mr-2"></i>Resolve
-                                        </button>
-                                    </form>
+                                    <a href="post.php?resolve_ticket=<?php echo $ticket_id; ?>&csrf_token=<?php echo $_SESSION['csrf_token'] ?>" class="btn btn-dark btn-sm confirm-link ml-3" id="ticket_close">
+                                        <i class="fas fa-fw fa-check mr-2"></i>Resolve
+                                    </a>
                                 <?php } ?>
 
                                 <?php if (!empty($ticket_resolved_at) && $task_count == $completed_task_count) { ?>
-                                    <form method="post" action="post.php" class="d-inline">
-                                        <input type="hidden" name="close_ticket" value="<?php echo $ticket_id; ?>">
-                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
-                                        <button type="submit" class="btn btn-dark btn-sm confirm-link ml-3" id="ticket_close">
-                                            <i class="fas fa-fw fa-gavel mr-2"></i>Close
-                                        </button>
-                                    </form>
+                                    <a href="post.php?close_ticket=<?php echo $ticket_id; ?>&csrf_token=<?php echo $_SESSION['csrf_token'] ?>" class="btn btn-dark btn-sm confirm-link ml-3" id="ticket_close">
+                                        <i class="fas fa-fw fa-gavel mr-2"></i>Close
+                                    </a>
                                 <?php } ?>
 
                                 <div class="dropdown dropleft text-center ml-3 mr-2">
@@ -445,13 +433,9 @@ if (isset($_GET['ticket_id'])) {
                                         </a>
                                         <?php if (lookupUserPermission("module_support") == 3) { ?>
                                             <div class="dropdown-divider"></div>
-                                            <form method="post" action="post.php" class="m-0">
-                                                <input type="hidden" name="delete_ticket" value="<?php echo $ticket_id; ?>">
-                                                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
-                                                <button type="submit" class="dropdown-item text-danger text-bold confirm-link">
-                                                    <i class="fas fa-fw fa-trash mr-2"></i>Delete
-                                                </button>
-                                            </form>
+                                            <a class="dropdown-item text-danger text-bold confirm-link" href="post.php?delete_ticket=<?php echo $ticket_id; ?>&csrf_token=<?php echo $_SESSION['csrf_token'] ?>">
+                                                <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                            </a>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -775,13 +759,9 @@ if (isset($_GET['ticket_id'])) {
                                                         <i class="fas fa-fw fa-edit text-secondary mr-2"></i>Edit
                                                     </a>
                                                     <div class="dropdown-divider"></div>
-                                                    <form method="post" action="post.php" class="m-0">
-                                                        <input type="hidden" name="archive_ticket_reply" value="<?= $ticket_reply_id ?>">
-                                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                                        <button type="submit" class="dropdown-item text-danger confirm-link">
-                                                            <i class="fas fa-fw fa-archive mr-2"></i>Archive
-                                                        </button>
-                                                    </form>
+                                                    <a class="dropdown-item text-danger confirm-link" href="post.php?archive_ticket_reply=<?= $ticket_reply_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                                        <i class="fas fa-fw fa-archive mr-2"></i>Archive
+                                                    </a>
                                                     <?php } ?>
                                                 </div>
                                             <?php } ?>
@@ -939,21 +919,13 @@ if (isset($_GET['ticket_id'])) {
                                         <i class="fas fa-ellipsis-v"></i>
                                     </button>
                                     <div class="dropdown-menu">
-                                        <form method="post" action="post.php" class="m-0">
-                                            <input type="hidden" name="complete_all_tasks" value="<?= $ticket_id ?>">
-                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                            <button type="submit" class="dropdown-item text-success">
-                                                <i class="fas fa-fw fa-check-double mr-2"></i>Mark All Complete
-                                            </button>
-                                        </form>
+                                        <a class="dropdown-item text-success" href="post.php?complete_all_tasks=<?= $ticket_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                            <i class="fas fa-fw fa-check-double mr-2"></i>Mark All Complete
+                                        </a>
                                         <div class="dropdown-divider"></div>
-                                        <form method="post" action="post.php" class="m-0">
-                                            <input type="hidden" name="undo_complete_all_tasks" value="<?= $ticket_id ?>">
-                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                            <button type="submit" class="dropdown-item">
-                                                <i class="far fa-fw fa-square mr-2"></i>Mark All Incomplete
-                                            </button>
-                                        </form>
+                                        <a class="dropdown-item" href="post.php?undo_complete_all_tasks=<?= $ticket_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                            <i class="far fa-fw fa-square mr-2"></i>Mark All Incomplete
+                                        </a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item text-danger confirm-link" href="#">
                                             <i class="fas fa-fw fa-trash-alt mr-2"></i>Delete All
@@ -1044,24 +1016,15 @@ if (isset($_GET['ticket_id'])) {
                                                        title="Approval required"></i>
 
                                                     <?php if ($user_can_approve) { ?>
-                                                        <form method="post" action="post.php" class="d-inline">
-                                                            <input type="hidden" name="approve_ticket_task" value="<?= $task_id ?>">
-                                                            <input type="hidden" name="approval_id" value="<?= $approval_id ?>">
-                                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                                            <button type="submit" class="btn btn-link p-0 align-baseline confirm-link" title="Approve task">
-                                                                <i class="fas fa-thumbs-up text-green"></i>
-                                                            </button>
-                                                        </form>
+                                                        <a class="confirm-link" href="post.php?approve_ticket_task=<?= $task_id ?>&approval_id=<?= $approval_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                                            <i class="fas fa-thumbs-up text-green" title="Approve task"></i>
+                                                        </a>
                                                     <?php } ?>
 
                                                 <?php } else { ?>
-                                                    <form method="post" action="post.php" class="d-inline">
-                                                        <input type="hidden" name="complete_task" value="<?= $task_id ?>">
-                                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                                        <button type="submit" class="btn btn-link p-0 align-baseline" title="Mark task complete">
-                                                            <i class="far fa-square text-dark"></i>
-                                                        </button>
-                                                    </form>
+                                                    <a href="post.php?complete_task=<?= $task_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                                        <i class="far fa-square text-dark"></i>
+                                                    </a>
                                                 <?php } ?>
 
                                             <?php } ?>
@@ -1092,22 +1055,14 @@ if (isset($_GET['ticket_id'])) {
                                                                     </a>
                                                                 <?php } ?>
                                                                 <?php if ($task_completed_at) { ?>
-                                                                    <form method="post" action="post.php" class="m-0">
-                                                                        <input type="hidden" name="undo_complete_task" value="<?= $task_id ?>">
-                                                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                                                        <button type="submit" class="dropdown-item">
-                                                                            <i class="fas fa-fw fa-arrow-circle-left mr-2"></i>Mark incomplete
-                                                                        </button>
-                                                                    </form>
+                                                                    <a class="dropdown-item" href="post.php?undo_complete_task=<?= $task_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                                                        <i class="fas fa-fw fa-arrow-circle-left mr-2"></i>Mark incomplete
+                                                                    </a>
                                                                 <?php } ?>
                                                                 <div class="dropdown-divider"></div>
-                                                                <form method="post" action="post.php" class="m-0">
-                                                                    <input type="hidden" name="delete_task" value="<?php echo $task_id; ?>">
-                                                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
-                                                                    <button type="submit" class="dropdown-item text-danger confirm-link">
-                                                                        <i class="fas fa-fw fa-trash-alt mr-2"></i>Delete
-                                                                    </button>
-                                                                </form>
+                                                                <a class="dropdown-item text-danger confirm-link" href="post.php?delete_task=<?php echo $task_id; ?>&csrf_token=<?php echo $_SESSION['csrf_token'] ?>">
+                                                                    <i class="fas fa-fw fa-trash-alt mr-2"></i>Delete
+                                                                </a>
                                                             </div>
                                                         </div>
 
@@ -1204,13 +1159,9 @@ if (isset($_GET['ticket_id'])) {
                                 <div class='mt-1'>
                                     <i class="fa fa-fw fa-envelope text-secondary mr-2"></i><?php echo $ticket_watcher_email; ?>
                                     <?php if (empty($ticket_closed_at)) { ?>
-                                        <form method="post" action="post.php" class="float-right m-0">
-                                            <input type="hidden" name="delete_ticket_watcher" value="<?= $watcher_id ?>">
-                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                            <button type="submit" class="btn btn-link p-0 confirm-link" title="Remove watcher">
-                                                <i class="fas fa-fw fa-times text-secondary"></i>
-                                            </button>
-                                        </form>
+                                        <a class="confirm-link float-right" href="post.php?delete_ticket_watcher=<?= $watcher_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                            <i class="fas fa-fw fa-times text-secondary"></i>
+                                        </a>
                                     <?php } ?>
                                 </div>
 
@@ -1253,14 +1204,9 @@ if (isset($_GET['ticket_id'])) {
                                         <i class="fa fa-fw fa-<?php echo $additional_asset_icon; ?> text-secondary mr-2"></i><?php echo $additional_asset_name; ?>
                                     </a>
                                     <?php if (empty($ticket_closed_at)) { ?>
-                                        <form method="post" action="post.php" class="float-right m-0">
-                                            <input type="hidden" name="delete_ticket_additional_asset" value="<?= $additional_asset_id; ?>">
-                                            <input type="hidden" name="ticket_id" value="<?= $ticket_id ?>">
-                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                            <button type="submit" class="btn btn-link p-0 confirm-link" title="Remove asset from ticket">
-                                                <i class="fas fa-fw fa-times text-secondary"></i>
-                                            </button>
-                                        </form>
+                                        <a class="confirm-link float-right" href="post.php?delete_ticket_additional_asset=<?= $additional_asset_id; ?>&ticket_id=<?= $ticket_id ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" title="Remove asset from ticket">
+                                            <i class="fas fa-fw fa-times text-secondary"></i>
+                                        </a>
                                     <?php } ?>
                                 </div>
                             <?php

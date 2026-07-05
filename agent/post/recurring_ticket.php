@@ -166,7 +166,7 @@ if (isset($_POST['bulk_force_recurring_tickets'])) {
                 $data = [];
 
                 // Notify client by email their ticket has been raised, if general notifications are turned on & there is a valid contact email
-                if (!empty($config_smtp_host) && $config_ticket_client_general_notifications == 1 && filter_var($contact_email, FILTER_VALIDATE_EMAIL)) {
+                if (!empty($config_smtp_provider) && $config_ticket_client_general_notifications == 1 && filter_var($contact_email, FILTER_VALIDATE_EMAIL)) {
 
                     $email_subject = "Ticket Created - [$ticket_prefix$ticket_number] - $ticket_subject (scheduled)";
                     $email_body = "<i style=\'color: #808080\'>##- Please type your reply above this line -##</i><br><br>Hello $contact_name,<br><br>A ticket regarding \"$ticket_subject\" has been automatically created for you.<br><br>--------------------------------<br>$ticket_details--------------------------------<br><br>Ticket: $ticket_prefix$ticket_number<br>Subject: $ticket_subject<br>Status: Open<br>Portal: https://$config_base_url/client/ticket.php?id=$id<br><br>--<br>$company_name - Support<br>$config_ticket_from_email<br>$company_phone";
@@ -218,14 +218,13 @@ if (isset($_POST['bulk_force_recurring_tickets'])) {
 
 }
 
-if (isset($_POST['force_recurring_ticket']) || isset($_GET['force_recurring_ticket'])) {
+if (isset($_GET['force_recurring_ticket'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_support', 2);
 
-    $recurring_ticket_id = intval($_POST['force_recurring_ticket'] ?? $_GET['force_recurring_ticket']);
+    $recurring_ticket_id = intval($_GET['force_recurring_ticket']);
 
     $sql = mysqli_query($mysqli, "SELECT * FROM recurring_tickets WHERE recurring_ticket_id = $recurring_ticket_id");
 
@@ -307,7 +306,7 @@ if (isset($_POST['force_recurring_ticket']) || isset($_GET['force_recurring_tick
         $data = [];
 
         // Notify client by email their ticket has been raised, if general notifications are turned on & there is a valid contact email
-        if (!empty($config_smtp_host) && $config_ticket_client_general_notifications == 1 && filter_var($contact_email, FILTER_VALIDATE_EMAIL)) {
+        if (!empty($config_smtp_provider) && $config_ticket_client_general_notifications == 1 && filter_var($contact_email, FILTER_VALIDATE_EMAIL)) {
 
             $email_subject = "Ticket created - [$ticket_prefix$ticket_number] - $ticket_subject (scheduled)";
             $email_body = "<i style=\'color: #808080\'>##- Please type your reply above this line -##</i><br><br>Hello $contact_name,<br><br>A ticket regarding \"$ticket_subject\" has been automatically created for you.<br><br>--------------------------------<br>$ticket_details--------------------------------<br><br>Ticket: $ticket_prefix$ticket_number<br>Subject: $ticket_subject<br>Status: Open<br>Portal: https://$config_base_url/client/ticket.php?id=$id<br><br>--<br>$company_name - Support<br>$config_ticket_from_email<br>$company_phone";
@@ -359,14 +358,13 @@ if (isset($_POST['force_recurring_ticket']) || isset($_GET['force_recurring_tick
 
 }
 
-if (isset($_POST['delete_recurring_ticket']) || isset($_GET['delete_recurring_ticket'])) {
+if (isset($_GET['delete_recurring_ticket'])) {
 
-    $csrf_token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    validateCSRFToken($csrf_token);
+    validateCSRFToken($_GET['csrf_token']);
 
     enforceUserPermission('module_support', 3);
 
-    $recurring_ticket_id = intval($_POST['delete_recurring_ticket'] ?? $_GET['delete_recurring_ticket']);
+    $recurring_ticket_id = intval($_GET['delete_recurring_ticket']);
 
     // Get Scheduled Ticket Subject Ticket Prefix, Number and Client ID for logging and alert message
     $sql = mysqli_query($mysqli, "SELECT * FROM recurring_tickets WHERE recurring_ticket_id = $recurring_ticket_id");
@@ -486,7 +484,7 @@ if (isset($_POST['bulk_assign_recurring_ticket'])) {
             mysqli_query($mysqli, "INSERT INTO notifications SET notification_type = 'Recurring Ticket', notification = '$recurring_ticket_count Recurring Tickets have been assigned to you by $session_name', notification_action = 'recurring_tickets.php?assigned=$assign_to', notification_client_id = $client_id, notification_user_id = $assign_to");
 
             // Agent Email Notification
-            if (!empty($config_smtp_host)) {
+            if (!empty($config_smtp_provider)) {
 
                 // Sanitize Config vars from get_settings.php
                 $config_ticket_from_name = sanitizeInput($config_ticket_from_name);

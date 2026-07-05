@@ -11,8 +11,6 @@ require_once "../includes/check_login.php";
 // Define a variable that we can use to only allow running post files via inclusion (prevents people/bots poking them)
 define('FROM_POST_HANDLER', true);
 
-normalizeLegacyPostActionRequest();
-
 // Determine which files we should load
 
 // Parse URL & get the path

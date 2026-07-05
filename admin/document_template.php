@@ -112,13 +112,9 @@
                                         <i class="fas fa-fw fa-edit mr-2"></i>Edit
                                     </a>
                                     <div class="dropdown-divider"></div>
-                                    <form method="post" action="post.php" class="m-0">
-                                        <input type="hidden" name="delete_document_template" value="<?php echo $document_template_id; ?>">
-                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                        <button type="submit" class="dropdown-item text-danger text-bold">
-                                            <i class="fas fa-fw fa-trash mr-2"></i>Delete
-                                        </button>
-                                    </form>
+                                    <a class="dropdown-item text-danger text-bold" href="post.php?delete_document_template=<?php echo $document_template_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>">
+                                        <i class="fas fa-fw fa-trash mr-2"></i>Delete
+                                    </a>
                                 </div>
                             </div>
                         </td>

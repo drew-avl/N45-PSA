@@ -12,7 +12,7 @@ require_once '../includes/load_global_settings.php';
 
 
 if (empty($config_smtp_host)) {
-    header("Location: /client/");
+    header("Location: /client/login.php");
     exit();
 }
 
@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
             // Redirect to login page
             $_SESSION['login_message'] = "Password reset successfully!";
-            header("Location: /client/");
+            header("Location: /client/login.php");
             exit();
 
         } else {
@@ -277,7 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 ?>
             </p>
 
-            <a href="/client/">Back to login</a>
+            <a href="/client/login.php">Back to login</a>
 
 
         </div>

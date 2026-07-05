@@ -1,6 +1,27 @@
 <?php
 require_once "includes/inc_all_admin.php";
 
+$theme_colors_array = array (
+    'lightblue',
+    'blue',
+    'cyan',
+    'green',
+    'olive',
+    'teal',
+    'red',
+    'maroon',
+    'pink',
+    'purple',
+    'indigo',
+    'fuchsia',
+    'yellow',
+    'orange',
+    'yellow',
+    'black',
+    'navy',
+    'gray'
+);
+
 ?>
 
 <div class="card card-dark">
@@ -8,10 +29,36 @@ require_once "includes/inc_all_admin.php";
         <h3 class="card-title"><i class="fas fa-fw fa-paint-brush mr-2"></i>Theme</h3>
     </div>
     <div class="card-body">
-        <div class="n45-theme-lock d-flex align-items-center justify-content-between">
-            <span><i class="fas fa-moon mr-2"></i>N45 Dark</span>
-            <span class="badge badge-primary">Active</span>
-        </div>
+        <form action="post.php" method="post" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
+
+            <label>Select a Theme</label>
+            <div class="form-row">
+
+                <?php
+
+                foreach ($theme_colors_array as $theme_color) {
+
+                    ?>
+
+                    <div class="col-4 text-center mb-3">
+                        <div class="form-group">
+                            <div class="custom-control custom-radio">
+                                <input class="custom-control-input" type="radio" onchange="this.form.submit()" id="customRadio<?php echo $theme_color; ?>" name="edit_theme_settings" value="<?php echo $theme_color; ?>" <?php if ($config_theme == $theme_color) { echo "checked"; } ?>>
+                                <label for="customRadio<?php echo $theme_color; ?>" class="custom-control-label">
+                                    <i class="fa fa-fw fa-6x fa-circle text-<?php echo $theme_color; ?>"></i>
+                                    <br>
+                                    <?php echo $theme_color; ?>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                <?php } ?>
+
+            </div>
+
+        </form>
     </div>
 </div>
 
@@ -33,11 +80,7 @@ require_once "includes/inc_all_admin.php";
 
             <button type="submit" name="edit_favicon_settings" class="btn btn-primary text-bold"><i class="fa fa-check mr-2"></i>Upload Icon</button>
             <?php if(file_exists("../uploads/favicon.ico")) { ?>
-            <form method="post" action="post.php" class="d-inline m-0">
-                <input type="hidden" name="reset_favicon" value="1">
-                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                <button type="submit" class="btn btn-outline-danger"><i class="fas fa-redo-alt mr-2"></i>Reset Favicon</button>
-            </form>
+            <a href="post.php?reset_favicon&csrf_token=<?= $_SESSION['csrf_token'] ?>" class="btn btn-outline-danger"><i class="fas fa-redo-alt mr-2"></i>Reset Favicon</a>
             <?php } ?>
         </form>
     </div>

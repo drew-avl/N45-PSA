@@ -97,11 +97,7 @@ if (isset($_GET['id']) && intval($_GET['id'])) {
                 <div class="card-tools">
                     <?php
                     if (empty($ticket_resolved_at) && $task_count == $completed_task_count) { ?>
-                        <form method="post" action="post.php" class="d-inline">
-                            <input type="hidden" name="resolve_ticket" value="<?php echo $ticket_id; ?>">
-                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                            <button type="submit" class="btn btn-sm btn-outline-success float-right text-white confirm-link"><i class="fas fa-fw fa-check text-success"></i> Resolve ticket</button>
-                        </form>
+                        <a href="post.php?resolve_ticket=<?php echo $ticket_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" class="btn btn-sm btn-outline-success float-right text-white confirm-link"><i class="fas fa-fw fa-check text-success"></i> Resolve ticket</a>
                     <?php } ?>
                 </div>
             </div>
@@ -180,16 +176,7 @@ if (isset($_GET['id']) && intval($_GET['id'])) {
 
                             <li>
                                 <?php echo $task_name;
-                                if ($contact_can_approve) { ?>
-                                    -
-                                    <form method="post" action="post.php" class="d-inline">
-                                        <input type="hidden" name="approve_ticket_task" value="<?= $task_id ?>">
-                                        <input type="hidden" name="approval_id" value="<?= $approval_id ?>">
-                                        <input type="hidden" name="approval_url_key" value="<?= $approval_url_key ?>">
-                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                                        <button type="submit" class="btn btn-link p-0 align-baseline confirm-link">Approve task</button>
-                                    </form>
-                                <?php }
+                                if ($contact_can_approve) { ?> - <a href="post.php?approve_ticket_task=<?= $task_id ?>&approval_id=<?= $approval_id ?>&approval_url_key=<?= $approval_url_key ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" class="confirm-link">Approve task</a> <?php }
                                 else {?> - Please ask your <?= $approval_type ?> contact to approve this task <?php } ?>
                             </li>
 
@@ -230,19 +217,11 @@ if (isset($_GET['id']) && intval($_GET['id'])) {
             <div class="col-6">
                 <div class="row">
                     <div class="col">
-                        <form method="post" action="post.php" class="d-inline">
-                            <input type="hidden" name="reopen_ticket" value="<?php echo $ticket_id; ?>">
-                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                            <button type="submit" class="btn btn-secondary btn-lg"><i class="fas fa-fw fa-redo text-white"></i> Reopen ticket</button>
-                        </form>
+                        <a href="post.php?reopen_ticket=<?php echo $ticket_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" class="btn btn-secondary btn-lg"><i class="fas fa-fw fa-redo text-white"></i> Reopen ticket</a>
                     </div>
 
                     <div class="col">
-                        <form method="post" action="post.php" class="d-inline">
-                            <input type="hidden" name="close_ticket" value="<?php echo $ticket_id; ?>">
-                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                            <button type="submit" class="btn btn-success btn-lg confirm-link"><i class="fas fa-fw fa-gavel text-white"></i> Close ticket</button>
-                        </form>
+                        <a href="post.php?close_ticket=<?php echo $ticket_id; ?>&csrf_token=<?= $_SESSION['csrf_token'] ?>" class="btn btn-success btn-lg confirm-link"><i class="fas fa-fw fa-gavel text-white"></i> Close ticket</a>
                     </div>
                 </div>
             </div>
