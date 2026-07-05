@@ -34,8 +34,8 @@ header("X-Frame-Options: DENY");
     <link rel="stylesheet" href="/plugins/toastr/toastr.min.css">
     <link rel="stylesheet" href="/plugins/DataTables/datatables.min.css">
     <link rel="stylesheet" href="/plugins/intl-tel-input/css/intlTelInput.min.css">
-    <link rel="stylesheet" href="/plugins/adminlte/css/adminlte.min.css">
     <link rel="stylesheet" href="/css/itflow_custom.css">
+    <link rel="stylesheet" href="/plugins/adminlte/css/adminlte.min.css">
 
     <!-- Scripts -->
     <script src="/plugins/jquery/jquery.min.js"></script>
@@ -43,7 +43,7 @@ header("X-Frame-Options: DENY");
 </head>
 <body class="
     hold-transition sidebar-mini layout-fixed layout-navbar-fixed
-    accent-<?php echo isset($_GET['client_id']) ? 'blue' : nullable_htmlentities($config_theme); ?>
+    accent-<?php echo nullable_htmlentities($config_theme); ?>
     <?php if ($user_config_theme_dark) echo 'dark-mode'; ?>
 ">
     <div class="wrapper text-sm">
